@@ -8,47 +8,143 @@ format_cod_source_info <- function(df) {
 lookup_cod_source_info <- function(desc_source_info_f) {
 
     # HACK, hard-code the lookup here
-    cod_source_info_map <- c(
-        "Évaluation de stocks IML - Pétoncle Minganie" = "18",
-        "Évaluation de stocks IML - Pétoncle I de M" = "19", # MSACCESS
-        "Évaluation de stocks IML - Pétoncle Îles-de-la-Madeleine" = "19", # ORACLE
-        "Relevé buccin Haute Côte-Nord" = "22"
-    )
-    return(cod_source_info_map[desc_source_info_f])
+    # cod_source_info_map <- c(
+    #     "Évaluation de stocks IML - Pétoncle Minganie" = "18",
+    #     "Évaluation de stocks IML - Pétoncle I de M" = "19", # MSACCESS
+    #     "Évaluation de stocks IML - Pétoncle Îles-de-la-Madeleine" = "19", # ORACLE
+    #     "Relevé buccin Haute Côte-Nord" = "22"
+    # )
+    # return(cod_source_info_map[desc_source_info_f])
 
-    # TODO: better to lookup the values from the mdb file...
+    key <- get_ref_key(
+        table = "Source_Info",
+        pkey_col = "COD_SOURCE_INFO",
+        col = "DESC_SOURCE_INFO_F",
+        val = desc_source_info_f)
+    return(key)
+}
 
-    # access_db <- readr::read_file(system.file("ref_data",
-    #                                       "access_template.mdb",
-    #                                       package = "ANDESMollusque"))
-    # channel <- RODBC::odbcConnectAccess2007(access_db)
 
-    # query <- sprintf("
-    # SELECT COD_SOURCE_INFO
-    # FROM SOURCE_INFO
-    # WHERE DESC_SOURCE_INFO_F=%s
-    # ;
-    # ", desc_source_info_f)
+#' Add the cod_serie_hist to the whole dataframe
+#' This value is not present in ANDES so it will have to be specified here.
+#' Run this without desc_serie_hist_f to get a list of choices.
+init_cod_serie_hist <- function(df, desc_serie_hist_f=NULL) {
+    # only buld a list of choices if no descriptioin is specified.
+    if (is.null(desc_serie_hist_f)) {
+        # May have to update this list, perhaps we should build it fro mthe MS access db
+        choices <- get_ref_choices(
+            table = "Indice_Suivi_Etat_Stock",
+            col = "DESC_SERIE_HIST_F"
+        )
+        stop("Please specify desc_serie_hist_f. Choices are: ", paste(choices, collapse = ", "))
+        logger::log_error("Andes does not know about the COD_SERIE_HIST, showing possible choices...")
+    }
+    logger::log_info("Andes does not know about the COD_SERIE_HIST, so it was initialized as from {desc_serie_hist_f}.")
 
-    # res <- RODBC::sqlQuery(channel,
-    #                     query,
-    #                     errors = FALSE)
-    # RODBC::odbcClose(channel)
-    # return(res)
+    # do not need to validate desc_serie_hist_f, the lookup will raise an arror if it is not legal.
+    cod_serie_hist <- lookup_cod_serie_hist(desc_serie_hist_f)
+    df["COD_SERIE_HIST"] <- cod_serie_hist
+    # desc_serie_hist_f <-  df[, which(names(df) == "DESC_SERIE_HIST_F")]
+    # df["COD_SERIE_HIST"] <- unlist(lapply(desc_serie_hist_f, lookup_cod_serie_hist))
+    return(df)
 }
 
 lookup_cod_serie_hist <- function(desc_serie_hist_f) {
-    # HACK hard lookuip here
-    cod_serie_hist_map <- c(
-        "Indice d'abondance zone 16E - pétoncle" <- 15,
-        "Indice d'abondance zone 16F - pétoncle" <- 16,
-        "Indice d'abondance zone 20 - pétoncle" <- 18,
-        "Indice d'abondance buccin" <- 20
-    )
-    return(cod_serie_hist_map[desc_serie_hist_f])
-    # query <- sprintf("
-    # SELECT COD_SERIE_HIST
-    # FROM Indice_Suivi_Etat_Stock
-    # WHERE DESC_SERIE_HIST_F=%S,
-    # ;", desc_serie_hist_f)
+    # # HACK hard lookup here
+    # cod_serie_hist_map <- c(
+    #     "Indice d'abondance zone 16E - pétoncle" <- 15,
+    #     "Indice d'abondance zone 16F - pétoncle" <- 16,
+    #     "Indice d'abondance zone 20 - pétoncle" <- 18,
+    #     "Indice d'abondance buccin" <- 20
+    # )
+    # return(cod_serie_hist_map[desc_serie_hist_f])
+
+    key <- get_ref_key(
+        table = "Indice_Suivi_Etat_Stock",
+        pkey_col = "COD_SERIE_HIST",
+        col = "DESC_SERIE_HIST_F",
+        val = desc_serie_hist_f)
+    return(key)
+}
+
+format_date_deb_projet <- function(df) {
+    # get the col
+    date_projet <- df[, which(names(df) == "DATE_DEB_PROJET")]
+    df["DATE_DEB_PROJET"] <- unlist(lapply(date_projet, andes_str_to_oracle_date))
+    return(df)
+}
+
+format_date_fin_projet <- function(df) {
+    # get the col
+    date_projet <- df[, which(names(df) == "DATE_FIN_PROJET")]
+    df["DATE_FIN_PROJET"] <- unlist(lapply(date_projet, andes_str_to_oracle_date))
+    return(df)
+}
+
+format_seq_pecheur <- function(df) {
+    # get the col
+    vessel_name <- df[, which(names(df) == "vessel_name")]
+    # sad hack... :(
+    if (vessel_name=="Leim") {
+        pecheur <- "Capitaine Leim"
+    } else {
+        stop("The only supported vessel is the Leim for now. Cannot determine SEQ_PECHEUR for vessel: ", vessel_name)
+        logger::log_error("The only supported vessel is the Leim for now. Cannot determine SEQ_PECHEUR for vessel: {vessel_name}")
+    }
+
+    logger::log_info("Assuming {pecheur} as NOM_PECHEUR (from the vessel {vessel_name})")
+
+    seq_pecheur <- get_ref_key(table="Pecheur",
+                                pkey_col="SEQ_PECHEUR",
+                                col="NOM_PECHEUR",
+                                val=pecheur)
+
+    df["SEQ_PECHEUR"] <- seq_pecheur
+    # we are done with, the vessel_name column, it can be deleted.
+    return(df)
+}
+
+
+cleanup_text <- function(df, col_name = NULL, max_chars = NULL) {
+    # get the col
+    andes_text <- df[, which(names(df) == col_name)]
+    # cleanup, remove line breaks from the text block
+    andes_text <- gsub("\r?\n|\r", " ", andes_text)
+
+    if (! is.null(max_chars) && nchar(andes_text) > max_chars) {
+        # truncate the text to max_chars
+        andes_text <- substr(andes_text, 1, max_chars)
+        logger::log_warn("The text in column {col_name} was truncated to {max_chars} characters.")
+    }
+
+    df[col_name] <- andes_text
+    return(df)
+}
+
+andes_str_to_oracle_date <- function(date_str) {
+    # as posixlt
+    # posixct_date <- unlist(lapply(date_str, parse_andes_datetime))
+    posixct_date <- parse_andes_datetime(date_str)
+    return(format(posixct_date, format="%Y-%m-%d"))
+}
+
+#' takes a standard ANDES UTC time string and converts it to a POSIXct object
+parse_andes_datetime <- function(andes_time_str) {
+  # if (is.na(andes_time_str)==TRUE) {
+  #   return(NA)
+  # }
+  parsed_time <- as.POSIXct(andes_time_str, format = "%Y-%m-%d %H:%M:%S", tz = "UTC", optional=TRUE)
+  # Convert ISO 8601 time to POSIXlt, ANDES DB time values are implicitly in UTC
+  return(parsed_time)
+}
+
+add_hard_coded_value <- function(df, col_name = NULL, value = NULL) {
+    if (is.null(col_name)) {
+        stop("Both col_name and value must be provided.")
+        logger::log_error("add_hard_coded_value was called with bad arguments")
+    }
+    logger::log_info("A hard-coded value of {value} was added to column {col_name}")
+    # add a hard coded value to the dataframe
+    df[col_name] <- value
+    return(df)
 }
