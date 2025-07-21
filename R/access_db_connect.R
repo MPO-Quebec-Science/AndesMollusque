@@ -42,17 +42,20 @@ get_ref_key <- function(table="tablename",
                         val="entryvalue",
                         optional_query="") {
 
+    sanitized_val <- gsub("'", "''", val)
     query <- paste("SELECT ", pkey_col,
                   " FROM ", table,
-                  " WHERE ", col, "='", val, "'",
+                  " WHERE ", col, "='", sanitized_val, "'",
                   " ", optional_query,
                   sep = "")
-    # print(query)
     access_db_connection <- access_db_connect()
     result <- DBI::dbSendQuery(access_db_connection, query)
-    ref_key <- DBI::dbFetch(result, n = Inf)[,pkey_col]
+    ref_key <- DBI::dbFetch(result, n = Inf)[, pkey_col]
     DBI::dbDisconnect(access_db_connection)
 
+    if (length(ref_key) != 1) {
+        stop("The reference query: ", query, " returned ", length(ref_key), " results. Expected 1 result.")
+    }
     # TODO: add sanity checks, 
         #     if len(res) == 1:
         #     return res[0][0]
@@ -64,4 +67,21 @@ get_ref_key <- function(table="tablename",
         #     raise ValueError
 
     return(ref_key)
+}
+
+#' Builds a list of legal choices (descriptions) for get ref key
+get_ref_choices <- function(table="tablename",
+                        col="columnname",
+                        optional_query="") {
+    
+    query <- paste("SELECT ", col,
+            " FROM ", table,
+            " ", optional_query,
+            sep = "")
+    # print(query)
+    access_db_connection <- access_db_connect()
+    result <- DBI::dbSendQuery(access_db_connection, query)
+    choices <- DBI::dbFetch(result, n = Inf)[, col]
+    DBI::dbDisconnect(access_db_connection)
+    return(choices)
 }
