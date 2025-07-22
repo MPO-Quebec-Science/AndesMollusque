@@ -12,7 +12,7 @@
 #' @return A dataframe containing fishing set data.
 #' @seealso [get_projet_mollusc()] for the formatted results
 #' @export
-get_projet_mollusc_db<- function(andes_db_connection) {
+get_projet_mollusque_db<- function(andes_db_connection) {
     query <- readr::read_file(system.file("sql_queries",
                                           "projet_mollusque.sql",
                                           package = "ANDESMollusque"))
@@ -32,8 +32,8 @@ get_projet_mollusc_db<- function(andes_db_connection) {
 #' @return A dataframe containing fishing set data.
 #' @seealso [get_projet_mollusc_db()] for the raw database results
 #' @export
-get_projet_mollusc <- function(andes_db_connection) {
-    proj <- get_projet_mollusc_db(andes_db_connection)
+get_projet_mollusque <- function(andes_db_connection) {
+    proj <- get_projet_mollusque_db(andes_db_connection)
 
     # add COD_SOURCE_INFO from the description
     proj <- format_cod_source_info(proj)

@@ -21,5 +21,5 @@ andes_db_connect(url_bd, port_bd, nom_usager, mot_de_passe, nom_bd = "andesdb")
 A connection object to the ANDES database.
 }
 \description{
-This is a wrapper for the `RMySQL::dbConnect`, see it's documentation for more details.
+This is a wrapper for the `DBI::dbConnect`, see it's documentation for more details.
 }

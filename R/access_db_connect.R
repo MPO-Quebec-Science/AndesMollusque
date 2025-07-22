@@ -14,10 +14,21 @@ access_db_connect <- function(file_path = NULL) {
                     "access_template.mdb",
                     package = "ANDESMollusque")
     }
+
     connection_string <- paste(
         "Driver={Microsoft Access Driver (*.mdb, *.accdb)};",
-        "DBQ=", file_path,
+        "DBQ=", file_path, ";",
         sep = "")
+
+
+    # if opening the access template, set to read only.
+    if (file_path == system.file("ref_data", "access_template.mdb", package = "ANDESMollusque")) {
+        connection_string <- paste(
+            connection_string,
+            "ReadOnly=1;",
+            sep = "")
+    }
+    print(connection_string)
     access_db_connection <- DBI::dbConnect(odbc::odbc(),
                     .connection_string = connection_string,
                     timeout = 10)
@@ -26,6 +37,23 @@ access_db_connect <- function(file_path = NULL) {
 
     return(access_db_connection)
 }
+
+#' @export
+create_new_access_db <- function(fname = "new_access_db.mdb") {
+    template_file_path <- system.file("ref_data",
+            "access_template.mdb",
+            package = "ANDESMollusque")
+    res <- file.copy(template_file_path, fname, overwrite = FALSE)
+    if (res){
+        return(fname)
+    } else {
+        logger::log_error("Failed to create a new Access database file {fname}")
+        stop("Failed to copy the template file to ", fname)
+       
+        return(FALSE)
+    }
+}
+
 
 
 #' gets the reference key corresponding to a value (usually from the Oracle / MSAccess reference database)
@@ -51,6 +79,7 @@ get_ref_key <- function(table="tablename",
     access_db_connection <- access_db_connect()
     result <- DBI::dbSendQuery(access_db_connection, query)
     ref_key <- DBI::dbFetch(result, n = Inf)[, pkey_col]
+    DBI::dbClearResult(result)
     DBI::dbDisconnect(access_db_connection)
 
     if (length(ref_key) != 1) {
@@ -70,6 +99,7 @@ get_ref_key <- function(table="tablename",
 }
 
 #' Builds a list of legal choices (descriptions) for get ref key
+#' @export
 get_ref_choices <- function(table="tablename",
                         col="columnname",
                         optional_query="") {
@@ -82,6 +112,7 @@ get_ref_choices <- function(table="tablename",
     access_db_connection <- access_db_connect()
     result <- DBI::dbSendQuery(access_db_connection, query)
     choices <- DBI::dbFetch(result, n = Inf)[, col]
+    DBI::dbClearResult(result)
     DBI::dbDisconnect(access_db_connection)
     return(choices)
 }

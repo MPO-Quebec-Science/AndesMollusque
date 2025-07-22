@@ -19,13 +19,18 @@ andes_db_connection <- andes_db_connect(
 
 ################################################
 # EXTERNAL INPUT
-# desc_serie_hist_f <- "Indice d'abondance zone 16E - pétoncle"
+desc_serie_hist_f <- "Indice d'abondance zone 16E - pétoncle"
 
 devtools::load_all()
 
-proj <- get_projet_mollusc(andes_db_connection)
-
+proj <- get_projet_mollusque(andes_db_connection)
 proj <- init_cod_serie_hist(proj, desc_serie_hist_f)
-proj
 
 
+file_path <- create_new_access_db()
+access_db_write_connection <- access_db_connect(paste("./", file_path, sep=""))
+
+
+write_projet_mollusque(proj, access_db_write_connection)
+
+DBI::dbDisconnect(access_db_write_connection)
