@@ -64,6 +64,9 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     #  the first letter, capitalized and without accents becomes secteur_releve
     secteur_releve <- toupper(substr(desc_secteur_releve_f, 1, 1))
 
+    # we can now get rid of that column
+    trait <- subset(trait, select = -c(desc_secteur_releve_f))
+
     cod_secteur_releve <- get_ref_key(
         table = "SECTEUR_RELEVE_MOLL",
         pkey_col = "COD_SECTEUR_RELEVE",
@@ -72,15 +75,31 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
 
 
     # add COD_STRAT
-    trait <- format_cod_strat(trait, desc_serie_hist_f, cod_sect_releve)
+    trait <- format_cod_strat(trait, desc_serie_hist_f, cod_secteur_releve)
 
     # add COD_ZONE_GEST_MOLL
     trait <- format_zone(trait, desc_serie_hist_f)
 
-
-    # it is now fine to rename( if needed) the stations
+    # it is now fine to rename (if needed) the stations
     trait <- format_no_station(trait)
 
+
+    # The mission-level desc_stratification was part of the set
+    # they are all the same, as it should be be, so just take the first one)
+    if (length(unique(trait$desc_stratification)) != 1){
+        logger::log_error("The sets do not have the same desc_secteur_releve_f")
+        stop("The sets do not have the same desc_secteur_releve_f")
+    }
+
+    desc_stratification <- trait$desc_stratification[1]
+    # we can now get rid of the desc_stratification column
+    trait <- subset(trait, select = -c(desc_stratification))
+
+    trait <- format_cod_typ_trait(trait, desc_stratification)
+    # can get rid of operation column
+    trait <- subset(trait, select = -c(operation))
+
+    
 
     # Format dates
     # trait <- format_date_trait(trait)
