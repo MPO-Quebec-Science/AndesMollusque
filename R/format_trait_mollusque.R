@@ -1,10 +1,20 @@
 
 #' @export
 format_cod_strat <- function(trait, desc_serie_hist_f, cod_sect_releve) {
-    # first get eh strat from the desc_serie_hist_f and NO_STATION
+    # first get the strat from the desc_serie_hist_f and NO_STATION
     strat <- lapply(trait$NO_STATION, get_strat, desc_serie_hist_f)
     # then, lookup the strat code
-    trait$COD_STRAT <- lapply(strat, lookup_cod_strat, cod_sect_releve)
+    # trait$COD_STRAT <- lapply(strat, lookup_cod_strat, cod_sect_releve)
+
+    # make a lookup table
+    value <- unique(strat)
+    code <- lapply(value, lookup_cod_strat, cod_sect_releve)
+    code_map <- cbind(code = code, value=value)
+
+    # use merge to apply the map
+    strat <- list(value = unlist(strat))
+    res <- merge(strat, code_map, by = "value")
+    trait$COD_STRAT <- res$code
     return(trait)
 }
 
@@ -53,7 +63,19 @@ format_zone <- function(trait, desc_serie_hist_f) {
     # first, get the zone from the desc_serie_hist_f and NO_STATION
     zone <- lapply(trait$NO_STATION, get_zone, desc_serie_hist_f)
     # then lookup the code, add to dataframe
-    trait$COD_ZONE_GEST_MOLL <- lapply(zone, lookup_cod_zone_gest_moll)
+    # trait$COD_ZONE_GEST_MOLL <- lapply(zone, lookup_cod_zone_gest_moll)
+
+
+    # make a lookup table
+    value <- unique(zone)
+    code <- lapply(value, lookup_cod_zone_gest_moll)
+    code_map <- cbind(code = code, value=value)
+
+    # use merge to apply the map
+    zone <- list(value = unlist(zone))
+    res <- merge(zone, code_map, by = "value")
+    trait$COD_ZONE_GEST_MOLL <- res$code
+
     return(trait)
 }
 
@@ -131,6 +153,47 @@ lookup_station <- function(station_name=NULL, zone=NULL, species=NULL) {
 
 
 
+
+format_cod_typ_trait <- function(trait, desc_stratification) {
+
+    desc_typ_trait <- lapply(trait$operation, get_desc_typ_trait, desc_stratification)
+
+    # the naive way (commented-out here) is to simply lookup every cod, but it is slow, so make a map ahead of time
+    # trait$cod_typ_trait <- lapply(desc_typ_trait, lookup_cod_typ_trait)
+
+    # make a lookup table
+    desc <-  unique(desc_typ_trait)
+    code <- lapply(desc, lookup_cod_typ_trait)
+    code_map <- cbind(code = code, desc=desc)
+
+    # user merge to apply the map
+    desc_typ_trait <- list(desc = unlist(desc_typ_trait))
+    res <- merge(desc_typ_trait, code_map, by = "desc")
+    trait$COD_TYP_TRAIT <- res$code
+    return(trait)
+}
+
+get_desc_typ_trait <- function(operation, desc_stratification) {
+    if (operation=="ctd") {
+        return("Océanographie seulement")
+    } else if (operation=="fish"){
+        # this is a fishing operation, must return the mission's stratification type 
+        return(desc_stratification)
+    } else {
+        logger::log_error("cannot get desc_typ_trait, verify that operatin is one of ctd or fish")
+        stop("cannot get desc_typ_trait, verify that operation is one of ctd or fish")
+    }
+}
+
+lookup_cod_typ_trait <- function(desc_typ_trait) {
+    key <- get_ref_key(
+    table = "TYPE_TRAIT",
+    pkey_col = "COD_TYP_TRAIT",
+    col = "DESC_TYP_TRAIT_F",
+    val = desc_typ_trait)
+    return(key)
+
+}
 #' Format dates for TRAIT_MOLLUSQUE
 #'
 #' Converts date and time fields to appropriate format

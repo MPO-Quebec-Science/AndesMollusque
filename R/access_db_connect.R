@@ -20,7 +20,6 @@ access_db_connect <- function(file_path = NULL) {
         "DBQ=", file_path, ";",
         sep = "")
 
-
     # if opening the access template, set to read only.
     if (file_path == system.file("ref_data", "access_template.mdb", package = "ANDESMollusque")) {
         connection_string <- paste(
@@ -28,7 +27,7 @@ access_db_connect <- function(file_path = NULL) {
             "ReadOnly=1;",
             sep = "")
     }
-    print(connection_string)
+    # print(connection_string)
     access_db_connection <- DBI::dbConnect(odbc::odbc(),
                     .connection_string = connection_string,
                     timeout = 10)
