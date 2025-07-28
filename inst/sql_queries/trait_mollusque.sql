@@ -1,6 +1,7 @@
 SELECT
     shared_models_sample.sample_number as IDENT_NO_TRAIT,
-    shared_models_station.name as NO_STATION -- this needs to be numeric, will have to strip alphabetic characters
+    shared_models_station.name as NO_STATION, -- this needs to be numeric, will have to strip alphabetic characters
+    shared_models_mission.area_of_operation as desc_secteur_releve_f -- this ANDES field take a special role to determine COD_SECTEUR_RELEVE
 FROM shared_models_sample
 LEFT JOIN shared_models_mission
     ON shared_models_sample.mission_id=shared_models_mission.id
