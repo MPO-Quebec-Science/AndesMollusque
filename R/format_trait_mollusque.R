@@ -194,23 +194,33 @@ lookup_cod_typ_trait <- function(desc_typ_trait) {
     return(key)
 
 }
+
 #' Format dates for TRAIT_MOLLUSQUE
 #'
-#' Converts date and time fields to appropriate format
+#' Converts date fields to appropriate format. uses andes_str_to_oracle_date
 #'
 #' @param df Input dataframe
 #' @return Formatted dataframe
 #' @export
-format_date_trait <- function(trait_df) {
+format_date_trait <- function(trait) {
     # Convert start and end dates
-    trait_df$DATE_HEURE_DEB_TRAIT <- sapply(trait_df$start_date, andes_str_to_oracle_datetime)
-    trait_df$DATE_HEURE_FIN_TRAIT <- sapply(trait_df$end_date, andes_str_to_oracle_datetime)
-    
-    # Add time type and timezone codes
-    trait_df$COD_TYP_HEURE <- determine_time_type(trait_df$start_date)
-    trait_df$COD_FUSEAU_HORAIRE <- determine_timezone(trait_df$start_date)
-    
-    return(trait_df)
+    trait$DATE_DEB_TRAIT <- lapply(trait$DATE_DEB_TRAIT, andes_str_to_oracle_date)
+    trait$DATE_FIN_TRAIT <- lapply(trait$DATE_FIN_TRAIT, andes_str_to_oracle_date)
+    return(trait)
+}
+
+#' Format dates for TRAIT_MOLLUSQUE
+#'
+#' Converts and time fields to appropriate format uses andes_str_to_oracle_datetime
+#'
+#' @param df Input dataframe
+#' @return Formatted dataframe
+#' @export
+format_date_hre_trait <- function(trait) {
+    # Convert start and end dates
+    trait$DATE_DEB_TRAIT <- lapply(trait$DATE_DEB_TRAIT, andes_str_to_oracle_datetime)
+    trait$DATE_FIN_TRAIT <- lapply(trait$DATE_FIN_TRAIT, andes_str_to_oracle_datetime)
+    return(trait)
 }
 
 

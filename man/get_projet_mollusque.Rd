@@ -2,20 +2,20 @@
 % Please edit documentation in R/projet_mollusque.R
 \name{get_projet_mollusque}
 \alias{get_projet_mollusque}
-\title{Gets fishing projet_mollusc (raw database results)}
+\title{Gets fishing projet_mollusque (formatted results)}
 \usage{
 get_projet_mollusque(andes_db_connection)
 }
 \arguments{
-\item{andes_db_connection}{a connection object to the ANDES database. Please}
+\item{andes_db_connection}{a connection object to the ANDES database.}
 }
 \value{
 A dataframe containing fishing set data.
 }
 \description{
-This function executes a SQL query to retrieve the needed andes data to construct the PROJET_MOLLUSC table.
+This function executes a SQL query to retrieve the needed andes data to construct the PROJET_MOLLUSQUE table.
 The current ANDES active mission will determine for which data are returned.
 }
 \seealso{
-[get_projet_mollusc_db()] for the raw database results
+[get_projet_mollusque_db()] for the raw database results
 }

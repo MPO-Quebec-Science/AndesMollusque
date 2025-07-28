@@ -99,11 +99,15 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     # can get rid of operation column
     trait <- subset(trait, select = -c(operation))
 
-    
 
-    # Format dates
-    # trait <- format_date_trait(trait)
-    
+    # make a copy for for the times before we format the dates
+    trait$HRE_DEB_TRAIT <- trait$DATE_DEB_TRAIT
+    trait$HRE_FIN_TRAIT <- trait$DATE_FIN_TRAIT
+
+    trait <- format_date_trait(trait)
+
+    trait <- format_date_hre_trait(trait)
+
     # Format coordinates
     # trait <- format_coordinates(trait)
     
