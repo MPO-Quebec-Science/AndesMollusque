@@ -1,4 +1,5 @@
 
+rm()
 devtools::load_all()
 devtools::document()
 
@@ -23,9 +24,48 @@ desc_serie_hist_f <- "Indice d'abondance zone 16E - pétoncle"
 
 devtools::load_all()
 
+
 proj <- get_projet_mollusque(andes_db_connection)
+
 proj <- init_cod_serie_hist(proj, desc_serie_hist_f)
 
+# proj -> trait -> engine -> capture -> FreqLongMollusque -> 
+# BiometrieMollusque 
+# PoidsBiometrie
+
+devtools::load_all()
+
+for(pi in 1:nrow(proj)) {
+  p <- proj[pi,]
+  trait <- get_trait_mollusque(andes_db_connection, proj=p)
+  # trait_db <- get_trait_mollusque_db(andes_db_connection)
+}
+
+trait <- get_trait_mollusque(andes_db_connection, proj=proj)
+
+View(trait)
+
+# then, lookup the strat code
+trait$COD_STRAT <- lookup_cod_strat(strat)
+
+
+
+trait
+
+lapply(trait$NO_STATION, strip_alphabetic)
+trait$NO_STATION
+
+format_no_station(trait)
+
+format_cod_zone_gest_moll(trait)
+determine_zone_name(trait)
+trait
+sapply()
+
+determine_zone_name("dsd", desc_serie_hist_f)
+
+apply(trait, determine_zone_name)
+trait
 
 file_path <- create_new_access_db()
 access_db_write_connection <- access_db_connect(paste("./", file_path, sep=""))

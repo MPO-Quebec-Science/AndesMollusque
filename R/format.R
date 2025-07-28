@@ -16,11 +16,20 @@ cleanup_text <- function(df, col_name = NULL, max_chars = NULL) {
 }
 
 #' @export
-andes_str_to_oracle_date <- function(date_str) {
+andes_str_to_oracle_date <- function(datetime_str) {
     # as posixlt
     # posixct_date <- unlist(lapply(date_str, parse_andes_datetime))
-    posixct_date <- parse_andes_datetime(date_str)
-    return(format(posixct_date, format="%Y-%m-%d"))
+    posixct_date <- parse_andes_datetime(datetime_str)
+    return(format(posixct_date, format = "%Y-%m-%d"))
+}
+
+#' @export
+andes_str_to_oracle_datetime <- function(datetime_str) {
+    # as posixlt
+    # posixct_date <- unlist(lapply(date_str, parse_andes_datetime))
+    posixct_date <- parse_andes_datetime(datetime_str)
+    timezone_str <- "America/Montreal"
+    return(format(posixct_date, format = "%Y-%m-%d %H:%M:%S", tz = timezone_str))
 }
 
 #' takes a standard ANDES UTC time string and converts it to a POSIXct object
