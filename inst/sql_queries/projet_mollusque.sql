@@ -16,9 +16,9 @@ SELECT
     shared_models_mission.targeted_trawl_distance as DIST_CHALUTE_VISEE,
     shared_models_mission.samplers as NOM_SCIENCE_NAVIRE,
     shared_models_mission.notes as REM_PROJET_MOLL -- make sure this is under 255 characters
-    FROM shared_models_mission 
-    LEFT JOIN shared_models_stratificationtype
-        ON shared_models_mission.stratification_type_id=shared_models_stratificationtype.id
+FROM shared_models_mission 
+LEFT JOIN shared_models_stratificationtype
+    ON shared_models_mission.stratification_type_id=shared_models_stratificationtype.id
 -- Filters
 -- Just data for the active mission
 WHERE shared_models_mission.is_active=1

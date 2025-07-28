@@ -1,16 +1,16 @@
 
 
-#' Gets fishing projet_mollusc (raw database results)
+#' Gets fishing projet_mollusque (raw database results)
 #'
-#' This function executes a SQL query to retrieve the needed andes data to construct the PROJET_MOLLUSC table.
+#' This function executes a SQL query to retrieve the needed andes data to construct the PROJET_MOLLUSQUE table.
 #' The current ANDES active mission will determine for which data are returned.
 #'
 #' This function is intended for internal use and returns raw results from the database.
-#' It is not meant for direct use in analysis or reporting. Users should use `get_projet_mollusc` 
+#' It is not meant for direct use in analysis or reporting. Users should use `get_projet_mollusque` 
 #'
-#' @param andes_db_connection a connection object to the ANDES database. Please
+#' @param andes_db_connection a connection object to the ANDES database. 
 #' @return A dataframe containing fishing set data.
-#' @seealso [get_projet_mollusc()] for the formatted results
+#' @seealso [get_projet_mollusque()] for the formatted results
 #' @export
 get_projet_mollusque_db<- function(andes_db_connection) {
     query <- readr::read_file(system.file("sql_queries",
@@ -23,14 +23,14 @@ get_projet_mollusque_db<- function(andes_db_connection) {
 }
 
 
-#' Gets fishing projet_mollusc (raw database results)
+#' Gets fishing projet_mollusque (formatted results)
 #'
-#' This function executes a SQL query to retrieve the needed andes data to construct the PROJET_MOLLUSC table.
+#' This function executes a SQL query to retrieve the needed andes data to construct the PROJET_MOLLUSQUE table.
 #' The current ANDES active mission will determine for which data are returned.
 #'
-#' @param andes_db_connection a connection object to the ANDES database. Please
+#' @param andes_db_connection a connection object to the ANDES database.
 #' @return A dataframe containing fishing set data.
-#' @seealso [get_projet_mollusc_db()] for the raw database results
+#' @seealso [get_projet_mollusque_db()] for the raw database results
 #' @export
 get_projet_mollusque <- function(andes_db_connection) {
     proj <- get_projet_mollusque_db(andes_db_connection)

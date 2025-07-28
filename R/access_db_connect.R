@@ -69,13 +69,19 @@ get_ref_key <- function(table="tablename",
                         col="columnname",
                         val="entryvalue",
                         optional_query="") {
-
-    sanitized_val <- gsub("'", "''", val)
+    # sanitize the strings
+    if (is.character(val)) {
+        # sanitize the value, double up existing quotes
+        val <- gsub("'", "''", val)
+        # sanitize the value, wrap in single quotes
+        val <- paste("'", val, "'", sep = "")
+    }
     query <- paste("SELECT ", pkey_col,
                   " FROM ", table,
-                  " WHERE ", col, "='", sanitized_val, "'",
+                  " WHERE ", col, "=", val,
                   " ", optional_query,
                   sep = "")
+    # print(query)
     access_db_connection <- access_db_connect()
     result <- DBI::dbSendQuery(access_db_connection, query)
     ref_key <- DBI::dbFetch(result, n = Inf)[, pkey_col]
