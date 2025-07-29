@@ -54,13 +54,15 @@ is_andes_time_str_dst <-function(datetime_str) {
 
     utc_offset <- format(posixct_date, format = "%z", tz = timezone_str)
     if (is.na(utc_offset)){
-        logger::log_warn("Could not determine if Daylight savings is active")
+        logger::log_warn("Could not determine if Daylight savings is active for date: {datetime_str}")
+        # stop("Could not determine if Daylight savings is active for date")
     } else if (utc_offset == "-0400") {
         is_dst <- TRUE
     } else if (utc_offset == "-0500") {
         is_dst <- FALSE
     } else {
-        logger::log_warn("Could not determine if Daylight savings is active")
+        logger::log_warn("Could not determine if Daylight savings is active for date: {datetime_str}")
+        # stop("Could not determine if Daylight savings is active for date")
     }
     return(is_dst)
 }
@@ -79,10 +81,16 @@ parse_andes_datetime <- function(andes_time_str) {
 #' @export
 add_hard_coded_value <- function(df, col_name = NULL, value = NULL) {
     if (is.null(col_name)) {
-        stop("Both col_name and value must be provided.")
         logger::log_error("add_hard_coded_value was called with bad arguments")
+        stop("Both col_name and value must be provided.")
     }
-    logger::log_info("A hard-coded value of {value} was added to column {col_name}")
+    if (is.null(value)) {
+        logger::log_error("A hard-coded NULL-value was added to column {col_name}")
+        # this is what sanitize_sql_value() actually ends up doing...
+        logger::log_error("DO NOT DO THIS! Please change to NA and switch to NULL when executing the statement")
+    } else{
+        logger::log_info("A hard-coded value of {value} was added to column {col_name}")
+    }
     # add a hard coded value to the dataframe
     df[col_name] <- value
     return(df)
@@ -106,3 +114,27 @@ sanitize_sql_value <- function(value) {
     return (value)
 }
 
+#' Convert coordinate to Oracle format
+#'
+#'        For example, the latitude of 47.155927
+#'        is decomposed into:
+#'        whole_degrees = 47
+# '       whole_minutes = 9
+#'        decimal_minues = 35562
+#'        and yields: 4709.35562
+#' @param coord Input coordinate
+#' @return Formatted coordinate
+#' @export
+to_oracle_coord <- function(coord) {
+    if (is.null(coord) || is.na(coord)) {
+        return(NA)
+    }
+    degrees <- floor(abs(coord))
+    minutes_decimal <- (abs(coord) - degrees) * 60
+
+    if (coord<0) {
+        return(-1 * (degrees * 100 + minutes_decimal))
+    } else {
+        return(degrees * 100 + minutes_decimal)
+    }
+}
