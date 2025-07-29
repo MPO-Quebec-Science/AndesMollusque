@@ -52,7 +52,6 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
         pkey_col = "DESC_SERIE_HIST_F",
         col = "COD_SERIE_HIST",
         val = proj$COD_SERIE_HIST)
-
     # temporarily get cod_sect_releve, this is obtained from desc_secteur_releve_f
     # all sets shold have the same desc_serie_hist_f, verify this
     if (length(unique(trait$desc_secteur_releve_f)) != 1){
@@ -106,7 +105,17 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
 
     trait <- format_date_trait(trait)
 
+    # call format_cod_typ_heure before changing to oracle time
+    trait <- format_cod_typ_heure(trait)
+
     trait <- format_date_hre_trait(trait)
+
+    
+
+    trait <- add_hard_coded_value(trait, col_name = "SALINITE_FOND", value = NULL)
+    trait <- add_hard_coded_value(trait, col_name = "SALINITE_FOND_P", value = NULL)
+
+
 
     # Format coordinates
     # trait <- format_coordinates(trait)

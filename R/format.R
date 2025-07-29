@@ -1,3 +1,15 @@
+
+left_join <- function(x, y, ...) {
+    # https://stackoverflow.com/questions/17878048/merge-two-data-frames-while-keeping-the-original-row-order
+
+    x$join_id_ <- seq_len(nrow(x))
+    joined <- merge(x = x, y = y, all.x = TRUE, sort = FALSE, ...)
+
+    cols <- unique(c(colnames(x), colnames(y)))
+    return(joined[order(joined$join_id),
+         cols[cols %in% colnames(joined) & cols != "join_id_"]])
+}
+
 #' @export
 cleanup_text <- function(df, col_name = NULL, max_chars = NULL) {
     # get the col
@@ -28,8 +40,29 @@ andes_str_to_oracle_datetime <- function(datetime_str) {
     # as posixlt
     # posixct_date <- unlist(lapply(date_str, parse_andes_datetime))
     posixct_date <- parse_andes_datetime(datetime_str)
-    timezone_str <- "America/Montreal"
+    timezone_str <- "America/Toronto"
     return(format(posixct_date, format = "%Y-%m-%d %H:%M:%S", tz = timezone_str))
+}
+
+#' @export 
+is_andes_time_str_dst <-function(datetime_str) {
+    is_dst <- NA
+    # ANDES DB times are in UTC
+    posixct_date <- parse_andes_datetime(datetime_str)
+    # to see if EST vs EDT, convert to America/Toronto and look at offset
+    timezone_str <- "America/Toronto"
+
+    utc_offset <- format(posixct_date, format = "%z", tz = timezone_str)
+    if (is.na(utc_offset)){
+        logger::log_warn("Could not determine if Daylight savings is active")
+    } else if (utc_offset == "-0400") {
+        is_dst <- TRUE
+    } else if (utc_offset == "-0500") {
+        is_dst <- FALSE
+    } else {
+        logger::log_warn("Could not determine if Daylight savings is active")
+    }
+    return(is_dst)
 }
 
 #' takes a standard ANDES UTC time string and converts it to a POSIXct object
