@@ -4,7 +4,7 @@
 \alias{format_coordinates}
 \title{Format coordinates for TRAIT_MOLLUSQUE}
 \usage{
-format_coordinates(df)
+format_coordinates(trait)
 }
 \arguments{
 \item{df}{Input dataframe}

@@ -45,6 +45,9 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     trait$COD_SOURCE_INFO <- proj$COD_SOURCE_INFO
     trait$NO_RELEVE <- proj$NO_RELEVE
     trait$COD_NBPC <- proj$COD_NBPC
+    trait$NO_CHARGEMENT <- proj$NO_CHARGEMENT
+
+
 
     # temporarily get desc_serie_hist_f from proj to trait, it will provide the context to correctly get the zone/strate
     desc_serie_hist_f <- get_ref_key(
@@ -108,24 +111,55 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     # call format_cod_typ_heure before changing to oracle time
     trait <- format_cod_typ_heure(trait)
 
+    # ok, now change andes time string to oracle time string
     trait <- format_date_hre_trait(trait)
 
+    # all times are cast to America/Toronto, which is called "Québec"
+    cod_fuseau_horaire <- get_ref_key(
+            table="FUSEAU_HORAIRE",
+            pkey_col="COD_FUSEAU_HORAIRE",
+            col="DESC_FUSEAU_HORAIRE_F",
+            val="Québec")
+
+    trait <- add_hard_coded_value(trait, col_name = "COD_FUSEAU_HORAIRE", value = cod_fuseau_horaire)
+
+
+    # 0 -> Inconnue
+    # 1 -> Estimation
+    # 2 -> Radar
+    # 3 -> Decca
+    # 4 -> Loran
+    # 5 -> Satellite (GPS)
+    # 6 -> Satellite (DGPS)
+    trait <- add_hard_coded_value(trait, col_name = "COD_METHOD_POS", value = 6)
+
+    trait <- format_coordinates(trait)
+    trait <- add_hard_coded_value(trait, col_name = "LATLONG_P", value = NA)
+
+    trait <- add_hard_coded_value(trait, col_name = "DISTANCE_POS", value = NA)
+    trait <- add_hard_coded_value(trait, col_name = "DISTANCE_POS_P", value = NA)
+
+    trait <- add_hard_coded_value(trait, col_name = "VIT_TOUAGE", value = NA)
+    trait <- add_hard_coded_value(trait, col_name = "VIT_TOUAGE_P", value = NA)
+
+    trait <- add_hard_coded_value(trait, col_name = "DUREE_TRAIT", value = NA)
+    trait <- add_hard_coded_value(trait, col_name = "DUREE_TRAIT_P", value = NA)
+
+    trait <- add_hard_coded_value(trait, col_name = "TEMP", value = NA)
+    trait <- add_hard_coded_value(trait, col_name = "TEMP_P", value = NA)
+
+    
+    trait <- add_hard_coded_value(trait, col_name = "SALINITE_FOND", value = NA)
+    trait <- add_hard_coded_value(trait, col_name = "SALINITE_FOND_P", value = NA)
+
+    trait <- add_hard_coded_value(trait, col_name = "PROF_DEB_P", value = NA)
+    trait <- add_hard_coded_value(trait, col_name = "PROF_FIN_P", value = NA)
+
+    trait <- add_hard_coded_value(trait, col_name = "COD_TYP_ECH_TRAIT", value = NA)
+
+
     
 
-    trait <- add_hard_coded_value(trait, col_name = "SALINITE_FOND", value = NULL)
-    trait <- add_hard_coded_value(trait, col_name = "SALINITE_FOND_P", value = NULL)
-
-
-
-    # Format coordinates
-    # trait <- format_coordinates(trait)
-    
-    # Format zone and sector
-    # trait <- format_zone_secteur(trait)
-    
-    # Add hard-coded or computed values
-    # trait <- add_hard_coded_values(trait)
-    
     return(trait)
 }
 

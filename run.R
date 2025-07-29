@@ -35,14 +35,14 @@ proj <- init_cod_serie_hist(proj, desc_serie_hist_f)
 
 devtools::load_all()
 
-for(pi in 1:nrow(proj)) {
+for(pi in seq_len(nrow(proj))) {
   p <- proj[pi,]
   trait <- get_trait_mollusque(andes_db_connection, proj=p)
   # trait_db <- get_trait_mollusque_db(andes_db_connection)
 }
 
 trait <- get_trait_mollusque(andes_db_connection, proj=proj)
-
+View(trait)
 View(trait)
 
 # then, lookup the strat code

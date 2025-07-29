@@ -34,14 +34,14 @@ format_cod_strat <- function(trait, desc_serie_hist_f, cod_secteur_releve) {
 #' @export
 get_strat <- function(nom_station, desc_serie_hist_f) {
     #' This requires opening station reference data to determine the zone.
-    lookup_station <- function(station_name=NULL, zone=NULL, species=NULL) {
+    lookup_station <- function(station_name = NULL, zone = NULL, species = NULL) {
         logger::log_error("lookup_station is not fully implemented.")
 
         file_path <- system.file("ref_data",
                 "STATION_MOLL.csv",
                 package = "ANDESMollusque")
 
-        ref_station <-read.csv(file_path, sep=",")
+        ref_station <-read.csv(file_path, sep = ",")
         # # filter out survey target species
         # ref_station < ref_station[ref_station$ESPECE == "BUCCIN", ]
         # zone <- 
@@ -270,31 +270,14 @@ format_cod_typ_heure <- function(trait){
 #' @param df Input dataframe
 #' @return Formatted dataframe
 #' @export
-format_coordinates <- function(df) {
+format_coordinates <- function(trait) {
     # Convert latitude and longitude to Oracle coordinate encoding
-    df$LAT_DEB_TRAIT <- sapply(df$start_latitude, to_oracle_coord)
-    df$LAT_FIN_TRAIT <- sapply(df$end_latitude, to_oracle_coord)
+    trait$LAT_DEB_TRAIT <- lapply(trait$LAT_DEB_TRAIT, to_oracle_coord)
+    trait$LAT_FIN_TRAIT <- lapply(trait$LAT_FIN_TRAIT, to_oracle_coord)
 
     # the longitudes need a negative
-    df$LONG_DEB_TRAIT <- sapply(df$start_longitude, to_oracle_coord)
-    df$LONG_FIN_TRAIT <- sapply(df$end_longitude, to_oracle_coord)
-
-    
-    return(df)
+    trait$LON_DEB_TRAIT <- lapply(trait$LON_DEB_TRAIT, to_oracle_coord)
+    trait$LON_FIN_TRAIT <- lapply(trait$LON_FIN_TRAIT, to_oracle_coord)
+    return(trait)
 }
-
-#' Convert coordinate to Oracle format
-#'
-#' @param coord Input coordinate
-#' @return Formatted coordinate
-#' @export
-to_oracle_coord <- function(coord) {
-    if (is.null(coord)) return(NULL)
-    
-    degrees <- floor(abs(coord))
-    minutes_decimal <- (abs(coord) - degrees) * 60
-    
-    return(degrees * 100 + minutes_decimal)
-}
-
 
