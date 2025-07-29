@@ -64,8 +64,25 @@ get_projet_mollusque <- function(andes_db_connection) {
 
     proj <- add_hard_coded_value(proj, col_name = "NOM_EQUIPE_NAVIRE", value = "")
 
-    proj <- add_hard_coded_value(proj, col_name = "NO_CHARGEMENT", value = NULL)
+    proj <- add_hard_coded_value(proj, col_name = "NO_CHARGEMENT", value = NA)
 
     return(proj)
 }
 
+#' @export
+write_projet_mollusque <- function(proj, access_db_write_connection=NULL) {
+    # write the dataframe to the database
+    if (is.null(access_db_write_connection)) {
+        logger::log_error("Failed to provide a new MS Acces connection.")
+        stop("Failed to provide a new MS Acces connection")
+    }
+    statement <- generate_sql_insert_statement(proj, "PROJET_MOLLUSQUE")
+    result <- DBI::dbExecute(access_db_write_connection, statement)
+    if (result!=1) {
+        logger::log_error("Failed to write the projet_mollusque to the database.")
+        stop("Failed to write the projet_mollusque to the database.")
+    } else {
+        logger::log_info("Successfully wrote the projet_mollusque to the database.")
+    }
+    # DBI::dbClearResult(result)
+}

@@ -1,38 +1,38 @@
 
 #' @export
-format_cod_strat <- function(trait, desc_serie_hist_f, cod_secteur_releve) {
-    lookup_cod_strat <- function(strat_name, cod_sect_releve) {
+format_cod_strate <- function(trait, desc_serie_hist_f, cod_secteur_releve) {
+    lookup_cod_strate <- function(strate_name, cod_sect_releve) {
         optional_query <- paste("AND COD_SECTEUR_RELEVE=", cod_secteur_releve, sep="")
         key <- get_ref_key(
             table = "TYPE_STRATE_MOLL",
             pkey_col = "COD_STRATE",
             col = "STRATE",
-            val = strat_name,
+            val = strate_name,
             optional_query = optional_query)
         return(key)
     }
 
     # first get the strat from the desc_serie_hist_f and NO_STATION
-    strat <- lapply(trait$NO_STATION, get_strat, desc_serie_hist_f)
+    strate <- lapply(trait$NO_STATION, get_strate, desc_serie_hist_f)
     # then, lookup the strat code
-    # trait$COD_STRAT <- lapply(strat, lookup_cod_strat, cod_secteur_releve)
+    # trait$COD_STRATE <- lapply(strat, lookup_cod_strat, cod_secteur_releve)
 
     # make a lookup table
-    value <- unique(strat)
-    code <- lapply(value, lookup_cod_strat, cod_secteur_releve)
-    code_map <- as.data.frame(cbind(code = code, value=value))
+    value <- unique(strate)
+    code <- lapply(value, lookup_cod_strate, cod_secteur_releve)
+    code_map <- data.frame(code = unlist(code), value = unlist(value))
 
     # use merge to apply the map
-    strat <- as.data.frame(list(value = unlist(strat)))
-    # res <- merge(strat, code_map, by = "value", all.x = TRUE, sort = FALSE)
-    res <- left_join(strat, code_map, by = "value")
+    strate <- data.frame(value = unlist(strate))
+    # res <- merge(strate, code_map, by = "value", all.x = TRUE, sort = FALSE)
+    res <- left_join(strate, code_map, by = "value")
 
-    trait$COD_STRAT <- res$code
+    trait$COD_STRATE <- res$code
     return(trait)
 }
 
 #' @export
-get_strat <- function(nom_station, desc_serie_hist_f) {
+get_strate <- function(nom_station, desc_serie_hist_f) {
     #' This requires opening station reference data to determine the zone.
     lookup_station <- function(station_name = NULL, zone = NULL, species = NULL) {
         logger::log_error("lookup_station is not fully implemented.")
@@ -51,25 +51,25 @@ get_strat <- function(nom_station, desc_serie_hist_f) {
 
 
     if(desc_serie_hist_f=="Indice d'abondance zone 16E - pétoncle"){
-        # For 16E, the strat is the first letter of the station name
-        strat <- substring(nom_station, 1, 1)
-        return(strat)
+        # For 16E, the strate is the first letter of the station name
+        strate <- substring(nom_station, 1, 1)
+        return(strate)
     } else if(desc_serie_hist_f=="Indice d'abondance zone 16F - pétoncle"){
-        # For 16F, the strat is the first letter of the station name
-        strat <- substring(nom_station, 1, 1)
-        return(strat)
+        # For 16F, the strate is the first letter of the station name
+        strate <- substring(nom_station, 1, 1)
+        return(strate)
     } else if(desc_serie_hist_f=="Indice d'abondance zone 20 - pétoncle"){
         # For IdM, need a lookup table from station
         station <- lookup_station(station_name=nom_station, zone="20", species="PETONCLE")
-        strat <- station$STRAT
-        return(strat)
+        strate <- station$STRATE
+        return(strate)
     } else if(desc_serie_hist_f=="Indice d'abondance buccin") {
         # For buccin, need a lookup table from station
         station <- lookup_station(station_name=nom_station, species="BUCCIN")
-        strat <- station$STRAT
-        return(strat)
+        strate <- station$STRATE
+        return(strate)
     } else {
-        logger::log_error("get strat for {desc_serie_hist_f} has not been implemented.")
+        logger::log_error("get strate for {desc_serie_hist_f} has not been implemented.")
         stop("Cannot determine zone name")
     }
 }
@@ -124,10 +124,10 @@ format_zone <- function(trait, desc_serie_hist_f) {
     # make a lookup table
     value <- unique(zone)
     code <- lapply(value, lookup_cod_zone_gest_moll)
-    code_map <- as.data.frame(cbind(code = code, value=value))
+    code_map <- data.frame(code = unlist(code), value = unlist(value))
 
     # use merge to apply the map
-    zone <- as.data.frame(list(value = unlist(zone)))
+    zone <- data.frame(value = unlist(zone))
     # res <- merge(zone, code_map, by = "value", all.x = TRUE, sort = FALSE)
     res <- left_join(zone, code_map, by = "value")
     trait$COD_ZONE_GEST_MOLL <- res$code
@@ -171,10 +171,10 @@ format_cod_typ_trait <- function(trait, desc_stratification) {
     # make a lookup table
     desc <-  unique(desc_typ_trait)
     code <- lapply(desc, lookup_cod_typ_trait)
-    code_map <- as.data.frame(cbind(code = code, desc=desc))
+    code_map <- data.frame(code = unlist(code), desc = unlist(desc))
 
     # use merge to apply the map
-    desc_typ_trait <- as.data.frame(list(desc = unlist(desc_typ_trait)))
+    desc_typ_trait <- data.frame(desc = unlist(desc_typ_trait))
     # res <- merge(desc_typ_trait, code_map, by = "desc", all.x = TRUE, sort = FALSE)
     res <- left_join(desc_typ_trait, code_map, by = "desc")
 
@@ -206,8 +206,8 @@ get_desc_typ_trait <- function(operation, desc_stratification) {
 #' @export
 format_date_trait <- function(trait) {
     # Convert start and end dates
-    trait$DATE_DEB_TRAIT <- lapply(trait$DATE_DEB_TRAIT, andes_str_to_oracle_date)
-    trait$DATE_FIN_TRAIT <- lapply(trait$DATE_FIN_TRAIT, andes_str_to_oracle_date)
+    trait$DATE_DEB_TRAIT <- unlist(lapply(trait$DATE_DEB_TRAIT, andes_str_to_oracle_date))
+    trait$DATE_FIN_TRAIT <- unlist(lapply(trait$DATE_FIN_TRAIT, andes_str_to_oracle_date))
     return(trait)
 }
 
@@ -220,8 +220,8 @@ format_date_trait <- function(trait) {
 #' @export
 format_date_hre_trait <- function(trait) {
     # Convert start and end dates
-    trait$HRE_DEB_TRAIT <- lapply(trait$HRE_DEB_TRAIT, andes_str_to_oracle_datetime)
-    trait$HRE_FIN_TRAIT <- lapply(trait$HRE_FIN_TRAIT, andes_str_to_oracle_datetime)
+    trait$HRE_DEB_TRAIT <- unlist(lapply(trait$HRE_DEB_TRAIT, andes_str_to_oracle_datetime))
+    trait$HRE_FIN_TRAIT <- unlist(lapply(trait$HRE_FIN_TRAIT, andes_str_to_oracle_datetime))
     return(trait)
 }
 
@@ -253,12 +253,12 @@ format_cod_typ_heure <- function(trait){
     # make a lookup table
     desc <-  unique(is_dst)
     code <- lapply(desc, lookup_cod_typ_heure)
-    code_map <- as.data.frame(cbind(code = code, desc=desc))
+    code_map <- data.frame(code = unlist(code), desc = unlist(desc))
 
     # use merge to apply the map
-    is_dst <- as.data.frame(list(desc = unlist(is_dst)))
+    is_dst <- data.frame(desc = unlist(is_dst))
     res <- left_join(is_dst, code_map, by = "desc")
-    trait$COD_TYP_HRE <- res$code
+    trait$COD_TYP_HEURE <- res$code
     return(trait)
 }
 
@@ -272,12 +272,12 @@ format_cod_typ_heure <- function(trait){
 #' @export
 format_coordinates <- function(trait) {
     # Convert latitude and longitude to Oracle coordinate encoding
-    trait$LAT_DEB_TRAIT <- lapply(trait$LAT_DEB_TRAIT, to_oracle_coord)
-    trait$LAT_FIN_TRAIT <- lapply(trait$LAT_FIN_TRAIT, to_oracle_coord)
+    trait$LAT_DEB_TRAIT <- unlist(lapply(trait$LAT_DEB_TRAIT, to_oracle_coord))
+    trait$LAT_FIN_TRAIT <- unlist(lapply(trait$LAT_FIN_TRAIT, to_oracle_coord))
 
     # the longitudes need a negative
-    trait$LON_DEB_TRAIT <- lapply(trait$LON_DEB_TRAIT, to_oracle_coord)
-    trait$LON_FIN_TRAIT <- lapply(trait$LON_FIN_TRAIT, to_oracle_coord)
+    trait$LONG_DEB_TRAIT <- unlist(lapply(trait$LONG_DEB_TRAIT, to_oracle_coord))
+    trait$LONG_FIN_TRAIT <- unlist(lapply(trait$LONG_FIN_TRAIT, to_oracle_coord))
     return(trait)
 }
 

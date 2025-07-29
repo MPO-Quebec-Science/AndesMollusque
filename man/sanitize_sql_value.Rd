@@ -3,11 +3,13 @@
 \name{sanitize_sql_value}
 \alias{sanitize_sql_value}
 \title{It will wrap string with an extra set of single quotes.
+It will escape every single quote by doubling it up
 This usualy does nothing to the value itself except inject the NULL string for NA/null and empty strings}
 \usage{
 sanitize_sql_value(value)
 }
 \description{
 It will wrap string with an extra set of single quotes.
+It will escape every single quote by doubling it up
 This usualy does nothing to the value itself except inject the NULL string for NA/null and empty strings
 }

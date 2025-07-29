@@ -97,6 +97,7 @@ add_hard_coded_value <- function(df, col_name = NULL, value = NULL) {
 }
 
 #' It will wrap string with an extra set of single quotes.
+#' It will escape every single quote by doubling it up
 #' This usualy does nothing to the value itself except inject the NULL string for NA/null and empty strings
 #' @export
 sanitize_sql_value <- function(value) {
@@ -108,7 +109,11 @@ sanitize_sql_value <- function(value) {
         if (nchar(value) == 0) {
             return("NULL")
         } else {
-            return (paste("'", value, "'", sep = ""))
+            # escape single quotes
+            value <- gsub("'", "''", value)
+            # wrap the whole in single single quotes
+            value <- paste("'", value, "'", sep = "") 
+            return (value)
         }
     }
     return (value)
@@ -137,4 +142,49 @@ to_oracle_coord <- function(coord) {
     } else {
         return(degrees * 100 + minutes_decimal)
     }
+}
+
+#' @export
+generate_sql_insert_statement <- function(df, table_name) {
+    # constructt a df to hold the SQL insert statements (one statement per proj row)
+    # every row (conce contatenated) should spell this out: " INSERT INTO {table_name} {col_names_str} VALUES {col_values_str}"
+    # built a list of column names with parentheses: "(NO_RELEVE COD_NBPC ANNEE COD_TYP_STRATIF DATE_DEB_PROJET...)"
+    col_names <- NULL
+
+    # remove id col if present
+    if ("id" %in% names(df)) df <- subset(df, select = -c(id))
+
+    for (col in colnames(df)) {
+        col_names <- paste(col_names, col, sep = ", ")
+    }
+    # remove the leading comma and space
+    col_names <- substr(col_names, 3, nchar(col_names))
+    # add parenthesis
+    col_names <- paste("(", col_names, ") ", sep = "")
+
+    # built a list of column values with parentheses: "(36 4 2025 7 '2025-05-03'...)"
+    col_values_str <- apply(df, c(1,2), sanitize_sql_value)
+    
+    # at this point, we have to iterate over the rows...
+    statement <- NULL
+    # for (i in seq_len(nrow(col_values_str))){
+    for (i in seq_len(1)){
+        col_values_str[i,]
+        values_str <- paste(unlist(col_values_str[i, ]), collapse = ", ")
+        # add parenthesis
+        values_str <- paste("(", values_str, ") ", sep="")
+        statement <- paste(statement,
+                        "INSERT INTO",
+                        table_name,
+                        col_names,
+                        "VALUES",
+                        values_str,
+                        ";\n",
+                        sep = " ")
+    }
+
+    # sql_insert["col_values_str"] <- col_values_str
+
+    logger::log_debug("Writing the following statement to the database: {statement}")
+    return(statement)
 }

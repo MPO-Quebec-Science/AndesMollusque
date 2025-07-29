@@ -10,8 +10,8 @@ SELECT
     -- also copy these previous two for HEURE_DEB_TRAIT and HEURE_DEB_TRAIT
     shared_models_sample.start_latitude AS LAT_DEB_TRAIT,
     shared_models_sample.end_latitude AS LAT_FIN_TRAIT,
-    shared_models_sample.start_longitude AS LON_DEB_TRAIT,
-    shared_models_sample.end_longitude AS LON_FIN_TRAIT,
+    shared_models_sample.start_longitude AS LONG_DEB_TRAIT,
+    shared_models_sample.end_longitude AS LONG_FIN_TRAIT,
     MAX(CASE WHEN (shared_models_sampleobservationtype.export_name='start_depth_m') THEN value ELSE '' END) AS PROF_DEB,
     MAX(CASE WHEN (shared_models_sampleobservationtype.export_name='end_depth_m') THEN value ELSE '' END) AS PROF_FIN,
     shared_models_sample.remarks AS REM_TRAIT_MOLL
@@ -44,8 +44,8 @@ GROUP BY
     DATE_FIN_TRAIT,
     LAT_DEB_TRAIT,
     LAT_FIN_TRAIT,
-    LON_DEB_TRAIT,
-    LON_FIN_TRAIT,
+    LONG_DEB_TRAIT,
+    LONG_FIN_TRAIT,
     REM_TRAIT_MOLL
 ORDER BY IDENT_NO_TRAIT ASC
 ;
