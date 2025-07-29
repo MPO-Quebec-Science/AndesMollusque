@@ -76,8 +76,8 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
         val = secteur_releve)
 
 
-    # add COD_STRAT
-    trait <- format_cod_strat(trait, desc_serie_hist_f, cod_secteur_releve)
+    # add COD_STRATE
+    trait <- format_cod_strate(trait, desc_serie_hist_f, cod_secteur_releve)
 
     # add COD_ZONE_GEST_MOLL
     trait <- format_zone(trait, desc_serie_hist_f)
@@ -145,21 +145,36 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     trait <- add_hard_coded_value(trait, col_name = "DUREE_TRAIT", value = NA)
     trait <- add_hard_coded_value(trait, col_name = "DUREE_TRAIT_P", value = NA)
 
-    trait <- add_hard_coded_value(trait, col_name = "TEMP", value = NA)
-    trait <- add_hard_coded_value(trait, col_name = "TEMP_P", value = NA)
+    trait <- add_hard_coded_value(trait, col_name = "TEMP_FOND", value = NA)
+    trait <- add_hard_coded_value(trait, col_name = "TEMP_FOND_P", value = NA)
 
-    
-    trait <- add_hard_coded_value(trait, col_name = "SALINITE_FOND", value = NA)
-    trait <- add_hard_coded_value(trait, col_name = "SALINITE_FOND_P", value = NA)
 
     trait <- add_hard_coded_value(trait, col_name = "PROF_DEB_P", value = NA)
     trait <- add_hard_coded_value(trait, col_name = "PROF_FIN_P", value = NA)
 
-    trait <- add_hard_coded_value(trait, col_name = "COD_TYP_ECH_TRAIT", value = NA)
+    # trait <- add_hard_coded_value(trait, col_name = "SALINITE_FOND", value = NA)
+    # trait <- add_hard_coded_value(trait, col_name = "SALINITE_FOND_P", value = NA)
 
 
-    
+    # trait <- add_hard_coded_value(trait, col_name = "COD_TYP_ECH_TRAIT", value = NA)
 
     return(trait)
 }
 
+#' @export
+write_trait_mollusque <- function(trait, access_db_write_connection = NULL) {
+    # write the dataframe to the database
+    if (is.null(access_db_write_connection)) {
+        logger::log_error("Failed to provide a new MS Acces connection.")
+        stop("Failed to provide a new MS Acces connection")
+    }
+    statement <- generate_sql_insert_statement(trait, "TRAIT_MOLLUSQUE")
+    result <- DBI::dbExecute(access_db_write_connection, statement)
+    if (result!=1) {
+        logger::log_error("Failed to write the projet_mollusque to the database.")
+        stop("Failed to write the projet_mollusque to the database.")
+    } else {
+        logger::log_info("Successfully wrote the projet_mollusque to the database.")
+    }
+    # DBI::dbClearResult(result)
+}
