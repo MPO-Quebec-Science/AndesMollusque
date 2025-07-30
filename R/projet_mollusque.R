@@ -67,6 +67,24 @@ get_projet_mollusque <- function(andes_db_connection) {
     proj <- add_hard_coded_value(proj, col_name = "NO_CHARGEMENT", value = NA)
 
     return(proj)
+
+}
+
+#' Perform validation checks on the dataframe before writing to a database table
+#' @export
+validate_projet_mollusque <- function(df) {
+    not_null_columns <- c(
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "COD_NBPC",
+        "COD_SERIE_HIST",
+        "COD_TYP_STRATIF"
+    )
+    if (cols_contains_na(df, col_names = not_null_columns)) {
+        logger::log_error("dataframe cannot be written as DB table")
+        return(FALSE)
+    }
+    return(TRUE)
 }
 
 #' @export
