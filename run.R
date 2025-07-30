@@ -51,17 +51,14 @@ View(trait)
 names(trait)
 
 
+devtools::load_all()
 
 file_path <- create_new_access_db()
-access_db_write_connection <- access_db_connect(paste("./", file_path, sep=""))
+access_db_write_connection <- access_db_connect(paste("./", file_path, sep = ""))
 
 
 write_projet_mollusque(proj, access_db_write_connection)
 
 write_trait_mollusque(trait, access_db_write_connection)
-# CANNOT WRITE, this following statement fails with error: Type de données incompatible dans l'expression du critèr
-" INSERT INTO TRAIT_MOLLUSQUE (IDENT_NO_TRAIT, NO_STATION, COD_RESULT_OPER, DATE_DEB_TRAIT, DATE_FIN_TRAIT, LAT_DEB_TRAIT, LAT_FIN_TRAIT, LONG_DEB_TRAIT, LONG_FIN_TRAIT, PROF_DEB, PROF_FIN, REM_TRAIT_MOLL, COD_SOURCE_INFO, NO_RELEVE, COD_NBPC, NO_CHARGEMENT, COD_STRATE, COD_ZONE_GEST_MOLL, COD_TYP_TRAIT, HRE_DEB_TRAIT, HRE_FIN_TRAIT, COD_TYP_HEURE, COD_FUSEAU_HORAIRE, COD_METHOD_POS, LATLONG_P, DISTANCE_POS, DISTANCE_POS_P, VIT_TOUAGE, VIT_TOUAGE_P, DUREE_TRAIT, DUREE_TRAIT_P, TEMP_FOND, TEMP_FOND_P, PROF_DEB_P, PROF_FIN_P)  VALUES (' 1', '01', '1', '2025-05-03', '2025-05-03', '5011.543', '5011.501', '-6335.832', '-6335.729', '52', '52', 'Andes n''a pas fonctionné sur ce trait.\n**start/end dates repopulated**', '18', '36', '4', NULL, ' 8', '7', '10', '2025-05-03 10:44:45', '2025-05-03 10:47:20', ' 1', '1', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)  ;\n"
-
-
 
 DBI::dbDisconnect(access_db_write_connection)

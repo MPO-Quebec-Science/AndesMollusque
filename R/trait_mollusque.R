@@ -55,6 +55,7 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
         pkey_col = "DESC_SERIE_HIST_F",
         col = "COD_SERIE_HIST",
         val = proj$COD_SERIE_HIST)
+
     # temporarily get cod_sect_releve, this is obtained from desc_secteur_releve_f
     # all sets shold have the same desc_serie_hist_f, verify this
     if (length(unique(trait$desc_secteur_releve_f)) != 1){
@@ -63,21 +64,14 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     }
     # they are all the same, as it should be be, so just take the first one)
     desc_secteur_releve_f <- trait$desc_secteur_releve_f[1]
-    #  the first letter, capitalized and without accents becomes secteur_releve
-    secteur_releve <- toupper(substr(desc_secteur_releve_f, 1, 1))
+
+    trait <- format_cod_secteur_releve(trait, desc_secteur_releve_f)
 
     # we can now get rid of that column
     trait <- subset(trait, select = -c(desc_secteur_releve_f))
 
-    cod_secteur_releve <- get_ref_key(
-        table = "SECTEUR_RELEVE_MOLL",
-        pkey_col = "COD_SECTEUR_RELEVE",
-        col = "SECTEUR_RELEVE",
-        val = secteur_releve)
-
-
     # add COD_STRATE
-    trait <- format_cod_strate(trait, desc_serie_hist_f, cod_secteur_releve)
+    trait <- format_cod_strate(trait, desc_serie_hist_f)
 
     # add COD_ZONE_GEST_MOLL
     trait <- format_zone(trait, desc_serie_hist_f)
@@ -148,6 +142,7 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     trait <- add_hard_coded_value(trait, col_name = "TEMP_FOND", value = NA)
     trait <- add_hard_coded_value(trait, col_name = "TEMP_FOND_P", value = NA)
 
+    trait <- format_depths(trait)
 
     trait <- add_hard_coded_value(trait, col_name = "PROF_DEB_P", value = NA)
     trait <- add_hard_coded_value(trait, col_name = "PROF_FIN_P", value = NA)
@@ -168,13 +163,18 @@ write_trait_mollusque <- function(trait, access_db_write_connection = NULL) {
         logger::log_error("Failed to provide a new MS Acces connection.")
         stop("Failed to provide a new MS Acces connection")
     }
-    statement <- generate_sql_insert_statement(trait, "TRAIT_MOLLUSQUE")
-    result <- DBI::dbExecute(access_db_write_connection, statement)
-    if (result!=1) {
-        logger::log_error("Failed to write the projet_mollusque to the database.")
-        stop("Failed to write the projet_mollusque to the database.")
-    } else {
-        logger::log_info("Successfully wrote the projet_mollusque to the database.")
+
+    # insert make one row at a time
+    for (i in seq_len(nrow(trait))) {
+        statement <- generate_sql_insert_statement(trait[i, ], "TRAIT_MOLLUSQUE")
+        logger::log_debug("Writing the following statement to the database: {statement}")
+        result <- DBI::dbExecute(access_db_write_connection, statement)
+        if (result!=1) {
+            logger::log_error("Failed to write a row to the TRAIT_MOLLUSQUE Table, row: {i}")
+            stop("Failed to write a row to the TRAIT_MOLLUSQUE Table")
+        } else {
+            logger::log_debug("Successfully added a row to the TRAIT_MOLLUSQUE Table")
+        }
     }
-    # DBI::dbClearResult(result)
+    logger::log_info("Successfully wrote the trait_mollusque to the database.")
 }
