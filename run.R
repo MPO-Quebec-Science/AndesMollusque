@@ -41,8 +41,6 @@ for (p_i in seq_len(nrow(proj))) {
   trait <- get_trait_mollusque(andes_db_connection, proj = proj[p_i,])
   validate_trait_mollusque(trait)
 
-
-
   engin <- get_engin_mollusque(andes_db_connection, proj = proj[p_i,])
   validate_engin_mollusque(engin)
 }
@@ -62,7 +60,6 @@ devtools::load_all()
 
 file_path <- create_new_access_db()
 access_db_write_connection <- access_db_connect(paste("./", file_path, sep = ""))
-
 
 write_projet_mollusque(proj, access_db_write_connection)
 

@@ -61,7 +61,7 @@ format_cod_strate <- function(trait, desc_serie_hist_f) {
 
 #' @export
 get_strate <- function(nom_station, desc_serie_hist_f) {
-    #' This requires opening station reference data to determine the zone.
+    # This requires opening station reference data to determine the zone.
     lookup_station <- function(station_name = NULL, zone = NULL, species = NULL) {
         logger::log_error("lookup_station is not fully implemented.")
 
@@ -78,20 +78,20 @@ get_strate <- function(nom_station, desc_serie_hist_f) {
     }
 
 
-    if(desc_serie_hist_f=="Indice d'abondance zone 16E - pétoncle"){
+    if (desc_serie_hist_f=="Indice d'abondance zone 16E - pétoncle"){
         # For 16E, the strate is the first letter of the station name
         strate <- substring(nom_station, 1, 1)
         return(strate)
-    } else if(desc_serie_hist_f=="Indice d'abondance zone 16F - pétoncle"){
+    } else if (desc_serie_hist_f=="Indice d'abondance zone 16F - pétoncle"){
         # For 16F, the strate is the first letter of the station name
         strate <- substring(nom_station, 1, 1)
         return(strate)
-    } else if(desc_serie_hist_f=="Indice d'abondance zone 20 - pétoncle"){
+    } else if (desc_serie_hist_f=="Indice d'abondance zone 20 - pétoncle"){
         # For IdM, need a lookup table from station
         station <- lookup_station(station_name=nom_station, zone="20", species="PETONCLE")
         strate <- station$STRATE
         return(strate)
-    } else if(desc_serie_hist_f=="Indice d'abondance buccin") {
+    } else if (desc_serie_hist_f=="Indice d'abondance buccin") {
         # For buccin, need a lookup table from station
         station <- lookup_station(station_name=nom_station, species="BUCCIN")
         strate <- station$STRATE
@@ -106,20 +106,20 @@ get_strate <- function(nom_station, desc_serie_hist_f) {
 #' @export
 format_zone <- function(trait, desc_serie_hist_f) {
 
-    get_zone <- function(nom_station, desc_serie_hist_f){
-        if(desc_serie_hist_f=="Indice d'abondance zone 16E - pétoncle"){
+    get_zone <- function(nom_station, desc_serie_hist_f) {
+        if (desc_serie_hist_f=="Indice d'abondance zone 16E - pétoncle"){
             # For 16E
             zone <- "16E"
             return(zone)
-        } else if(desc_serie_hist_f=="Indice d'abondance zone 16F - pétoncle"){
+        } else if (desc_serie_hist_f=="Indice d'abondance zone 16F - pétoncle") {
             # For 16F
             zone <- "16F"
             return(zone)
-        } else if(desc_serie_hist_f=="Indice d'abondance zone 20 - pétoncle"){
+        } else if (desc_serie_hist_f=="Indice d'abondance zone 20 - pétoncle") {
             # For IdM
             zone <- "20"
             return(zone)
-        } else if(desc_serie_hist_f=="Indice d'abondance buccin") {
+        } else if (desc_serie_hist_f=="Indice d'abondance buccin") {
             stop("Buccin is not implemented yet.")
             return("")
         } else {
@@ -212,9 +212,9 @@ format_cod_typ_trait <- function(trait, desc_stratification) {
 }
 
 get_desc_typ_trait <- function(operation, desc_stratification) {
-    if (operation=="ctd") {
+    if (operation == "ctd") {
         return("Océanographie seulement")
-    } else if (operation=="fish"){
+    } else if (operation == "fish"){
         # this is a fishing operation, must return the mission's stratification type 
         return(desc_stratification)
     } else {
@@ -252,14 +252,15 @@ format_date_hre_trait <- function(trait) {
     return(trait)
 }
 
-format_cod_typ_heure <- function(trait){
+#' @export
+format_cod_typ_heure <- function(trait) {
 
-    lookup_cod_typ_heure <-function(is_dst){
+    lookup_cod_typ_heure <- function(is_dst) {
         if (is.na(is_dst)) {
             return(NA)
-        } else if (is_dst==TRUE) {
+        } else if (is_dst == TRUE) {
             desc <- "Avancée"
-        } else if (is_dst==FALSE) {
+        } else if (is_dst == FALSE) {
             desc <- "Normale"
         } else {
             return(NA)
