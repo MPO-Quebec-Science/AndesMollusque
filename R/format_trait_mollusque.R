@@ -289,12 +289,6 @@ format_cod_typ_heure <- function(trait){
     return(trait)
 }
 
-format_depths <-function(trait) {
-    trait$PROF_DEB <- as.numeric(trait$PROF_DEB)
-    trait$PROF_FIN <- as.numeric(trait$PROF_FIN)
-    return(trait)
-}
-
 
 #' Format coordinates for TRAIT_MOLLUSQUE
 #'

@@ -28,6 +28,7 @@ devtools::load_all()
 proj <- get_projet_mollusque(andes_db_connection)
 
 proj <- init_cod_serie_hist(proj, desc_serie_hist_f)
+validate_projet_mollusque(proj)
 
 # proj -> trait -> engine -> capture -> FreqLongMollusque -> 
 # BiometrieMollusque 
@@ -35,11 +36,17 @@ proj <- init_cod_serie_hist(proj, desc_serie_hist_f)
 
 devtools::load_all()
 
-for(pi in seq_len(nrow(proj))) {
-  p <- proj[pi,]
-  trait <- get_trait_mollusque(andes_db_connection, proj = p)
-  # trait_db <- get_trait_mollusque_db(andes_db_connection)
+p_i <-1
+for (p_i in seq_len(nrow(proj))) {
+  trait <- get_trait_mollusque(andes_db_connection, proj = proj[p_i,])
+  validate_trait_mollusque(trait)
+
+
+
+  engin <- get_engin_mollusque(andes_db_connection, proj = proj[p_i,])
+  validate_engin_mollusque(engin)
 }
+
 
 trait <- get_trait_mollusque(andes_db_connection, proj = proj)
 View(trait)
@@ -60,5 +67,7 @@ access_db_write_connection <- access_db_connect(paste("./", file_path, sep = "")
 write_projet_mollusque(proj, access_db_write_connection)
 
 write_trait_mollusque(trait, access_db_write_connection)
+
+write_engin_mollusque(engin, access_db_write_connection)
 
 DBI::dbDisconnect(access_db_write_connection)

@@ -179,3 +179,44 @@ generate_sql_insert_statement <- function(df_row, table_name) {
                     sep = " ")
     return(statement)
 }
+
+#'
+#' Convert all dataframe cols named in the col_names to a numeric value
+#' @arguments col_names: a list of column names which will be converted to numeric
+#' @export
+cols_to_numeric <- function(df, col_names = NULL) {
+    if (is.null(col_names)) {
+        stop("Must supply a list of column names")
+    }
+    for (i in seq_len(length(col_names))) {
+        if (! col_names[i] %in% names(df)) {
+            logger::log_error("Cannot convert type, {col_names[i]} is not a column name")
+            stop("Cannot convert type, not a column name")
+        }
+        logger::log_debug("Converting column {col_names[i]} to numeric")
+        df[, names(df) == col_names[i]] <- as.numeric(df[, names(df) == col_names[i]])
+    }
+    return (df)
+}
+
+#'
+#' Checks if all dataframe cols named in the col_names contain NA
+#' This is useful to validate if a dataframe can be written to a DB table (where some columns values cannot be null)
+#' @arguments col_names: a list of column names which will be verified
+#' @export
+cols_contains_na <- function(df, col_names = NULL) {
+    if (is.null(col_names)) {
+        stop("Must supply a list of column names")
+    }
+    for (i in seq_len(length(col_names))) {
+        if (! col_names[i] %in% names(df)) {
+            logger::log_error("Cannot verify, {col_names[i]} is not a column name")
+            stop("Cannot verify, not a column name")
+        }
+        if (any(is.na(df[, names(df) == col_names[i]]))) {
+            logger::log_error("Found NA in column {col_names[i]}")
+            return(TRUE)
+        }
+    }
+    return(FALSE)
+}

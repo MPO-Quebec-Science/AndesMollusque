@@ -142,7 +142,8 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     trait <- add_hard_coded_value(trait, col_name = "TEMP_FOND", value = NA)
     trait <- add_hard_coded_value(trait, col_name = "TEMP_FOND_P", value = NA)
 
-    trait <- format_depths(trait)
+    # convert these strings to numeric
+    trait <- cols_to_numeric(trait, col_names = c("PROF_DEB", "PROF_FIN"))
 
     trait <- add_hard_coded_value(trait, col_name = "PROF_DEB_P", value = NA)
     trait <- add_hard_coded_value(trait, col_name = "PROF_FIN_P", value = NA)
@@ -152,16 +153,36 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
 
 
     # trait <- add_hard_coded_value(trait, col_name = "COD_TYP_ECH_TRAIT", value = NA)
-
     return(trait)
 }
+
+#' Perform validation checks on the dataframe before writing to a database table
+#' @export
+validate_trait_mollusque <- function(df) {
+    not_null_columns <- c(
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "COD_NBPC",
+        "IDENT_NO_TRAIT",
+        "NO_STATION",
+        "COD_TYP_TRAIT",
+        "COD_RESULT_OPER"
+    )
+    if (cols_contains_na(df, col_names = not_null_columns)) {
+        logger::log_error("dataframe cannot be written as DB table")
+        return(FALSE)
+    }
+    return(TRUE)
+
+}
+
 
 #' @export
 write_trait_mollusque <- function(trait, access_db_write_connection = NULL) {
     # write the dataframe to the database
     if (is.null(access_db_write_connection)) {
-        logger::log_error("Failed to provide a new MS Acces connection.")
-        stop("Failed to provide a new MS Acces connection")
+        logger::log_error("Failed to provide a new MS Access connection.")
+        stop("Failed to provide a new MS Access connection")
     }
 
     # insert make one row at a time
