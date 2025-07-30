@@ -76,8 +76,10 @@ write_projet_mollusque <- function(proj, access_db_write_connection=NULL) {
         logger::log_error("Failed to provide a new MS Acces connection.")
         stop("Failed to provide a new MS Acces connection")
     }
-    statement <- generate_sql_insert_statement(proj, "PROJET_MOLLUSQUE")
+    
+    statement <- generate_sql_insert_statement(proj[1, ], "PROJET_MOLLUSQUE")
     result <- DBI::dbExecute(access_db_write_connection, statement)
+
     if (result!=1) {
         logger::log_error("Failed to write the projet_mollusque to the database.")
         stop("Failed to write the projet_mollusque to the database.")

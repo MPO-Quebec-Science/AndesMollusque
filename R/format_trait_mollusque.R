@@ -1,6 +1,24 @@
 
+
 #' @export
-format_cod_strate <- function(trait, desc_serie_hist_f, cod_secteur_releve) {
+format_cod_secteur_releve <- function(trait, desc_secteur_releve_f) {
+    # from the des ription, desc_secteur_releve_f
+    #  the first letter, capitalized and without accents becomes secteur_releve
+    secteur_releve <- toupper(substr(desc_secteur_releve_f, 1, 1))
+
+    cod_secteur_releve <- get_ref_key(
+        table = "SECTEUR_RELEVE_MOLL",
+        pkey_col = "COD_SECTEUR_RELEVE",
+        col = "SECTEUR_RELEVE",
+        val = secteur_releve)
+    
+    trait$COD_SECTEUR_RELEVE <- cod_secteur_releve
+    return(trait)
+}
+
+
+#' @export
+format_cod_strate <- function(trait, desc_serie_hist_f) {
     lookup_cod_strate <- function(strate_name, cod_sect_releve) {
         optional_query <- paste("AND COD_SECTEUR_RELEVE=", cod_secteur_releve, sep="")
         key <- get_ref_key(
@@ -12,7 +30,17 @@ format_cod_strate <- function(trait, desc_serie_hist_f, cod_secteur_releve) {
         return(key)
     }
 
-    # first get the strat from the desc_serie_hist_f and NO_STATION
+    # get cod_sect_releve, it should have been inserted for all sets,
+    # all sets should have the same cod_secteur_releve, verify this
+    if (length(unique(trait$COD_SECTEUR_RELEVE)) != 1){
+        logger::log_error("The sets do not have the same cod_secteur_releve")
+        stop("The sets do not have the same cod_secteur_releve")
+    }
+    # they are all the same, as it should be be, so just take the first one)
+    cod_secteur_releve <- trait$COD_SECTEUR_RELEVE[1]
+
+
+    # get the strat from the desc_serie_hist_f and NO_STATION
     strate <- lapply(trait$NO_STATION, get_strate, desc_serie_hist_f)
     # then, lookup the strat code
     # trait$COD_STRATE <- lapply(strat, lookup_cod_strat, cod_secteur_releve)
@@ -196,7 +224,6 @@ get_desc_typ_trait <- function(operation, desc_stratification) {
 }
 
 
-
 #' Format dates for TRAIT_MOLLUSQUE
 #'
 #' Converts date fields to appropriate format. uses andes_str_to_oracle_date
@@ -259,6 +286,12 @@ format_cod_typ_heure <- function(trait){
     is_dst <- data.frame(desc = unlist(is_dst))
     res <- left_join(is_dst, code_map, by = "desc")
     trait$COD_TYP_HEURE <- res$code
+    return(trait)
+}
+
+format_depths <-function(trait) {
+    trait$PROF_DEB <- as.numeric(trait$PROF_DEB)
+    trait$PROF_FIN <- as.numeric(trait$PROF_FIN)
     return(trait)
 }
 

@@ -101,9 +101,7 @@ add_hard_coded_value <- function(df, col_name = NULL, value = NULL) {
 #' This usualy does nothing to the value itself except inject the NULL string for NA/null and empty strings
 #' @export
 sanitize_sql_value <- function(value) {
-    if (is.null(value)) {
-        return("NULL")
-    } else if (is.na(value)) {
+    if (is.null(value) || is.na(value)) {
         return("NULL")
     } else if (is.character(value)) {
         if (nchar(value) == 0) {
@@ -144,17 +142,19 @@ to_oracle_coord <- function(coord) {
     }
 }
 
+#' generate a SQL inster statement for the single dataframe row as a new row into table_name
+#' The dataframe must have named columns that correspond to the columns of the table
+#' The values must have the correct data types t(here will be some SQL value sanitizing)
+#' The statement will look like:" INSERT INTO {table_name} {col_names_str} VALUES {col_values_str}"
+#' Where {col_names_str} is list of column names with parentheses: "(NO_RELEVE COD_NBPC ANNEE COD_TYP_STRATIF DATE_DEB_PROJET...)"
+#' and {col_values_str} is list of column values with parentheses: "(36 4 2025 7 '2025-05-03'...)"
 #' @export
-generate_sql_insert_statement <- function(df, table_name) {
-    # constructt a df to hold the SQL insert statements (one statement per proj row)
-    # every row (conce contatenated) should spell this out: " INSERT INTO {table_name} {col_names_str} VALUES {col_values_str}"
-    # built a list of column names with parentheses: "(NO_RELEVE COD_NBPC ANNEE COD_TYP_STRATIF DATE_DEB_PROJET...)"
+generate_sql_insert_statement <- function(df_row, table_name) {
     col_names <- NULL
-
     # remove id col if present
-    if ("id" %in% names(df)) df <- subset(df, select = -c(id))
+    if ("id" %in% names(df_row)) df_row <- subset(df_row, select = -c(id))
 
-    for (col in colnames(df)) {
+    for (col in colnames(df_row)) {
         col_names <- paste(col_names, col, sep = ", ")
     }
     # remove the leading comma and space
@@ -162,29 +162,20 @@ generate_sql_insert_statement <- function(df, table_name) {
     # add parenthesis
     col_names <- paste("(", col_names, ") ", sep = "")
 
-    # built a list of column values with parentheses: "(36 4 2025 7 '2025-05-03'...)"
-    col_values_str <- apply(df, c(1,2), sanitize_sql_value)
-    
-    # at this point, we have to iterate over the rows...
-    statement <- NULL
-    # for (i in seq_len(nrow(col_values_str))){
-    for (i in seq_len(1)){
-        col_values_str[i,]
-        values_str <- paste(unlist(col_values_str[i, ]), collapse = ", ")
-        # add parenthesis
-        values_str <- paste("(", values_str, ") ", sep="")
-        statement <- paste(statement,
-                        "INSERT INTO",
-                        table_name,
-                        col_names,
-                        "VALUES",
-                        values_str,
-                        ";\n",
-                        sep = " ")
-    }
-
-    # sql_insert["col_values_str"] <- col_values_str
-
-    logger::log_debug("Writing the following statement to the database: {statement}")
+    # run sanitize_sql_value() on every column of this row
+    col_values_str <- lapply(df_row, sanitize_sql_value)
+    # collapse all values into one string with columns separated by a comma
+    col_values_str <- paste(unlist(col_values_str), collapse = ", ")
+    # add parenthesis
+    col_values_str <- paste("(", col_values_str, ") ", sep="")
+    # the list is now build, we can create the INSERT statement.
+    statement <- paste(
+                    "INSERT INTO",
+                    table_name,
+                    col_names,
+                    "VALUES",
+                    col_values_str,
+                    ";",
+                    sep = " ")
     return(statement)
 }
