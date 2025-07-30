@@ -15,7 +15,7 @@ andes_db_connect <- function(
                             port_bd,
                             nom_usager,
                             mot_de_passe,
-                            nom_bd="andesdb") {
+                            nom_bd = "andesdb") {
 
     # ODBC needs to to wrap the password string in {} in case the password contains semicolons
     mot_de_passe <- paste("{", mot_de_passe, "}", sep = "")

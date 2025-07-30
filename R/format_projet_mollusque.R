@@ -31,7 +31,7 @@ lookup_cod_source_info <- function(desc_source_info_f) {
 #' This value is not present in ANDES so it will have to be specified here.
 #' Run this without desc_serie_hist_f to get a list of choices.
 #' @export
-init_cod_serie_hist <- function(df, desc_serie_hist_f=NULL) {
+init_cod_serie_hist <- function(df, desc_serie_hist_f = NULL) {
     # only buld a list of choices if no descriptioin is specified.
     if (is.null(desc_serie_hist_f)) {
         # May have to update this list, perhaps we should build it fro mthe MS access db
@@ -92,7 +92,7 @@ format_seq_pecheur <- function(df) {
     # get the col
     vessel_name <- df[, which(names(df) == "vessel_name")]
     # sad hack... :(
-    if (vessel_name=="Leim") {
+    if (vessel_name == "Leim") {
         pecheur <- "Capitaine Leim"
     } else {
         stop("The only supported vessel is the Leim for now. Cannot determine SEQ_PECHEUR for vessel: ", vessel_name)
@@ -101,10 +101,10 @@ format_seq_pecheur <- function(df) {
 
     logger::log_info("Assuming {pecheur} as NOM_PECHEUR (from the vessel {vessel_name})")
 
-    seq_pecheur <- get_ref_key(table="Pecheur",
-                                pkey_col="SEQ_PECHEUR",
-                                col="NOM_PECHEUR",
-                                val=pecheur)
+    seq_pecheur <- get_ref_key(table = "Pecheur",
+                                pkey_col = "SEQ_PECHEUR",
+                                col = "NOM_PECHEUR",
+                                val = pecheur)
 
     df["SEQ_PECHEUR"] <- seq_pecheur
     # we are done with, the vessel_name column, it can be deleted.

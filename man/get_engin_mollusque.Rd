@@ -4,17 +4,21 @@
 \alias{get_engin_mollusque}
 \title{Gets engin_mollusc (formatted results)}
 \usage{
-get_engin_mollusque(andes_db_connection)
+get_engin_mollusque(andes_db_connection, proj = NULL)
 }
 \arguments{
 \item{andes_db_connection}{a connection object to the ANDES database.}
 }
 \value{
-A dataframe containing fishing set data.
+A dataframe containing engin table data.
 }
 \description{
 This function executes a SQL query to retrieve the needed andes data to construct the ENGIN_MOLLUSC table.
 The current ANDES active mission will determine for which data are returned.
+}
+\details{
+Structurally, it would make sense to send a Trait instance to for every engin
+but here we can get away with proj (due to how ANDES is structured)
 }
 \seealso{
 [get_projet_mollusque_db()] for the db results

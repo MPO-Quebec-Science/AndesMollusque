@@ -182,7 +182,8 @@ generate_sql_insert_statement <- function(df_row, table_name) {
 
 #'
 #' Convert all dataframe cols named in the col_names to a numeric value
-#' @arguments col_names: a list of column names which will be converted to numeric
+#' @param df: the datafram to modify
+#' @param col_names: a list of column names which will be converted to numeric
 #' @export
 cols_to_numeric <- function(df, col_names = NULL) {
     if (is.null(col_names)) {
@@ -202,7 +203,8 @@ cols_to_numeric <- function(df, col_names = NULL) {
 #'
 #' Checks if all dataframe cols named in the col_names contain NA
 #' This is useful to validate if a dataframe can be written to a DB table (where some columns values cannot be null)
-#' @arguments col_names: a list of column names which will be verified
+#' @param df: the datafram to modify
+#' @param col_names: a list of column names which will be converted to numeric
 #' @export
 cols_contains_na <- function(df, col_names = NULL) {
     if (is.null(col_names)) {

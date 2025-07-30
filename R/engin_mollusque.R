@@ -6,13 +6,13 @@
 #' The current ANDES active mission will determine for which data are returned.
 #'
 #' This function is intended for internal use and returns raw results from the database.
-#' It is not meant for direct use in analysis or reporting. Users should use `get_engin_mollusc` 
+#' It is not meant for direct use in analysis or reporting. Users should use `get_engin_mollusc`
 #'
 #' @param andes_db_connection a connection object to the ANDES database.
 #' @return A dataframe containing fishing set data.
 #' @seealso [get_projet_mollusque()] for the formatted results
 #' @export
-get_engin_mollusque_db<- function(andes_db_connection) {
+get_engin_mollusque_db <- function(andes_db_connection) {
     query <- readr::read_file(system.file("sql_queries",
                                           "engin_mollusque.sql",
                                           package = "ANDESMollusque"))
@@ -36,7 +36,7 @@ get_engin_mollusque_db<- function(andes_db_connection) {
 #' @return A dataframe containing engin table data.
 #' @seealso [get_projet_mollusque_db()] for the db results
 #' @export
-get_engin_mollusque<- function(andes_db_connection, proj = NULL) {
+get_engin_mollusque <- function(andes_db_connection, proj = NULL) {
     # Validate input
     if (is.null(proj)) {
         logger::log_error("Must provide a formatted proj_mollusque dataframe.")
@@ -100,7 +100,7 @@ write_engin_mollusque <- function(engin, access_db_write_connection = NULL) {
         statement <- generate_sql_insert_statement(engin[i, ], "ENGIN_MOLLUSQUE")
         logger::log_debug("Writing the following statement to the database: {statement}")
         result <- DBI::dbExecute(access_db_write_connection, statement)
-        if (result!=1) {
+        if (result != 1) {
             logger::log_error("Failed to write a row to the ENGIN_MOLLUSQUE Table, row: {i}")
             stop("Failed to write a row to the ENGIN_MOLLUSQUE Table")
         } else {

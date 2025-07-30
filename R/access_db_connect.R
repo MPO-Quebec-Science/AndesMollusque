@@ -3,7 +3,7 @@
 #' Establish a connection to an MS Access database
 #'
 #' This is a wrapper for the `DBI::dbConnect`, see it's documentation for more details.
-#' @param file_path full path to the MS Access file 
+#' @param file_path full path to the MS Access file
 #' The default will be the Access template database
 #' @return A connection object to the MS ACCESS database.
 #' @export
@@ -27,13 +27,9 @@ access_db_connect <- function(file_path = NULL) {
             "ReadOnly=1;",
             sep = "")
     }
-    # print(connection_string)
     access_db_connection <- DBI::dbConnect(odbc::odbc(),
                     .connection_string = connection_string,
                     timeout = 10)
-    # TODO
-    # DBI::dbDisconnect(access_db_connection)
-
     return(access_db_connection)
 }
 
@@ -43,12 +39,11 @@ create_new_access_db <- function(fname = "new_access_db.mdb") {
             "access_template.mdb",
             package = "ANDESMollusque")
     res <- file.copy(template_file_path, fname, overwrite = FALSE)
-    if (res){
+    if (res) {
         return(fname)
     } else {
         logger::log_error("Failed to create a new Access database file {fname}")
         stop("Failed to copy the template file to ", fname)
-       
         return(FALSE)
     }
 }
@@ -63,11 +58,11 @@ create_new_access_db <- function(fname = "new_access_db.mdb") {
 #' @param optional_query: additional string to append to the query
 #' @return: The value found in the pkey column for the entry with the value
 #' @export
-get_ref_key <- function(table="tablename",
-                        pkey_col="columnofprimarykey",
-                        col="columnname",
-                        val="entryvalue",
-                        optional_query="") {
+get_ref_key <- function(table = "tablename",
+                        pkey_col = "columnofprimarykey",
+                        col = "columnname",
+                        val = "entryvalue",
+                        optional_query = "") {
     # sanitize the strings
     if (is.character(val)) {
         # sanitize the value, double up existing quotes
@@ -80,7 +75,6 @@ get_ref_key <- function(table="tablename",
                   " WHERE ", col, "=", val,
                   " ", optional_query,
                   sep = "")
-    # print(query)
     access_db_connection <- access_db_connect()
     result <- DBI::dbSendQuery(access_db_connection, query)
     ref_key <- DBI::dbFetch(result, n = Inf)[, pkey_col]
@@ -90,7 +84,7 @@ get_ref_key <- function(table="tablename",
     if (length(ref_key) != 1) {
         stop("The reference query: ", query, " returned ", length(ref_key), " results. Expected 1 result.")
     }
-    # TODO: add sanity checks, 
+    # TODO: add sanity checks,
         #     if len(res) == 1:
         #     return res[0][0]
         # elif len(res) == 0:
@@ -105,15 +99,14 @@ get_ref_key <- function(table="tablename",
 
 #' Builds a list of legal choices (descriptions) for get ref key
 #' @export
-get_ref_choices <- function(table="tablename",
-                        col="columnname",
-                        optional_query="") {
-    
+get_ref_choices <- function(table = "tablename",
+                        col = "columnname",
+                        optional_query = "") {
+
     query <- paste("SELECT ", col,
             " FROM ", table,
             " ", optional_query,
             sep = "")
-    # print(query)
     access_db_connection <- access_db_connect()
     result <- DBI::dbSendQuery(access_db_connection, query)
     choices <- DBI::dbFetch(result, n = Inf)[, col]
