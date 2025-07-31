@@ -10,16 +10,16 @@
 #'
 #' @param andes_db_connection a connection object to the ANDES database.
 #' @return A dataframe containing fishing set data.
-#' @seealso [get_projet_mollusque()] for the formatted results
+#' @seealso [get_engin_mollusque()] for the formatted results
 #' @export
 get_engin_mollusque_db <- function(andes_db_connection) {
     query <- readr::read_file(system.file("sql_queries",
                                           "engin_mollusque.sql",
                                           package = "ANDESMollusque"))
     result <- DBI::dbSendQuery(andes_db_connection, query)
-    proj <- DBI::dbFetch(result, n = Inf)
+    df <- DBI::dbFetch(result, n = Inf)
     DBI::dbClearResult(result)
-    return(proj)
+    return(df)
 }
 
 
@@ -34,7 +34,7 @@ get_engin_mollusque_db <- function(andes_db_connection) {
 #' @param andes_db_connection a connection object to the ANDES database.
 #
 #' @return A dataframe containing engin table data.
-#' @seealso [get_projet_mollusque_db()] for the db results
+#' @seealso [get_engin_mollusque_db()] for the db results
 #' @export
 get_engin_mollusque <- function(andes_db_connection, proj = NULL) {
     # Validate input

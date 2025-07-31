@@ -21,5 +21,5 @@ Structurally, it would make sense to send a Trait instance to for every engin
 but here we can get away with proj (due to how ANDES is structured)
 }
 \seealso{
-[get_projet_mollusque_db()] for the db results
+[get_engin_mollusque_db()] for the db results
 }

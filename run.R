@@ -36,7 +36,7 @@ validate_projet_mollusque(proj)
 
 devtools::load_all()
 
-p_i <-1
+p_i <- 1
 for (p_i in seq_len(nrow(proj))) {
   trait <- get_trait_mollusque(andes_db_connection, proj = proj[p_i,])
   validate_trait_mollusque(trait)
