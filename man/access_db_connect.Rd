@@ -7,7 +7,7 @@
 access_db_connect(file_path = NULL)
 }
 \arguments{
-\item{file_path}{full path to the MS Access file 
+\item{file_path}{full path to the MS Access file
 The default will be the Access template database}
 }
 \value{

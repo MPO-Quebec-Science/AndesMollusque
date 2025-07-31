@@ -1,7 +1,8 @@
 
+#' a merge that preserves row and column order
+#' shamelessly stolen from https://stackoverflow.com/questions/17878048/merge-two-data-frames-while-keeping-the-original-row-order
+#' @export
 left_join <- function(x, y, ...) {
-    # https://stackoverflow.com/questions/17878048/merge-two-data-frames-while-keeping-the-original-row-order
-
     x$join_id_ <- seq_len(nrow(x))
     joined <- merge(x = x, y = y, all.x = TRUE, sort = FALSE, ...)
 

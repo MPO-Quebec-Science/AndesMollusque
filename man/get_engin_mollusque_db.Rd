@@ -21,5 +21,5 @@ This function is intended for internal use and returns raw results from the data
 It is not meant for direct use in analysis or reporting. Users should use `get_engin_mollusc`
 }
 \seealso{
-[get_projet_mollusque()] for the formatted results
+[get_engin_mollusque()] for the formatted results
 }
