@@ -82,11 +82,11 @@ get_epibiont <- function(andes_db_connection) {
 #' This function executes a SQL query to retrieve the needed andes data to construct the CAPTURE_MOLLUSC table.
 #' The current ANDES active mission will determine for which data are returned.
 #'
-#' Structurally, it would make sense to send a Trait instance to for every engin
+#' Structurally, it would make sense to send a Trait instance to for every capture_mollusque
 #' but here we can get away with proj (due to how ANDES is structured)
 #' @param andes_db_connection a connection object to the ANDES database.
 #
-#' @return A dataframe containing engin table data.
+#' @return A dataframe containing capture_mollusque table data.
 #' @seealso [get_capture_mollusque_db()] for the db results
 #' @export
 get_caputre_mollusque <- function(andes_db_connection, proj = NULL) {
@@ -104,14 +104,18 @@ get_caputre_mollusque <- function(andes_db_connection, proj = NULL) {
     capt$COD_NBPC <- proj$COD_NBPC
     capt$NO_CHARGEMENT <- proj$NO_CHARGEMENT
 
+    epibiont_data <- get_epibiont(andes_db_connection)
+    epibiont_data
+    format_cod_couverture_epibiont(epibiont_data)
     # capt <- add_hard_coded_value(capt, col_name = "REM_ENGIN_MOLL", value = NA)
+
 
     return(capt)
 }
 
 #' Perform validation checks on the dataframe before writing to a database table
 #' @export
-validate_engin_mollusque <- function(df) {
+validate_capture_mollusque <- function(df) {
     # not_null_columns <- c(
     #     "COD_SOURCE_INFO",
     #     "NO_RELEVE",
@@ -130,7 +134,7 @@ validate_engin_mollusque <- function(df) {
 }
 
 #' @export
-write_engin_mollusque <- function(engin, access_db_write_connection = NULL) {
+write_capture_mollusque <- function(df, access_db_write_connection = NULL) {
 #    # write the dataframe to the database
 #     if (is.null(access_db_write_connection)) {
 #         logger::log_error("Failed to provide a new MS Access connection.")
@@ -138,16 +142,16 @@ write_engin_mollusque <- function(engin, access_db_write_connection = NULL) {
 #     }
 
 #     # insert make one row at a time
-#     for (i in seq_len(nrow(engin))) {
-#         statement <- generate_sql_insert_statement(engin[i, ], "ENGIN_MOLLUSQUE")
+#     for (i in seq_len(nrow(df))) {
+#         statement <- generate_sql_insert_statement(df[i, ], "CAPTURE_MOLLUSQUE")
 #         logger::log_debug("Writing the following statement to the database: {statement}")
 #         result <- DBI::dbExecute(access_db_write_connection, statement)
 #         if (result != 1) {
-#             logger::log_error("Failed to write a row to the ENGIN_MOLLUSQUE Table, row: {i}")
-#             stop("Failed to write a row to the ENGIN_MOLLUSQUE Table")
+#             logger::log_error("Failed to write a row to the CAPTURE_MOLLUSQUE Table, row: {i}")
+#             stop("Failed to write a row to the CAPTURE_MOLLUSQUE Table")
 #         } else {
-#             logger::log_debug("Successfully added a row to the ENGIN_MOLLUSQUE Table")
+#             logger::log_debug("Successfully added a row to the CAPTURE_MOLLUSQUE Table")
 #         }
 #     }
-#     logger::log_info("Successfully wrote the engin_mollusque to the database.")
+#     logger::log_info("Successfully wrote the capture_mollusque to the database.")
 }

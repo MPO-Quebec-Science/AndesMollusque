@@ -223,3 +223,11 @@ cols_contains_na <- function(df, col_names = NULL) {
     }
     return(FALSE)
 }
+
+assert_col <- function(df, col_name) {
+    if (!(col_name %in% names(df))) {
+        logger::log_error("Missing column name from dataframe{col_name}")
+        traceback()
+        stop("Missing column")
+    }
+}
