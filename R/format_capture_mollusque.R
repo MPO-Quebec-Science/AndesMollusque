@@ -7,7 +7,6 @@
 #' 2 -> 1/3 à 2/3 surface colonisée
 #' 3 -> 2/3 et plus surface colonisée
 #' 
-#' 
 #' #' ave_with_barnacles to cod_abondance
 #' 0 -> Aucun des pétoncles ne porte de balane
 #' 1 -> 1% à 20%% des pétoncles portent des balanes
@@ -16,18 +15,18 @@
 #' 4 -> 61% à 80%% despétoncles portent des balanes
 #' 5 -> 81% à 100%% des pétonlces portent des balanes
 #' @param epibiont_data the dataframe must contain columns "ave_with_barnacles" and "ave_coverage"
-#' @value The input dataframe with columns for categorical codes
+#' @return The input dataframe with columns for categorical codes
 #' @export
-format_epibiont_data <- function(epibiont_data) {
+format_epibiont <- function(epibiont_data) {
 
     assert_col(epibiont_data, "ave_with_barnacles")
     assert_col(epibiont_data, "ave_coverage")
 
     # cod_couverture categories:
-    #' 0 -> Aucune balane
-    #' 1 -> 1/3 et moins surface colonisée
-    #' 2 -> 1/3 à 2/3 surface colonisée
-    #' 3 -> 2/3 et plus surface colonisée
+    # 0 -> Aucune balane
+    # 1 -> 1/3 et moins surface colonisée
+    # 2 -> 1/3 à 2/3 surface colonisée
+    # 3 -> 2/3 et plus surface colonisée
     breaks <- c(0, 1 / 3., 2 / 3., 1)
     categories <- c(1, 2, 3)
     # We will handle case 0 later, no barnacle cases should have ave_coverage=NA
@@ -41,8 +40,7 @@ format_epibiont_data <- function(epibiont_data) {
     is_na_because_no_barnacles <- is.na(cod_couverture) & (epibiont_data$ave_with_barnacles == 0)
     cod_couverture[is_na_because_no_barnacles] <- 0
 
-    epibiont_data$cod_couverture_epibiont <- cod_couverture
-
+    epibiont_data$COD_COUVERTURE_EPIBIONT <- cod_couverture
 
     # cod_abondance categories:
     # 0 -> Aucun des pétoncles ne porte de balane
@@ -58,7 +56,13 @@ format_epibiont_data <- function(epibiont_data) {
     cod_abondance <- cut(epibiont_data$ave_with_barnacles, breaks = breaks, labels = categories, include.lowest=TRUE)
     # we don't actually want a factor, but a list with values from categories
     cod_abondance <- categories[as.integer(cod_abondance)]
-    epibiont_data$cod_abondance <- cod_abondance
+    epibiont_data$COD_ABONDANCE_EPIBIONT <- cod_abondance
+
+    # rename columns
+    names(epibiont_data)[names(epibiont_data) == 'sample_number'] <- 'IDENT_NO_TRAIT'
+    names(epibiont_data)[names(epibiont_data) == 'code'] <- 'strap_code'
+
+    
 
     return(epibiont_data)
 }
