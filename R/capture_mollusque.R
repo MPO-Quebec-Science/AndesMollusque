@@ -12,10 +12,47 @@
 #' @return A dataframe containing fishing set data.
 #' @seealso [get_capture_mollusque()] for the formatted results
 #' @export
-get_capture_mollusque_db <- function(andes_db_connection) {
+get_capture_mollusque_db <- function(andes_db_connection, code_filter = NULL, basket_class_filter = NULL) {
     query <- readr::read_file(system.file("sql_queries",
-                                          "epibiont_cte.sql",
+                                          "capture_mollusque.sql",
                                           package = "ANDESMollusque"))
+
+    # add mission filter
+    # use the active misison, one day you can choose a different mission,
+    query <- paste(query, "WHERE shared_models_mission.is_active=1")
+    # add code filter
+    if (!is.null(code_filter)) {
+        code_filter_clause <- NULL
+        if (length(code_filter) == 1 ) {
+            code_filter_clause <- paste(" AND shared_models_referencecatch.code=", code_filter[1], sep="") 
+        } else {
+            code_filter_clause <- " AND ( FALSE"
+            for (code in code_filter) {
+                code_filter_clause <- paste(code_filter_clause, " OR shared_models_referencecatch.code=", code, sep = "")
+            }
+            code_filter_clause <- paste(code_filter_clause, ")")
+        }
+        # add the clause to the query
+        query <- paste(query, code_filter_clause)
+    }
+    # basket_class_filter <- c(22, 33)
+    # add basket size class filter
+    if (!is.null(basket_class_filter)) {
+        basket_class_filter_clause <- NULL
+        if (length(basket_class_filter) == 1 ) {
+            basket_class_filter_clause <- paste(" AND shared_models_sizeclass.code=", basket_class_filter[1], sep="") 
+        } else {
+            basket_class_filter_clause <- " AND ( FALSE"
+            for (basket_class in basket_class_filter) {
+                basket_class_filter_clause <- paste(basket_class_filter_clause, " OR shared_models_sizeclass.code=", basket_class, sep = "")
+            }
+            basket_class_filter_clause <- paste(basket_class_filter_clause, ")")
+        }
+        # add the clause to the query
+        query <- paste(query, basket_class_filter_clause)
+    }
+
+    query <- paste(query, "ORDER BY shared_models_sample.sample_number ASC, shared_models_catch.id ASC")
 
     result <- DBI::dbSendQuery(andes_db_connection, query)
     df <- DBI::dbFetch(result, n = Inf)
@@ -27,7 +64,7 @@ get_capture_mollusque_db <- function(andes_db_connection) {
 #' This fetches the specimen-level coverage data and
 #' coverts it to an average set-level metric in accordance to the legacy Oracle database. 
 #' @export
-get_epibiont <- function(andes_db_connection) {
+get_epibiont <- function(andes_db_connection, code_filter) {
     query <- readr::read_file(system.file("sql_queries",
                                           "epibiont_cte.sql",
                                           package = "ANDESMollusque"))
@@ -39,13 +76,20 @@ get_epibiont <- function(andes_db_connection) {
     # let's to the hard-way, this effectively move SQL post-precessing into R post-processing
     # Moving the post-processing out of SQL and into R makes it easier to maintain / debug
 
-
     query <- paste(query, "SELECT * FROM balane_cte")
     result <- DBI::dbSendQuery(andes_db_connection, query)
     df <- DBI::dbFetch(result, n = Inf)
     DBI::dbClearResult(result)
 
-    # tag each specimen has having barnacles or not ( observation_value is anything but category 0)
+    # apply the code filter, ideally it would have been applied in the SQL
+    if (!is.null(code_filter)) {
+        for (code in code_filter) {
+            df <- df[df$code == code, ]
+        }
+    }
+
+
+    # tag each specimen as having barnacles or not ( observation_value is anything but category 0)
     has_barnacles <- as.numeric(df$observation_value > 0)
     abondance_epibiont <- aggregate(
         x = list(ave_with_barnacles = has_barnacles),
@@ -73,6 +117,7 @@ get_epibiont <- function(andes_db_connection) {
 
     # now we combine them
     joined <- merge(x = abondance_epibiont, y = couverture_epibiont, all = TRUE, sort = FALSE)
+    
     return(joined)
 }
 
@@ -89,14 +134,14 @@ get_epibiont <- function(andes_db_connection) {
 #' @return A dataframe containing capture_mollusque table data.
 #' @seealso [get_capture_mollusque_db()] for the db results
 #' @export
-get_caputre_mollusque <- function(andes_db_connection, proj = NULL) {
+get_capture_mollusque <- function(andes_db_connection, proj = NULL, code_filter = NULL, basket_class_filter = NULL) {
     # Validate input
     if (is.null(proj)) {
         logger::log_error("Must provide a formatted proj_mollusque dataframe.")
         stop("Must provide a formatted proj_mollusque dataframe.")
     }
 
-    capt <- get_capture_mollusque_db(andes_db_connection)
+    capt <- get_capture_mollusque_db(andes_db_connection, code_filter = code_filter, basket_class_filter = basket_class_filter)
 
     # Take data from trait_mollusque
     capt$COD_SOURCE_INFO <- proj$COD_SOURCE_INFO
@@ -104,11 +149,13 @@ get_caputre_mollusque <- function(andes_db_connection, proj = NULL) {
     capt$COD_NBPC <- proj$COD_NBPC
     capt$NO_CHARGEMENT <- proj$NO_CHARGEMENT
 
-    epibiont_data <- get_epibiont(andes_db_connection)
-    epibiont_data
-    format_cod_couverture_epibiont(epibiont_data)
-    # capt <- add_hard_coded_value(capt, col_name = "REM_ENGIN_MOLL", value = NA)
+    epibiont_data <- get_epibiont(andes_db_connection, code_filter)
+    epibiont_data <- format_epibiont(epibiont_data)
 
+    # capt <- add_hard_coded_value(capt, col_name = "REM_ENGIN_MOLL", value = NA)
+    capt <- left_join(capt, epibiont_data, by = c("IDENT_NO_TRAIT", "strap_code"))
+    # COD_ABONDANCE_EPIBIONT
+    # COD_COUVERTURE_EPIBIONT
 
     return(capt)
 }
