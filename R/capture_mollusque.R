@@ -24,7 +24,7 @@ get_capture_mollusque_db <- function(andes_db_connection, code_filter = NULL, ba
     if (!is.null(code_filter)) {
         code_filter_clause <- NULL
         if (length(code_filter) == 1 ) {
-            code_filter_clause <- paste(" AND shared_models_referencecatch.code=", code_filter[1], sep="") 
+            code_filter_clause <- paste(" AND shared_models_referencecatch.code=", code_filter[1], sep="")
         } else {
             code_filter_clause <- " AND ( FALSE"
             for (code in code_filter) {
@@ -81,13 +81,10 @@ get_epibiont <- function(andes_db_connection, code_filter) {
     df <- DBI::dbFetch(result, n = Inf)
     DBI::dbClearResult(result)
 
-    # apply the code filter, ideally it would have been applied in the SQL
+    # apply the code filter, ideally it would have been applied in the SQL, but here we are
     if (!is.null(code_filter)) {
-        for (code in code_filter) {
-            df <- df[df$code == code, ]
-        }
+        df <- df[df$code %in% code_filter, ]
     }
-
 
     # tag each specimen as having barnacles or not ( observation_value is anything but category 0)
     has_barnacles <- as.numeric(df$observation_value > 0)
@@ -134,28 +131,54 @@ get_epibiont <- function(andes_db_connection, code_filter) {
 #' @return A dataframe containing capture_mollusque table data.
 #' @seealso [get_capture_mollusque_db()] for the db results
 #' @export
-get_capture_mollusque <- function(andes_db_connection, proj = NULL, code_filter = NULL, basket_class_filter = NULL) {
+get_capture_mollusque <- function(andes_db_connection, engin = NULL, code_filter = NULL, basket_class_filter = NULL) {
     # Validate input
-    if (is.null(proj)) {
-        logger::log_error("Must provide a formatted proj_mollusque dataframe.")
-        stop("Must provide a formatted proj_mollusque dataframe.")
+    if (is.null(engin)) {
+        logger::log_error("Must provide a formatted engin_mollusque dataframe.")
+        stop("Must provide a formatted engin_mollusque dataframe.")
     }
 
     capt <- get_capture_mollusque_db(andes_db_connection, code_filter = code_filter, basket_class_filter = basket_class_filter)
 
-    # Take data from trait_mollusque
-    capt$COD_SOURCE_INFO <- proj$COD_SOURCE_INFO
-    capt$NO_RELEVE <- proj$NO_RELEVE
-    capt$COD_NBPC <- proj$COD_NBPC
-    capt$NO_CHARGEMENT <- proj$NO_CHARGEMENT
+    # grab data from parent engin
+    cols_from_engin <- c(
+        "IDENT_NO_TRAIT",
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "COD_NBPC",
+        "NO_CHARGEMENT",
+        "COD_TYP_PANIER",
+        "COD_ENG_GEN",
+        "NO_ENGIN"
+    )
+    data_from_engin <- engin[, names(engin) %in% cols_from_engin]
+    capt <- left_join(capt, data_from_engin, on = "IDENT_NO_TRAIT")
+
+
+        # self.data["COD_ESP_GEN"] = self.get_cod_esp_gen()
+        # self.data["FRACTION_PECH"] = self.get_fraction_peche()
+        # self.data["FRACTION_ECH"] = self.get_fraction_ech()
+        # self.data["COD_DESCRIP_CAPT"] = self.get_cod_descrip_capt()
+        # self.data["FRACTION_ECH_P"] = self.get_fraction_ech_p()
+        # self.data["COD_TYP_MESURE"] = self.get_cod_type_mesure()
+        # self.data["NBR_CAPT"] = self.get_nbr_capt()
+        # self.data["FRACTION_PECH_P"] = self.get_fraction_peche_p()
+        # self.data["NBR_ECH"] = self.get_nbr_ech()
+        # self.data["PDS_CAPT"] = self.get_pds_capt()
+        # self.data["PDS_CAPT_P"] = self.get_pds_capt_p()
+        # self.data["PDS_ECH"] = self.get_pds_ech()
+        # self.data["PDS_ECH_P"] = self.get_pds_ech()
 
     epibiont_data <- get_epibiont(andes_db_connection, code_filter)
     epibiont_data <- format_epibiont(epibiont_data)
 
     # capt <- add_hard_coded_value(capt, col_name = "REM_ENGIN_MOLL", value = NA)
     capt <- left_join(capt, epibiont_data, by = c("IDENT_NO_TRAIT", "strap_code"))
-    # COD_ABONDANCE_EPIBIONT
-    # COD_COUVERTURE_EPIBIONT
+
+    # can get rid of temporary columns
+    capt <- subset(capt, select = -c(ave_with_barnacles))
+    capt <- subset(capt, select = -c(ave_coverage))
+    capt <- subset(capt, select = -c(description_fra))
 
     return(capt)
 }
