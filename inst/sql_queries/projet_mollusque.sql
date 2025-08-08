@@ -1,3 +1,4 @@
+-- This is meant to be executed against an ANDES DB
 SELECT
 	shared_models_mission.id,
 	shared_models_mission.description as DESC_SOURCE_INFO_F, -- this descr will be mapped to COD_SOURCE_INFO

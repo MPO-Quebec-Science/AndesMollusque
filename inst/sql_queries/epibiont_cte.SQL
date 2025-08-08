@@ -1,3 +1,4 @@
+-- This is meant to be executed against an ANDES DB
 -- This CTE provides a list of responses for couverture balanes (usually the first 30 specimens of the set)
 WITH balane_cte AS (
     SELECT

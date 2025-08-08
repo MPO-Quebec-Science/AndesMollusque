@@ -7,6 +7,13 @@ shamelessly stolen from https://stackoverflow.com/questions/17878048/merge-two-d
 \usage{
 left_join(x, y, ...)
 }
+\arguments{
+\item{x, }{the "left" dataframe (all.x=TRUE)}
+
+\item{y, }{the "right" dataframe}
+
+\item{by, }{by The name of the column to merge on, must be in both x and y.}
+}
 \description{
 a merge that preserves row and column order
 shamelessly stolen from https://stackoverflow.com/questions/17878048/merge-two-data-frames-while-keeping-the-original-row-order

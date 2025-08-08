@@ -1,3 +1,4 @@
+-- This is meant to be executed against an ANDES DB
 SELECT
     shared_models_sample.sample_number AS IDENT_NO_TRAIT,
     shared_models_station.name AS NO_STATION, -- this needs to be numeric, will have to strip alphabetic characters
