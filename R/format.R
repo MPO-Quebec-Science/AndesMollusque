@@ -3,7 +3,7 @@
 #' shamelessly stolen from https://stackoverflow.com/questions/17878048/merge-two-data-frames-while-keeping-the-original-row-order
 #' @param x, the "left" dataframe (all.x=TRUE)
 #' @param y, the "right" dataframe
-#' @param by, by The name of the column to merge on, must be in both x and y.
+#' @param by, by The name (or names) of the column to merge on, must be in both x and y.
 #' @export
 left_join <- function(x, y, ...) {
     x$join_id_ <- seq_len(nrow(x))

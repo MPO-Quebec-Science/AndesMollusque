@@ -52,7 +52,13 @@ get_capture_mollusque_db <- function(andes_db_connection, code_filter = NULL, ba
         query <- paste(query, basket_class_filter_clause)
     }
 
-    query <- paste(query, "ORDER BY shared_models_sample.sample_number ASC, shared_models_catch.id ASC")
+    query <- paste(query, "GROUP BY IDENT_NO_TRAIT, strap_code, shared_models_sizeclass.description_fra ")
+
+    query <- paste(query, "ORDER BY IDENT_NO_TRAIT ASC")
+
+    # shared_models_sample.sample_number AS IDENT_NO_TRAIT,
+    # shared_models_referencecatch.code AS strap_code, -- will need to be converted to cod_esp_eng
+    # shared_models_sizeclass.description_fra,
 
     result <- DBI::dbSendQuery(andes_db_connection, query)
     df <- DBI::dbFetch(result, n = Inf)
@@ -61,62 +67,6 @@ get_capture_mollusque_db <- function(andes_db_connection, code_filter = NULL, ba
     return(df)
 }
 
-#' This fetches the specimen-level coverage data and
-#' coverts it to an average set-level metric in accordance to the legacy Oracle database. 
-#' @export
-get_epibiont <- function(andes_db_connection, code_filter) {
-    query <- readr::read_file(system.file("sql_queries",
-                                          "epibiont_cte.sql",
-                                          package = "ANDESMollusque"))
-    # finish the query from the primed CTE statement
-    # the easy way is to grab the final epibiont_cte table
-    # query <- paste(query,"SELECT * FROM epibiont_cte")
-
-    # the hard way is to take the balane_cte table and re-compute the post-porcessing.
-    # let's to the hard-way, this effectively move SQL post-precessing into R post-processing
-    # Moving the post-processing out of SQL and into R makes it easier to maintain / debug
-
-    query <- paste(query, "SELECT * FROM balane_cte")
-    result <- DBI::dbSendQuery(andes_db_connection, query)
-    df <- DBI::dbFetch(result, n = Inf)
-    DBI::dbClearResult(result)
-
-    # apply the code filter, ideally it would have been applied in the SQL, but here we are
-    if (!is.null(code_filter)) {
-        df <- df[df$code %in% code_filter, ]
-    }
-
-    # tag each specimen as having barnacles or not ( observation_value is anything but category 0)
-    has_barnacles <- as.numeric(df$observation_value > 0)
-    abondance_epibiont <- aggregate(
-        x = list(ave_with_barnacles = has_barnacles),
-        by = list(code = df$code, sample_number = df$sample_number),
-        FUN = mean
-    )
-    # View(abondance_epibiont)
-    # done with abondance_epibiont
-
-    # assign each coverage category with a numerical value (based o the midpoint)
-    code_map <- data.frame(observation_value = c("1", "2", "3"), coverage = c((0+1)/6., (1+2)/6., (2+3)/6.))
-    # res <- merge(desc_typ_trait, code_map, by = "desc", all.x = TRUE, sort = FALSE)
-    coverage <- left_join(df, code_map, by = "observation_value")$coverage
-
-    # category <- c ("1", "2", "3")
-    # value <- c ((0+1)/6. ,(1+2)/6. ,(2+3)/6. )
-
-    couverture_epibiont <- aggregate(
-        x = list(ave_coverage = coverage),
-        by = list(code = df$code, sample_number = df$sample_number),
-        FUN = mean, na.rm = TRUE
-    )
-    # View(couverture_epibiont)
-    # done with couverture_epibiont
-
-    # now we combine them
-    joined <- merge(x = abondance_epibiont, y = couverture_epibiont, all = TRUE, sort = FALSE)
-    
-    return(joined)
-}
 
 
 #' Gets capture_mollusque (formatted results)
@@ -154,31 +104,32 @@ get_capture_mollusque <- function(andes_db_connection, engin = NULL, code_filter
     data_from_engin <- engin[, names(engin) %in% cols_from_engin]
     capt <- left_join(capt, data_from_engin, on = "IDENT_NO_TRAIT")
 
+    # FRACTION_ECH : nombre de paniers de drague ayant bien peché: ex 4 ou 3 (de ANDES)
+    # FRACTION_PECH : nombre de paniers de drague ayant été echantionné: ex 4 ou 3 (d'habitude meme que NBR_CAPT)
+    capt$FRACTION_ECH <- capt$FRACTION_PECH
 
-        # self.data["COD_ESP_GEN"] = self.get_cod_esp_gen()
-        # self.data["FRACTION_PECH"] = self.get_fraction_peche()
-        # self.data["FRACTION_ECH"] = self.get_fraction_ech()
-        # self.data["COD_DESCRIP_CAPT"] = self.get_cod_descrip_capt()
-        # self.data["FRACTION_ECH_P"] = self.get_fraction_ech_p()
-        # self.data["COD_TYP_MESURE"] = self.get_cod_type_mesure()
-        # self.data["NBR_CAPT"] = self.get_nbr_capt()
-        # self.data["FRACTION_PECH_P"] = self.get_fraction_peche_p()
-        # self.data["NBR_ECH"] = self.get_nbr_ech()
-        # self.data["PDS_CAPT"] = self.get_pds_capt()
-        # self.data["PDS_CAPT_P"] = self.get_pds_capt_p()
-        # self.data["PDS_ECH"] = self.get_pds_ech()
-        # self.data["PDS_ECH_P"] = self.get_pds_ech()
+    capt <- add_hard_coded_value(capt, col_name = "FRACTION_PECH_P", value = NA)
+    capt <- add_hard_coded_value(capt, col_name = "FRACTION_ECH_P", value = NA)
+    capt <- add_hard_coded_value(capt, col_name = "NBR_CAPT", value = NA)
+    capt <- add_hard_coded_value(capt, col_name = "NBR_ECH", value = NA)
 
-    epibiont_data <- get_epibiont(andes_db_connection, code_filter)
-    epibiont_data <- format_epibiont(epibiont_data)
+    capt <- add_hard_coded_value(capt, col_name = "PDS_CAPT", value = NA)
+    capt <- add_hard_coded_value(capt, col_name = "PDS_CAPT_P", value = NA)
 
-    # capt <- add_hard_coded_value(capt, col_name = "REM_ENGIN_MOLL", value = NA)
-    capt <- left_join(capt, epibiont_data, by = c("IDENT_NO_TRAIT", "strap_code"))
+    capt <- add_hard_coded_value(capt, col_name = "PDS_ECH", value = NA)
+    capt <- add_hard_coded_value(capt, col_name = "PDS_ECH_P", value = NA)
 
-    # can get rid of temporary columns
-    capt <- subset(capt, select = -c(ave_with_barnacles))
-    capt <- subset(capt, select = -c(ave_coverage))
-    capt <- subset(capt, select = -c(description_fra))
+    
+    capt <- format_cod_descrip_capt(capt)
+
+    capt <- format_cod_typ_mesure(capt)
+
+    capt <- format_epibiont(capt, andes_db_connection, code_filter)
+
+    capt <- format_cod_esp_gen(capt)
+
+    # convert datatypes
+    capt <- cols_to_numeric(capt, col_names = c("FRACTION_ECH", "FRACTION_PECH"))
 
     return(capt)
 }
@@ -186,21 +137,24 @@ get_capture_mollusque <- function(andes_db_connection, engin = NULL, code_filter
 #' Perform validation checks on the dataframe before writing to a database table
 #' @export
 validate_capture_mollusque <- function(df) {
-    # not_null_columns <- c(
-    #     "COD_SOURCE_INFO",
-    #     "NO_RELEVE",
-    #     "COD_NBPC",
-    #     "IDENT_NO_TRAIT",
-    #     "COD_ENG_GEN",
-    #     "COD_TYP_PANIER",
-    #     "NO_ENGIN"
-    # )
-    # if (cols_contains_na(df, col_names = not_null_columns)) {
-    #     logger::log_error("dataframe cannot be written as DB table")
-    #     return(FALSE)
-    # }
-
-    # return(TRUE)
+    not_null_columns <- c(
+        "COD_SOURCE_INFO",
+        "COD_ESP_GEN",
+        "NO_RELEVE",
+        "COD_ENG_GEN",
+        "IDENT_NO_TRAIT",
+        "COD_TYP_PANIER",
+        "COD_NBPC",
+        "FRACTION_PECH",
+        "NO_ENGIN",
+        "FRACTION_ECH",
+        "COD_TYP_MESURE"
+    )
+    if (cols_contains_na(df, col_names = not_null_columns)) {
+        logger::log_error("dataframe cannot be written as DB table")
+        return(FALSE)
+    }
+    return(TRUE)
 }
 
 #' @export

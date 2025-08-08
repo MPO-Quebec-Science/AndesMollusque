@@ -4,7 +4,11 @@
 \alias{get_capture_mollusque_db}
 \title{Gets capture_mollusc_db (raw database results)}
 \usage{
-get_capture_mollusque_db(andes_db_connection)
+get_capture_mollusque_db(
+  andes_db_connection,
+  code_filter = NULL,
+  basket_class_filter = NULL
+)
 }
 \arguments{
 \item{andes_db_connection}{a connection object to the ANDES database.}

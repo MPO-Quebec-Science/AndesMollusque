@@ -1,3 +1,4 @@
+-- This is meant to be executed against an ANDES DB
 SELECT
     shared_models_sample.sample_number AS IDENT_NO_TRAIT,
     MAX(CASE WHEN (shared_models_sampleobservationtype.export_name='NO_ENGIN') THEN value ELSE '' END) AS NO_ENGIN,

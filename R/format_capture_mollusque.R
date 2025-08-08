@@ -17,7 +17,9 @@
 #' @param epibiont_data the dataframe must contain columns "ave_with_barnacles" and "ave_coverage"
 #' @return The input dataframe with columns for categorical codes
 #' @export
-format_epibiont <- function(epibiont_data) {
+format_epibiont <- function(capt, andes_db_connection, code_filter) {
+
+    epibiont_data <- get_epibiont(andes_db_connection, code_filter)
 
     assert_col(epibiont_data, "ave_with_barnacles")
     assert_col(epibiont_data, "ave_coverage")
@@ -58,11 +60,126 @@ format_epibiont <- function(epibiont_data) {
     cod_abondance <- categories[as.integer(cod_abondance)]
     epibiont_data$COD_ABONDANCE_EPIBIONT <- cod_abondance
 
-    # rename columns
+    # rename columns for the merge
     names(epibiont_data)[names(epibiont_data) == 'sample_number'] <- 'IDENT_NO_TRAIT'
     names(epibiont_data)[names(epibiont_data) == 'code'] <- 'strap_code'
 
-    
+    # merge
+    capt <- left_join(capt, epibiont_data, by = c("IDENT_NO_TRAIT", "strap_code"))   
+    # can get rid the extra
+    capt <- subset(capt, select = -c(ave_with_barnacles))
+    capt <- subset(capt, select = -c(ave_coverage))
+    capt <- subset(capt, select = -c(description_fra))
 
-    return(epibiont_data)
+    return(capt)
+}
+
+
+#' This fetches the specimen-level coverage data and
+#' coverts it to an average set-level metric in accordance to the legacy Oracle database. 
+#' @export
+get_epibiont <- function(andes_db_connection, code_filter) {
+    query <- readr::read_file(system.file("sql_queries",
+                                          "epibiont_cte.sql",
+                                          package = "ANDESMollusque"))
+    # finish the query from the primed CTE statement
+    # the easy way is to grab the final epibiont_cte table
+    # query <- paste(query,"SELECT * FROM epibiont_cte")
+
+    # the hard way is to take the balane_cte table and re-compute the post-porcessing.
+    # let's to the hard-way, this effectively move SQL post-precessing into R post-processing
+    # Moving the post-processing out of SQL and into R makes it easier to maintain / debug
+
+    query <- paste(query, "SELECT * FROM balane_cte")
+    result <- DBI::dbSendQuery(andes_db_connection, query)
+    df <- DBI::dbFetch(result, n = Inf)
+    DBI::dbClearResult(result)
+
+    # apply the code filter, ideally it would have been applied in the SQL, but here we are
+    if (!is.null(code_filter)) {
+        df <- df[df$code %in% code_filter, ]
+    }
+
+    # tag each specimen as having barnacles or not ( observation_value is anything but category 0)
+    has_barnacles <- as.numeric(df$observation_value > 0)
+    abondance_epibiont <- aggregate(
+        x = list(ave_with_barnacles = has_barnacles),
+        by = list(code = df$code, sample_number = df$sample_number),
+        FUN = mean
+    )
+    # View(abondance_epibiont)
+    # done with abondance_epibiont
+
+    # assign each coverage category with a numerical value (based o the midpoint)
+    code_map <- data.frame(observation_value = c("1", "2", "3"), coverage = c((0+1)/6., (1+2)/6., (2+3)/6.))
+    # res <- merge(desc_typ_trait, code_map, by = "desc", all.x = TRUE, sort = FALSE)
+    coverage <- left_join(df, code_map, by = "observation_value")$coverage
+
+    # category <- c ("1", "2", "3")
+    # value <- c ((0+1)/6. ,(1+2)/6. ,(2+3)/6. )
+
+    couverture_epibiont <- aggregate(
+        x = list(ave_coverage = coverage),
+        by = list(code = df$code, sample_number = df$sample_number),
+        FUN = mean, na.rm = TRUE
+    )
+    # View(couverture_epibiont)
+    # done with couverture_epibiont
+
+    # now we combine them
+    joined <- merge(x = abondance_epibiont, y = couverture_epibiont, all = TRUE, sort = FALSE)
+    
+    return(joined)
+}
+
+
+#' @export
+format_cod_esp_gen <- function(capt) {
+    query <- readr::read_file(system.file("sql_queries",
+                                          "esp_gen_code_map.sql",
+                                          package = "ANDESMollusque"))
+
+    # manually delete the comments from the SQL query... because ACCESS...
+    query <- gsub("--.*?\n", "", query)
+    access_db_connection <- access_db_connect()
+    result <- DBI::dbSendQuery(access_db_connection, query)
+    cod_esp_gen_map <- DBI::dbFetch(result, n = Inf)
+    DBI::dbClearResult(result)
+    DBI::dbDisconnect(access_db_connection)
+
+    # rename column to match for the merge
+    names(cod_esp_gen_map)[names(cod_esp_gen_map) == 'COD_ESPECE'] <- 'strap_code'
+    capt <- left_join(capt, cod_esp_gen_map, by = "strap_code")
+
+    # we can probably drop the strap_code column now...
+    # capt <- subset(capt, select = -c(strap_code))
+
+    return(capt)
+}
+
+#' 
+#' For now, we will just assume all data is quantitative
+#' since we are limiting ourselves to commercial (scallops and whelk).
+#' One day, this function should be generalized to also lookup the data and determine it.
+#' @export
+format_cod_typ_mesure <- function(capt) {
+
+    quantitative_code <- get_ref_key(
+        table = "TYPE_MESURE_MOLL",
+        pkey_col = "COD_TYP_MESURE",
+        col = "DESC_TYP_MESURE_F",
+        val = "Données quantitatives",
+    )
+    capt <- add_hard_coded_value(capt, col_name = "COD_TYP_MESURE", value = quantitative_code)
+    return(capt)
+}
+
+#' 
+#' For now, we will just keep this blank
+#' It is a function here so that one day we can use the ANDES relative abundance category
+#' But it is not used for commercial stocks, so we skip it
+#' @export
+format_cod_descrip_capt <- function(capt) {
+    capt <- add_hard_coded_value(capt, col_name = "COD_DESCRIP_CAPT", value = NA)
+    return(capt)
 }
