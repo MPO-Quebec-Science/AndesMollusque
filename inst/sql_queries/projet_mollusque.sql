@@ -23,4 +23,3 @@ LEFT JOIN shared_models_stratificationtype
 -- Filters
 -- Just data for the active mission
 WHERE shared_models_mission.is_active=1
-;

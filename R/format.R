@@ -210,21 +210,37 @@ cols_to_numeric <- function(df, col_names = NULL) {
 #' @param df: the datafram to modify
 #' @param col_names: a list of column names which will be converted to numeric
 #' @export
-cols_contains_na <- function(df, col_names = NULL) {
+check_cols_contains_na <- function(df, col_names = NULL) {
     if (is.null(col_names)) {
         stop("Must supply a list of column names")
     }
-    for (i in seq_len(length(col_names))) {
-        if (! col_names[i] %in% names(df)) {
-            logger::log_error("Cannot verify, {col_names[i]} is not a column name")
+    for (col_name in col_names) {
+        if (! col_name %in% names(df)) {
+            logger::log_error("Cannot verify, {col_name} is not a column in the dataframe")
             stop("Cannot verify, not a column name")
         }
-        if (any(is.na(df[, names(df) == col_names[i]]))) {
-            logger::log_error("Found NA in column {col_names[i]}")
+        if (any(is.na(df[, col_name == names(df)]))) {
+            logger::log_error("Found NA in column {col_name}")
+            logger::log_error("dataframe cannot be written as DB table. It contains NULL values in a column that should not.")
             return(TRUE)
         }
     }
+
     return(FALSE)
+}
+
+#' @export
+check_required_columns <- function(df, col_names = NULL) {
+    if (is.null(col_names)) {
+        stop("Must supply a list of required columns to verify")
+    }
+    for (col_name in col_names) {
+        if (!(col_name %in% names(df))) {
+            logger::log_error("Missing required column. The column {col_name} is not in dataframe")
+            return(FALSE)
+        }
+    }
+    return(TRUE)
 }
 
 assert_col <- function(df, col_name) {

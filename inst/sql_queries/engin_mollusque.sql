@@ -17,4 +17,3 @@ WHERE shared_models_mission.is_active=1
 GROUP BY
     IDENT_NO_TRAIT
 ORDER BY IDENT_NO_TRAIT ASC
-;
