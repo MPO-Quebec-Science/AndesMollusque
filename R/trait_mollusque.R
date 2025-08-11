@@ -5,9 +5,9 @@
 #' The current ANDES active mission will determine for which data are returned.
 #'
 #' This function is intended for internal use and returns raw results from the database.
-#' It is not meant for direct use in analysis or reporting. Users should use `get_trait_mollusque` 
+#' It is not meant for direct use in analysis or reporting. Users should use `get_trait_mollusque`
 #'
-#' @param andes_db_connection a connection object to the ANDES database. 
+#' @param andes_db_connection a connection object to the ANDES database.
 #' @return A dataframe containing fishing set data.
 #' @seealso [get_trait_mollusque()] for the formatted results
 #' @export
@@ -24,7 +24,7 @@ get_trait_mollusque_db<- function(andes_db_connection) {
 
 #' Gets trait_mollusque (formatted results)
 #'
-#' This function executes a SQL query to retrieve the needed andes data 
+#' This function executes a SQL query to retrieve the needed andes data
 #' to construct the TRAIT_MOLLUSQUE table and formats the results.
 #'
 #' @param andes_db_connection a connection object to the ANDES database.
