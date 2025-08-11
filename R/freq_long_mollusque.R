@@ -96,9 +96,9 @@ get_freq_long_mollusque <- function(andes_db_connection, capt = NULL) {
 #' Perform validation checks on the dataframe before writing to a database table
 #' @param delete_extra If True, it delete extra columns
 #' @export
-validate_freq_long_mollusque <- function(df, delete_extra = TRUE) {
+validate_freq_long_mollusque <- function(df) {
     # check all required cols are present
-    check_required_columns(df, col_names = c(
+    check_columns_present(df, col_names = c(
         "COD_ESP_GEN",
         "COD_ENG_GEN",
         "COD_SOURCE_INFO",
@@ -118,11 +118,17 @@ validate_freq_long_mollusque <- function(df, delete_extra = TRUE) {
 
     # check all not-null columns do not have nulls
     check_cols_contains_na(df, col_names = c(
-        "COD_SOURCE_INFO",
+        "COD_ESP_GEN",
+        "IDENT_NO_TRAIT",
         "NO_RELEVE",
+        "COD_SOURCE_INFO",
         "COD_NBPC",
-        "COD_SERIE_HIST",
-        "COD_TYP_STRATIF"
+        "COD_ENG_GEN",
+        "COD_TYP_PANIER",
+        "NO_ENGIN",
+        "COD_TYP_LONG",
+        "COD_TYP_ETAT",
+        "COD_TECH_MESURE_LONG"
     ))
 
     # check if extra columns are in the dataframe
@@ -130,20 +136,23 @@ validate_freq_long_mollusque <- function(df, delete_extra = TRUE) {
     # FROM INFORMATION_SCHEMA.COLUMNS
     # WHERE TABLE_NAME = 'FREQ_LONG_MOLLUSQUE';
 
-COD_ESP_GEN
-IDENT_NO_TRAIT
-NO_RELEVE
-COD_SOURCE_INFO
-COD_NBPC
-COD_ENG_GEN
-COD_TYP_PANIER
-NO_ENGIN
-NO_MOLLUSQUE
-COD_TYP_LONG
-VALEUR_LONG_MOLL
-VALEUR_LONG_MOLL_P
-COD_TYP_ETAT
-COD_TECH_MESURE_LONG
-NO_CHARGEMENT
+    check_other_columns(df, col_names = c(
+        "COD_ESP_GEN",
+        "IDENT_NO_TRAIT",
+        "NO_RELEVE",
+        "COD_SOURCE_INFO",
+        "COD_NBPC",
+        "COD_ENG_GEN",
+        "COD_TYP_PANIER",
+        "NO_ENGIN",
+        "NO_MOLLUSQUE",
+        "COD_TYP_LONG",
+        "VALEUR_LONG_MOLL",
+        "VALEUR_LONG_MOLL_P",
+        "COD_TYP_ETAT",
+        "COD_TECH_MESURE_LONG",
+        "NO_CHARGEMENT"
+    ))
+
     return(TRUE)
 }

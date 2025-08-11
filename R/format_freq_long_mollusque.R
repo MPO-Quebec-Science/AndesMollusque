@@ -29,7 +29,7 @@ format_cod_tech_mesure_long <- function(freq) {
         val = "Vernier électronique",
         optional_query = paste("AND COD_CLASSE_PROJET=", code_class_proj)
     )
-    freq <- add_hard_coded_value(freq, col_name = "COD_TYP_LONG", value = code)
+    freq <- add_hard_coded_value(freq, col_name = "COD_TECH_MESURE_LONG", value = code)
     return(freq)
 }
 

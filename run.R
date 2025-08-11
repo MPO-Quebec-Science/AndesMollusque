@@ -36,33 +36,38 @@ validate_projet_mollusque(proj)
 
 devtools::load_all()
 
+# choose which species we want to have using code_filter
 # usefull strap codes:
 cod_petoncle_island <- 4167
 cod_petoncle_geant <- 4179
+code_filter <- c(cod_petoncle_island, cod_petoncle_geant)
 
-code_filter <- c(cod_petoncle_island)
+# choose which basket class have using basket_class_filter
+# useful basket classes
+# 0 - NA
+# 1 - Vivant intact
+# 2 - Claquette ouverte, int. nacré, ressort dans charnière
+# 9 - Biodiversité
 
-code_filter <- c(4167, 4179)
-basket_class_filter <- c(4167, 4179)
+basket_class_filter <- c(1)
 
 
 p_i <- 1
 for (p_i in seq_len(nrow(proj))) {
-  trait <- get_trait_mollusque(andes_db_connection, proj = proj[p_i,])
+  trait <- get_trait_mollusque(andes_db_connection, proj = proj[p_i, ])
   validate_trait_mollusque(trait)
 
-  engin <- get_engin_mollusque(andes_db_connection, proj = proj[p_i,])
+  engin <- get_engin_mollusque(andes_db_connection, proj = proj[p_i, ])
   validate_engin_mollusque(engin)
+  # Captures should only use the basket_class filter to select 1 - Vivant intact
+  capt <- get_capture_mollusque(andes_db_connection, engin, code_filter = code_filter, basket_class_filter = basket_class_filter)
+  validate_capture_mollusque(capt)
+
+  freq <- get_freq_long_mollusque(andes_db_connection, capt)
 }
-# choose which species we want to have using code_filter
-# choose which basket class have using basket_class_filter
 
-capt <- get_caputre_mollusque(andes_db_connection, proj, code_filter=code_filter, basket_class_filter=basket_class_filter)
 
-trait <- get_trait_mollusque(andes_db_connection, proj = proj)
-View(trait)
-View(trait)
-
+ 
 
 
 
@@ -79,5 +84,7 @@ write_projet_mollusque(proj, access_db_write_connection)
 write_trait_mollusque(trait, access_db_write_connection)
 
 write_engin_mollusque(engin, access_db_write_connection)
+
+write_capture_mollusque(capt, access_db_write_connection)
 
 DBI::dbDisconnect(access_db_write_connection)
