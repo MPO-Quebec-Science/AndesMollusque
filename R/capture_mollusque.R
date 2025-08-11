@@ -128,6 +128,10 @@ get_capture_mollusque <- function(andes_db_connection, engin = NULL, code_filter
 
     capt <- format_cod_esp_gen(capt)
 
+    # can get rid of strap_code column
+    capt <- subset(capt, select = -c(strap_code))
+    
+
     # convert datatypes
     capt <- cols_to_numeric(capt, col_names = c("FRACTION_ECH", "FRACTION_PECH"))
 
@@ -159,23 +163,23 @@ validate_capture_mollusque <- function(df) {
 
 #' @export
 write_capture_mollusque <- function(df, access_db_write_connection = NULL) {
-#    # write the dataframe to the database
-#     if (is.null(access_db_write_connection)) {
-#         logger::log_error("Failed to provide a new MS Access connection.")
-#         stop("Failed to provide a new MS Access connection")
-#     }
+   # write the dataframe to the database
+    if (is.null(access_db_write_connection)) {
+        logger::log_error("Failed to provide a new MS Access connection.")
+        stop("Failed to provide a new MS Access connection")
+    }
 
-#     # insert make one row at a time
-#     for (i in seq_len(nrow(df))) {
-#         statement <- generate_sql_insert_statement(df[i, ], "CAPTURE_MOLLUSQUE")
-#         logger::log_debug("Writing the following statement to the database: {statement}")
-#         result <- DBI::dbExecute(access_db_write_connection, statement)
-#         if (result != 1) {
-#             logger::log_error("Failed to write a row to the CAPTURE_MOLLUSQUE Table, row: {i}")
-#             stop("Failed to write a row to the CAPTURE_MOLLUSQUE Table")
-#         } else {
-#             logger::log_debug("Successfully added a row to the CAPTURE_MOLLUSQUE Table")
-#         }
-#     }
-#     logger::log_info("Successfully wrote the capture_mollusque to the database.")
+    # insert make one row at a time
+    for (i in seq_len(nrow(df))) {
+        statement <- generate_sql_insert_statement(df[i, ], "CAPTURE_MOLLUSQUE")
+        logger::log_debug("Writing the following statement to the database: {statement}")
+        result <- DBI::dbExecute(access_db_write_connection, statement)
+        if (result != 1) {
+            logger::log_error("Failed to write a row to the CAPTURE_MOLLUSQUE Table, row: {i}")
+            stop("Failed to write a row to the CAPTURE_MOLLUSQUE Table")
+        } else {
+            logger::log_debug("Successfully added a row to the CAPTURE_MOLLUSQUE Table")
+        }
+    }
+    logger::log_info("Successfully wrote the capture_mollusque to the database.")
 }
