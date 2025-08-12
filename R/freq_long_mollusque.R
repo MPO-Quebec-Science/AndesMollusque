@@ -11,7 +11,7 @@
 #' @return A dataframe containing fishing set data.
 #' @seealso [get_freq_long_mollusque()] for the formatted results
 #' @export
-get_freq_long_mollusque_db<- function(andes_db_connection) {
+get_freq_long_mollusque_db <- function(andes_db_connection) {
 
     # mnake a small pre-query to get the observation type for length.
     # this is purposefully not inside the main query in case we want to change it later ...
@@ -57,7 +57,7 @@ get_freq_long_mollusque <- function(andes_db_connection, capt = NULL) {
         logger::log_error("Must provide a formatted projet_mollusque dataframe.")
         stop("Must provide a formatted projet_mollusque dataframe.")
     }
-    
+
     # Get raw data
     freq <- get_freq_long_mollusque_db(andes_db_connection)
 
@@ -89,8 +89,6 @@ get_freq_long_mollusque <- function(andes_db_connection, capt = NULL) {
 
     # can get rid of temporary columns
     freq <- subset(freq, select = -c(id, sample_number, strap_code, description_fra, observation_type_id))
-
-
 
     # convert these strings to numeric
     freq <- cols_to_numeric(freq, col_names = c("VALEUR_LONG_MOLL", "VALEUR_LONG_MOLL_P"))
@@ -174,4 +172,27 @@ validate_freq_long_mollusque <- function(df) {
     is_valid <- is_valid & result
 
     return(is_valid)
+}
+
+#' @export
+write_freq_long_mollusque <- function(df, access_db_write_connection = NULL) {
+   # write the dataframe to the database
+    if (is.null(access_db_write_connection)) {
+        logger::log_error("Failed to provide a new MS Access connection.")
+        stop("Failed to provide a new MS Access connection")
+    }
+
+    # insert make one row at a time
+    for (i in seq_len(nrow(df))) {
+        statement <- generate_sql_insert_statement(df[i, ], "FREQ_LONG_MOLLUSQUE")
+        logger::log_debug("Writing the following statement to the database: {statement}")
+        result <- DBI::dbExecute(access_db_write_connection, statement)
+        if (result != 1) {
+            logger::log_error("Failed to write a row to the FREQ_LONG_MOLLUSQUE Table, row: {i}")
+            stop("Failed to write a row to the FREQ_LONG_MOLLUSQUE Table")
+        } else {
+            logger::log_debug("Successfully added a row to the FREQ_LONG_MOLLUSQUE Table")
+        }
+    }
+    logger::log_info("Successfully wrote the freq_long_mollusque dataframe to the database.")
 }

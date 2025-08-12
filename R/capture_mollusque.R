@@ -23,8 +23,8 @@ get_capture_mollusque_db <- function(andes_db_connection, code_filter = NULL, ba
     # add code filter
     if (!is.null(code_filter)) {
         code_filter_clause <- NULL
-        if (length(code_filter) == 1 ) {
-            code_filter_clause <- paste(" AND shared_models_referencecatch.code=", code_filter[1], sep="")
+        if (length(code_filter) == 1) {
+            code_filter_clause <- paste(" AND shared_models_referencecatch.code=", code_filter[1], sep = "")
         } else {
             code_filter_clause <- " AND ( FALSE"
             for (code in code_filter) {
@@ -39,8 +39,8 @@ get_capture_mollusque_db <- function(andes_db_connection, code_filter = NULL, ba
     # add basket size class filter
     if (!is.null(basket_class_filter)) {
         basket_class_filter_clause <- NULL
-        if (length(basket_class_filter) == 1 ) {
-            basket_class_filter_clause <- paste(" AND shared_models_sizeclass.code=", basket_class_filter[1], sep="") 
+        if (length(basket_class_filter) == 1) {
+            basket_class_filter_clause <- paste(" AND shared_models_sizeclass.code=", basket_class_filter[1], sep = "")
         } else {
             basket_class_filter_clause <- " AND ( FALSE"
             for (basket_class in basket_class_filter) {
@@ -119,7 +119,7 @@ get_capture_mollusque <- function(andes_db_connection, engin = NULL, code_filter
     capt <- add_hard_coded_value(capt, col_name = "PDS_ECH", value = NA)
     capt <- add_hard_coded_value(capt, col_name = "PDS_ECH_P", value = NA)
 
-    
+
     capt <- format_cod_descrip_capt(capt)
 
     capt <- format_cod_typ_mesure(capt)
@@ -130,7 +130,6 @@ get_capture_mollusque <- function(andes_db_connection, engin = NULL, code_filter
 
     # can get rid of strap_code column
     capt <- subset(capt, select = -c(strap_code))
-    
 
     # convert datatypes
     capt <- cols_to_numeric(capt, col_names = c(

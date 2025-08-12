@@ -6,13 +6,13 @@
 #' The current ANDES active mission will determine for which data are returned.
 #'
 #' This function is intended for internal use and returns raw results from the database.
-#' It is not meant for direct use in analysis or reporting. Users should use `get_projet_mollusque` 
+#' It is not meant for direct use in analysis or reporting. Users should use `get_projet_mollusque`
 #'
-#' @param andes_db_connection a connection object to the ANDES database. 
+#' @param andes_db_connection a connection object to the ANDES database.
 #' @return A dataframe containing fishing set data.
 #' @seealso [get_projet_mollusque()] for the formatted results
 #' @export
-get_projet_mollusque_db<- function(andes_db_connection) {
+get_projet_mollusque_db <- function(andes_db_connection) {
     query <- readr::read_file(system.file("sql_queries",
                                           "projet_mollusque.sql",
                                           package = "ANDESMollusque"))
@@ -168,17 +168,17 @@ validate_projet_mollusque <- function(df) {
 }
 
 #' @export
-write_projet_mollusque <- function(proj, access_db_write_connection=NULL) {
+write_projet_mollusque <- function(proj, access_db_write_connection = NULL) {
     # write the dataframe to the database
     if (is.null(access_db_write_connection)) {
         logger::log_error("Failed to provide a new MS Acces connection.")
         stop("Failed to provide a new MS Acces connection")
     }
-    
+
     statement <- generate_sql_insert_statement(proj[1, ], "PROJET_MOLLUSQUE")
     result <- DBI::dbExecute(access_db_write_connection, statement)
 
-    if (result!=1) {
+    if (result != 1) {
         logger::log_error("Failed to write the projet_mollusque to the database.")
         stop("Failed to write the projet_mollusque to the database.")
     } else {

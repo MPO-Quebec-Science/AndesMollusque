@@ -11,7 +11,7 @@ format_cod_secteur_releve <- function(trait, desc_secteur_releve_f) {
         pkey_col = "COD_SECTEUR_RELEVE",
         col = "SECTEUR_RELEVE",
         val = secteur_releve)
-    
+
     trait$COD_SECTEUR_RELEVE <- cod_secteur_releve
     return(trait)
 }
@@ -20,7 +20,7 @@ format_cod_secteur_releve <- function(trait, desc_secteur_releve_f) {
 #' @export
 format_cod_strate <- function(trait, desc_serie_hist_f) {
     lookup_cod_strate <- function(strate_name, cod_sect_releve) {
-        optional_query <- paste("AND COD_SECTEUR_RELEVE=", cod_secteur_releve, sep="")
+        optional_query <- paste("AND COD_SECTEUR_RELEVE=", cod_secteur_releve, sep = "")
         key <- get_ref_key(
             table = "TYPE_STRATE_MOLL",
             pkey_col = "COD_STRATE",
@@ -32,7 +32,7 @@ format_cod_strate <- function(trait, desc_serie_hist_f) {
 
     # get cod_sect_releve, it should have been inserted for all sets,
     # all sets should have the same cod_secteur_releve, verify this
-    if (length(unique(trait$COD_SECTEUR_RELEVE)) != 1){
+    if (length(unique(trait$COD_SECTEUR_RELEVE)) != 1) {
         logger::log_error("The sets do not have the same cod_secteur_releve")
         stop("The sets do not have the same cod_secteur_releve")
     }
@@ -52,7 +52,6 @@ format_cod_strate <- function(trait, desc_serie_hist_f) {
 
     # use merge to apply the map
     strate <- data.frame(value = unlist(strate))
-    # res <- merge(strate, code_map, by = "value", all.x = TRUE, sort = FALSE)
     res <- left_join(strate, code_map, by = "value")
 
     trait$COD_STRATE <- res$code
@@ -65,35 +64,35 @@ get_strate <- function(nom_station, desc_serie_hist_f) {
     lookup_station <- function(station_name = NULL, zone = NULL, species = NULL) {
         logger::log_error("lookup_station is not fully implemented.")
 
-        file_path <- system.file("ref_data",
-                "STATION_MOLL.csv",
-                package = "ANDESMollusque")
+        # file_path <- system.file("ref_data",
+        #         "STATION_MOLL.csv",
+        #         package = "ANDESMollusque")
 
-        ref_station <-read.csv(file_path, sep = ",")
+        # ref_station <- read.csv(file_path, sep = ",")
         # # filter out survey target species
         # ref_station < ref_station[ref_station$ESPECE == "BUCCIN", ]
-        # zone <- 
+        # zone <-
         logger::log_warn("Whelk zone determination is not implemented, returning default zone 1.")
         return("1")
     }
 
 
-    if (desc_serie_hist_f=="Indice d'abondance zone 16E - pétoncle"){
+    if (desc_serie_hist_f == "Indice d'abondance zone 16E - pétoncle") {
         # For 16E, the strate is the first letter of the station name
         strate <- substring(nom_station, 1, 1)
         return(strate)
-    } else if (desc_serie_hist_f=="Indice d'abondance zone 16F - pétoncle"){
+    } else if (desc_serie_hist_f == "Indice d'abondance zone 16F - pétoncle") {
         # For 16F, the strate is the first letter of the station name
         strate <- substring(nom_station, 1, 1)
         return(strate)
-    } else if (desc_serie_hist_f=="Indice d'abondance zone 20 - pétoncle"){
+    } else if (desc_serie_hist_f == "Indice d'abondance zone 20 - pétoncle") {
         # For IdM, need a lookup table from station
-        station <- lookup_station(station_name=nom_station, zone="20", species="PETONCLE")
+        station <- lookup_station(station_name = nom_station, zone = "20", species = "PETONCLE")
         strate <- station$STRATE
         return(strate)
-    } else if (desc_serie_hist_f=="Indice d'abondance buccin") {
+    } else if (desc_serie_hist_f == "Indice d'abondance buccin") {
         # For buccin, need a lookup table from station
-        station <- lookup_station(station_name=nom_station, species="BUCCIN")
+        station <- lookup_station(station_name = nom_station, species = "BUCCIN")
         strate <- station$STRATE
         return(strate)
     } else {
@@ -107,19 +106,19 @@ get_strate <- function(nom_station, desc_serie_hist_f) {
 format_zone <- function(trait, desc_serie_hist_f) {
 
     get_zone <- function(nom_station, desc_serie_hist_f) {
-        if (desc_serie_hist_f=="Indice d'abondance zone 16E - pétoncle"){
+        if (desc_serie_hist_f == "Indice d'abondance zone 16E - pétoncle") {
             # For 16E
             zone <- "16E"
             return(zone)
-        } else if (desc_serie_hist_f=="Indice d'abondance zone 16F - pétoncle") {
+        } else if (desc_serie_hist_f == "Indice d'abondance zone 16F - pétoncle") {
             # For 16F
             zone <- "16F"
             return(zone)
-        } else if (desc_serie_hist_f=="Indice d'abondance zone 20 - pétoncle") {
+        } else if (desc_serie_hist_f == "Indice d'abondance zone 20 - pétoncle") {
             # For IdM
             zone <- "20"
             return(zone)
-        } else if (desc_serie_hist_f=="Indice d'abondance buccin") {
+        } else if (desc_serie_hist_f == "Indice d'abondance buccin") {
             stop("Buccin is not implemented yet.")
             return("")
         } else {
@@ -214,8 +213,8 @@ format_cod_typ_trait <- function(trait, desc_stratification) {
 get_desc_typ_trait <- function(operation, desc_stratification) {
     if (operation == "ctd") {
         return("Océanographie seulement")
-    } else if (operation == "fish"){
-        # this is a fishing operation, must return the mission's stratification type 
+    } else if (operation == "fish") {
+        # this is a fishing operation, must return the mission's stratification type
         return(desc_stratification)
     } else {
         logger::log_error("cannot get desc_typ_trait, verify that operatin is one of ctd or fish")
@@ -270,7 +269,7 @@ format_cod_typ_heure <- function(trait) {
             table = "TYPE_HEURE",
             pkey_col = "COD_TYP_HEURE",
             col = "DESC_TYP_HEURE_F",
-            val=desc)
+            val = desc)
         return(key)
     }
     # use set start as reference
@@ -308,4 +307,3 @@ format_coordinates <- function(trait) {
     trait$LONG_FIN_TRAIT <- unlist(lapply(trait$LONG_FIN_TRAIT, to_oracle_coord))
     return(trait)
 }
-
