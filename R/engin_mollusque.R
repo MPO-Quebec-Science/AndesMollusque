@@ -53,16 +53,22 @@ get_engin_mollusque <- function(andes_db_connection, proj = NULL) {
 
     engin <- format_cod_typ_panier(engin)
 
-    engin <- cols_to_numeric(engin, col_names = c("COD_ENG_GEN", "NO_ENGIN", "REMPLISSAGE"))
-
     engin <- add_hard_coded_value(engin, col_name = "REMPLISSAGE_P", value = NA)
-
     engin <- add_hard_coded_value(engin, col_name = "LONG_FUNE", value = NA)
     engin <- add_hard_coded_value(engin, col_name = "LONG_FUNE_P", value = NA)
-
     engin <- add_hard_coded_value(engin, col_name = "NB_PANIER", value = 4)
 
     # engin <- add_hard_coded_value(engin, col_name = "REM_ENGIN_MOLL", value = NA)
+
+
+    engin <- cols_to_numeric(engin, col_names = c(
+        "COD_ENG_GEN",
+        "NO_ENGIN",
+        "REMPLISSAGE",
+        "REMPLISSAGE_P",
+        "LONG_FUNE",
+        "LONG_FUNE_P"
+        ))
 
     return(engin)
 }
@@ -70,7 +76,27 @@ get_engin_mollusque <- function(andes_db_connection, proj = NULL) {
 #' Perform validation checks on the dataframe before writing to a database table
 #' @export
 validate_engin_mollusque <- function(df) {
-    not_null_columns <- c(
+    is_valid <- TRUE
+    # check all required cols are present
+    result <- check_columns_present(df, col_names = c(
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "COD_NBPC",
+        "IDENT_NO_TRAIT",
+        "COD_ENG_GEN",
+        "COD_TYP_PANIER",
+        "NO_ENGIN",
+        "LONG_FUNE",
+        "LONG_FUNE_P",
+        "REMPLISSAGE",
+        "REMPLISSAGE_P",
+        "NB_PANIER",
+        "NO_CHARGEMENT"
+    ))
+    is_valid <- is_valid & result
+
+    # check all not-null columns do not have nulls
+    result <- check_cols_contains_na(df, col_names = c(
         "COD_SOURCE_INFO",
         "NO_RELEVE",
         "COD_NBPC",
@@ -78,13 +104,42 @@ validate_engin_mollusque <- function(df) {
         "COD_ENG_GEN",
         "COD_TYP_PANIER",
         "NO_ENGIN"
-    )
-    if (cols_contains_na(df, col_names = not_null_columns)) {
-        logger::log_error("dataframe cannot be written as DB table")
-        return(FALSE)
-    }
+    ))
+    is_valid <- is_valid & result
 
-    return(TRUE)
+    result <- check_other_columns(df, col_names = c(
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "COD_NBPC",
+        "IDENT_NO_TRAIT",
+        "COD_ENG_GEN",
+        "COD_TYP_PANIER",
+        "NO_ENGIN",
+        "LONG_FUNE",
+        "LONG_FUNE_P",
+        "REMPLISSAGE",
+        "REMPLISSAGE_P",
+        "NB_PANIER",
+        "NO_CHARGEMENT"
+    ))
+    is_valid <- is_valid & result
+
+    result <- check_numeric_columns(df, col_names = c(
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "IDENT_NO_TRAIT",
+        "COD_ENG_GEN",
+        "COD_TYP_PANIER",
+        "NO_ENGIN",
+        "LONG_FUNE",
+        "LONG_FUNE_P",
+        "REMPLISSAGE",
+        "REMPLISSAGE_P",
+        "NB_PANIER",
+        "NO_CHARGEMENT"
+    ))
+    is_valid <- is_valid & result
+    return(is_valid)
 }
 
 #' @export

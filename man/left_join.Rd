@@ -12,7 +12,7 @@ left_join(x, y, ...)
 
 \item{y, }{the "right" dataframe}
 
-\item{by, }{by The name of the column to merge on, must be in both x and y.}
+\item{by, }{by The name (or names) of the column to merge on, must be in both x and y.}
 }
 \description{
 a merge that preserves row and column order

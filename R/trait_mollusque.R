@@ -142,9 +142,6 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     trait <- add_hard_coded_value(trait, col_name = "TEMP_FOND", value = NA)
     trait <- add_hard_coded_value(trait, col_name = "TEMP_FOND_P", value = NA)
 
-    # convert these strings to numeric
-    trait <- cols_to_numeric(trait, col_names = c("PROF_DEB", "PROF_FIN"))
-
     trait <- add_hard_coded_value(trait, col_name = "PROF_DEB_P", value = NA)
     trait <- add_hard_coded_value(trait, col_name = "PROF_FIN_P", value = NA)
 
@@ -153,13 +150,76 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
 
 
     # trait <- add_hard_coded_value(trait, col_name = "COD_TYP_ECH_TRAIT", value = NA)
+
+    # convert these strings to numeric
+    trait <- cols_to_numeric(trait, col_names = c(
+        "NO_STATION",
+        "COD_RESULT_OPER",
+        "LATLONG_P",
+        "DISTANCE_POS",
+        "DISTANCE_POS_P",
+        "VIT_TOUAGE",
+        "VIT_TOUAGE_P",
+        "DUREE_TRAIT",
+        "DUREE_TRAIT_P",
+        "TEMP_FOND",
+        "TEMP_FOND_P",
+        "PROF_DEB",
+        "PROF_DEB_P",
+        "PROF_FIN",
+        "PROF_FIN_P"
+    ))
+
     return(trait)
 }
 
 #' Perform validation checks on the dataframe before writing to a database table
 #' @export
 validate_trait_mollusque <- function(df) {
-    not_null_columns <- c(
+    is_valid <- TRUE
+    # check all required cols are present
+    result <- check_columns_present(df, col_names = c(
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "COD_NBPC",
+        "IDENT_NO_TRAIT",
+        "COD_ZONE_GEST_MOLL",
+        "COD_SECTEUR_RELEVE",
+        "COD_STRATE",
+        "NO_STATION",
+        "COD_TYP_TRAIT",
+        "COD_RESULT_OPER",
+        "DATE_DEB_TRAIT",
+        "DATE_FIN_TRAIT",
+        "HRE_DEB_TRAIT",
+        "HRE_FIN_TRAIT",
+        "COD_TYP_HEURE",
+        "COD_FUSEAU_HORAIRE",
+        "COD_METHOD_POS",
+        "LAT_DEB_TRAIT",
+        "LAT_FIN_TRAIT",
+        "LONG_DEB_TRAIT",
+        "LONG_FIN_TRAIT",
+        "LATLONG_P",
+        "DISTANCE_POS",
+        "DISTANCE_POS_P",
+        "VIT_TOUAGE",
+        "VIT_TOUAGE_P",
+        "DUREE_TRAIT",
+        "DUREE_TRAIT_P",
+        "TEMP_FOND",
+        "TEMP_FOND_P",
+        "PROF_DEB",
+        "PROF_DEB_P",
+        "PROF_FIN",
+        "PROF_FIN_P",
+        "REM_TRAIT_MOLL",
+        "NO_CHARGEMENT"
+    ))
+    is_valid <- is_valid & result
+
+    # check all not-null columns do not have nulls
+    result <- check_cols_contains_na(df, col_names = c(
         "COD_SOURCE_INFO",
         "NO_RELEVE",
         "COD_NBPC",
@@ -167,15 +227,85 @@ validate_trait_mollusque <- function(df) {
         "NO_STATION",
         "COD_TYP_TRAIT",
         "COD_RESULT_OPER"
-    )
-    if (cols_contains_na(df, col_names = not_null_columns)) {
-        logger::log_error("dataframe cannot be written as DB table")
-        return(FALSE)
-    }
-    return(TRUE)
+    ))
+    is_valid <- is_valid & result
 
+    result <- check_other_columns(df, col_names = c(
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "COD_NBPC",
+        "IDENT_NO_TRAIT",
+        "COD_ZONE_GEST_MOLL",
+        "COD_SECTEUR_RELEVE",
+        "COD_STRATE",
+        "NO_STATION",
+        "COD_TYP_TRAIT",
+        "COD_RESULT_OPER",
+        "DATE_DEB_TRAIT",
+        "DATE_FIN_TRAIT",
+        "HRE_DEB_TRAIT",
+        "HRE_FIN_TRAIT",
+        "COD_TYP_HEURE",
+        "COD_FUSEAU_HORAIRE",
+        "COD_METHOD_POS",
+        "LAT_DEB_TRAIT",
+        "LAT_FIN_TRAIT",
+        "LONG_DEB_TRAIT",
+        "LONG_FIN_TRAIT",
+        "LATLONG_P",
+        "DISTANCE_POS",
+        "DISTANCE_POS_P",
+        "VIT_TOUAGE",
+        "VIT_TOUAGE_P",
+        "DUREE_TRAIT",
+        "DUREE_TRAIT_P",
+        "TEMP_FOND",
+        "TEMP_FOND_P",
+        "PROF_DEB",
+        "PROF_DEB_P",
+        "PROF_FIN",
+        "PROF_FIN_P",
+        "REM_TRAIT_MOLL",
+        "NO_CHARGEMENT"
+    ))
+    is_valid <- is_valid & result
+
+    result <- check_numeric_columns(df, col_names = c(
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "IDENT_NO_TRAIT",
+        "COD_ZONE_GEST_MOLL",
+        "COD_SECTEUR_RELEVE",
+        "COD_STRATE",
+        "NO_STATION",
+        "COD_TYP_TRAIT",
+        "COD_RESULT_OPER",
+        "COD_TYP_HEURE",
+        "COD_FUSEAU_HORAIRE",
+        "COD_METHOD_POS",
+        "LAT_DEB_TRAIT",
+        "LAT_FIN_TRAIT",
+        "LONG_DEB_TRAIT",
+        "LONG_FIN_TRAIT",
+        "LATLONG_P",
+        "DISTANCE_POS",
+        "DISTANCE_POS_P",
+        "VIT_TOUAGE",
+        "VIT_TOUAGE_P",
+        "DUREE_TRAIT",
+        "DUREE_TRAIT_P",
+        "TEMP_FOND",
+        "TEMP_FOND_P",
+        "PROF_DEB",
+        "PROF_DEB_P",
+        "PROF_FIN",
+        "PROF_FIN_P",
+        "NO_CHARGEMENT"
+    ))
+    is_valid <- is_valid & result
+
+    return(is_valid)
 }
-
 
 #' @export
 write_trait_mollusque <- function(trait, access_db_write_connection = NULL) {

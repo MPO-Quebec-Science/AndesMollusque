@@ -24,7 +24,7 @@ access_db_connect <- function(file_path = NULL) {
     if (file_path == system.file("ref_data", "access_template.mdb", package = "ANDESMollusque")) {
         connection_string <- paste(
             connection_string,
-            "ReadOnly=1;",
+            "ReadOnly=1",
             sep = "")
     }
     access_db_connection <- DBI::dbConnect(odbc::odbc(),
@@ -113,4 +113,29 @@ get_ref_choices <- function(table = "tablename",
     DBI::dbClearResult(result)
     DBI::dbDisconnect(access_db_connection)
     return(choices)
+}
+
+
+#' this function is meant to help the validation
+#' automatically getting colnames, no-null cols and datatypes.
+#' but I cannot get it to work here yet... (but works in Dbeaver)
+get_access_table_properties <- function(table_name = NULL) {
+    if (is.null(table_name)) {
+        stop("Must supply a table name to verify properties")
+    }
+
+    access_db_connection <- access_db_connect()
+
+    query <- readr::read_file(system.file("sql_queries",
+                                          "table_property.sql",
+                                          package = "ANDESMollusque"))
+    # manually delete the comments from the SQL query... because ACCESS...
+    query <- gsub("--.*?\n", "", query)
+
+    query <- paste(query, " WHERE TABLE_NAME='", table_name, "'", sep = "")
+
+    result <- DBI::dbSendQuery(access_db_connection, query)
+    table_props <- DBI::dbFetch(result, n = Inf)
+    DBI::dbClearResult(result)
+    DBI::dbDisconnect(access_db_connection)
 }

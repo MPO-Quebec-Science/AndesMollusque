@@ -10,7 +10,7 @@ ave_coverage to cod_couverture :
 2 -> 1/3 à 2/3 surface colonisée
 3 -> 2/3 et plus surface colonisée}
 \usage{
-format_epibiont(epibiont_data)
+format_epibiont(capt, andes_db_connection, code_filter)
 }
 \arguments{
 \item{epibiont_data}{the dataframe must contain columns "ave_with_barnacles" and "ave_coverage"}
