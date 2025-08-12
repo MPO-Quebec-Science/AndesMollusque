@@ -11,7 +11,7 @@
 #' @return A dataframe containing fishing set data.
 #' @seealso [get_trait_mollusque()] for the formatted results
 #' @export
-get_trait_mollusque_db<- function(andes_db_connection) {
+get_trait_mollusque_db <- function(andes_db_connection) {
     query <- readr::read_file(system.file("sql_queries",
                                           "trait_mollusque.sql",
                                           package = "ANDESMollusque"))
@@ -37,17 +37,15 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
         logger::log_error("Must provide a formatted projet_mollusque dataframe.")
         stop("Must provide a formatted projet_mollusque dataframe.")
     }
-    
+
     # Get raw data
     trait <- get_trait_mollusque_db(andes_db_connection)
-    
+
     # Take data from projet_mollusque
     trait$COD_SOURCE_INFO <- proj$COD_SOURCE_INFO
     trait$NO_RELEVE <- proj$NO_RELEVE
     trait$COD_NBPC <- proj$COD_NBPC
     trait$NO_CHARGEMENT <- proj$NO_CHARGEMENT
-
-
 
     # temporarily get desc_serie_hist_f from proj to trait, it will provide the context to correctly get the zone/strate
     desc_serie_hist_f <- get_ref_key(
@@ -58,7 +56,7 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
 
     # temporarily get cod_sect_releve, this is obtained from desc_secteur_releve_f
     # all sets shold have the same desc_serie_hist_f, verify this
-    if (length(unique(trait$desc_secteur_releve_f)) != 1){
+    if (length(unique(trait$desc_secteur_releve_f)) != 1) {
         logger::log_error("The sets do not have the same desc_secteur_releve_f")
         stop("The sets do not have the same desc_secteur_releve_f")
     }
@@ -82,7 +80,7 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
 
     # The mission-level desc_stratification was part of the set
     # they are all the same, as it should be be, so just take the first one)
-    if (length(unique(trait$desc_stratification)) != 1){
+    if (length(unique(trait$desc_stratification)) != 1) {
         logger::log_error("The sets do not have the same desc_secteur_releve_f")
         stop("The sets do not have the same desc_secteur_releve_f")
     }

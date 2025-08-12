@@ -48,8 +48,8 @@ andes_str_to_oracle_datetime <- function(datetime_str) {
     return(format(posixct_date, format = "%Y-%m-%d %H:%M:%S", tz = timezone_str))
 }
 
-#' @export 
-is_andes_time_str_dst <-function(datetime_str) {
+#' @export
+is_andes_time_str_dst <- function(datetime_str) {
     is_dst <- NA
     # ANDES DB times are in UTC
     posixct_date <- parse_andes_datetime(datetime_str)
@@ -57,7 +57,7 @@ is_andes_time_str_dst <-function(datetime_str) {
     timezone_str <- "America/Toronto"
 
     utc_offset <- format(posixct_date, format = "%z", tz = timezone_str)
-    if (is.na(utc_offset)){
+    if (is.na(utc_offset)) {
         logger::log_warn("Could not determine if Daylight savings is active for date: {datetime_str}")
         # stop("Could not determine if Daylight savings is active for date")
     } else if (utc_offset == "-0400") {
@@ -77,7 +77,7 @@ parse_andes_datetime <- function(andes_time_str) {
   # if (is.na(andes_time_str)==TRUE) {
   #   return(NA)
   # }
-  parsed_time <- as.POSIXct(andes_time_str, format = "%Y-%m-%d %H:%M:%S", tz = "UTC", optional=TRUE)
+  parsed_time <- as.POSIXct(andes_time_str, format = "%Y-%m-%d %H:%M:%S", tz = "UTC", optional = TRUE)
   # Convert ISO 8601 time to POSIXlt, ANDES DB time values are implicitly in UTC
   return(parsed_time)
 }
@@ -92,7 +92,7 @@ add_hard_coded_value <- function(df, col_name = NULL, value = NULL) {
         logger::log_error("A hard-coded NULL-value was added to column {col_name}")
         # this is what sanitize_sql_value() actually ends up doing...
         logger::log_error("DO NOT DO THIS! Please change to NA and switch to NULL when executing the statement")
-    } else{
+    } else {
         logger::log_info("A hard-coded value of {value} was added to column {col_name}")
     }
     # add a hard coded value to the dataframe
@@ -114,11 +114,11 @@ sanitize_sql_value <- function(value) {
             # escape single quotes
             value <- gsub("'", "''", value)
             # wrap the whole in single single quotes
-            value <- paste("'", value, "'", sep = "") 
-            return (value)
+            value <- paste("'", value, "'", sep = "")
+            return(value)
         }
     }
-    return (value)
+    return(value)
 }
 
 #' Convert coordinate to Oracle format
@@ -139,7 +139,7 @@ to_oracle_coord <- function(coord) {
     degrees <- floor(abs(coord))
     minutes_decimal <- (abs(coord) - degrees) * 60
 
-    if (coord<0) {
+    if (coord < 0) {
         return(-1 * (degrees * 100 + minutes_decimal))
     } else {
         return(degrees * 100 + minutes_decimal)
@@ -171,7 +171,7 @@ generate_sql_insert_statement <- function(df_row, table_name) {
     # collapse all values into one string with columns separated by a comma
     col_values_str <- paste(unlist(col_values_str), collapse = ", ")
     # add parenthesis
-    col_values_str <- paste("(", col_values_str, ") ", sep="")
+    col_values_str <- paste("(", col_values_str, ") ", sep = "")
     # the list is now build, we can create the INSERT statement.
     statement <- paste(
                     "INSERT INTO",
@@ -201,7 +201,7 @@ cols_to_numeric <- function(df, col_names = NULL) {
         logger::log_debug("Converting column {col_names[i]} to numeric")
         df[, names(df) == col_names[i]] <- as.numeric(df[, names(df) == col_names[i]])
     }
-    return (df)
+    return(df)
 }
 
 #'

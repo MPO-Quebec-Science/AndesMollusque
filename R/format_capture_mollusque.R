@@ -6,7 +6,7 @@
 #' 1 -> 1/3 et moins surface colonisée
 #' 2 -> 1/3 à 2/3 surface colonisée
 #' 3 -> 2/3 et plus surface colonisée
-#' 
+#'
 #' #' ave_with_barnacles to cod_abondance
 #' 0 -> Aucun des pétoncles ne porte de balane
 #' 1 -> 1% à 20%% des pétoncles portent des balanes
@@ -55,17 +55,17 @@ format_epibiont <- function(capt, andes_db_connection, code_filter) {
     categories <- c(0, 1, 2, 3, 4, 5)
 
     # this should take care of all legal values of area
-    cod_abondance <- cut(epibiont_data$ave_with_barnacles, breaks = breaks, labels = categories, include.lowest=TRUE)
+    cod_abondance <- cut(epibiont_data$ave_with_barnacles, breaks = breaks, labels = categories, include.lowest = TRUE)
     # we don't actually want a factor, but a list with values from categories
     cod_abondance <- categories[as.integer(cod_abondance)]
     epibiont_data$COD_ABONDANCE_EPIBIONT <- cod_abondance
 
     # rename columns for the merge
-    names(epibiont_data)[names(epibiont_data) == 'sample_number'] <- 'IDENT_NO_TRAIT'
-    names(epibiont_data)[names(epibiont_data) == 'code'] <- 'strap_code'
+    names(epibiont_data)[names(epibiont_data) == "sample_number"] <- "IDENT_NO_TRAIT"
+    names(epibiont_data)[names(epibiont_data) == "code"] <- "strap_code"
 
     # merge
-    capt <- left_join(capt, epibiont_data, by = c("IDENT_NO_TRAIT", "strap_code"))   
+    capt <- left_join(capt, epibiont_data, by = c("IDENT_NO_TRAIT", "strap_code"))
     # can get rid the extra
     capt <- subset(capt, select = -c(ave_with_barnacles))
     capt <- subset(capt, select = -c(ave_coverage))
@@ -76,7 +76,7 @@ format_epibiont <- function(capt, andes_db_connection, code_filter) {
 
 
 #' This fetches the specimen-level coverage data and
-#' coverts it to an average set-level metric in accordance to the legacy Oracle database. 
+#' coverts it to an average set-level metric in accordance to the legacy Oracle database.
 #' @export
 get_epibiont <- function(andes_db_connection, code_filter) {
     query <- readr::read_file(system.file("sql_queries",
@@ -111,7 +111,7 @@ get_epibiont <- function(andes_db_connection, code_filter) {
     # done with abondance_epibiont
 
     # assign each coverage category with a numerical value (based o the midpoint)
-    code_map <- data.frame(observation_value = c("1", "2", "3"), coverage = c((0+1)/6., (1+2)/6., (2+3)/6.))
+    code_map <- data.frame(observation_value = c("1", "2", "3"), coverage = c((0 + 1) / 6., (1 + 2) / 6., (2 + 3) / 6.))
     # res <- merge(desc_typ_trait, code_map, by = "desc", all.x = TRUE, sort = FALSE)
     coverage <- left_join(df, code_map, by = "observation_value")$coverage
 
@@ -128,7 +128,7 @@ get_epibiont <- function(andes_db_connection, code_filter) {
 
     # now we combine them
     joined <- merge(x = abondance_epibiont, y = couverture_epibiont, all = TRUE, sort = FALSE)
-    
+
     return(joined)
 }
 
@@ -148,7 +148,7 @@ format_cod_esp_gen <- function(capt) {
     DBI::dbDisconnect(access_db_connection)
 
     # rename column to match for the merge
-    names(cod_esp_gen_map)[names(cod_esp_gen_map) == 'COD_ESPECE'] <- 'strap_code'
+    names(cod_esp_gen_map)[names(cod_esp_gen_map) == "COD_ESPECE"] <- "strap_code"
     capt <- left_join(capt, cod_esp_gen_map, by = "strap_code")
 
     # we can probably drop the strap_code column now...
@@ -157,7 +157,7 @@ format_cod_esp_gen <- function(capt) {
     return(capt)
 }
 
-#' 
+#'
 #' For now, we will just assume all data is quantitative
 #' since we are limiting ourselves to commercial (scallops and whelk).
 #' One day, this function should be generalized to also lookup the data and determine it.
@@ -174,7 +174,7 @@ format_cod_typ_mesure <- function(capt) {
     return(capt)
 }
 
-#' 
+#'
 #' For now, we will just keep this blank
 #' It is a function here so that one day we can use the ANDES relative abundance category
 #' But it is not used for commercial stocks, so we skip it

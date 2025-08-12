@@ -138,4 +138,5 @@ get_access_table_properties <- function(table_name = NULL) {
     table_props <- DBI::dbFetch(result, n = Inf)
     DBI::dbClearResult(result)
     DBI::dbDisconnect(access_db_connection)
+    return(table_props)
 }
