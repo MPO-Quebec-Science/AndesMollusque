@@ -133,7 +133,19 @@ get_capture_mollusque <- function(andes_db_connection, engin = NULL, code_filter
     
 
     # convert datatypes
-    capt <- cols_to_numeric(capt, col_names = c("FRACTION_ECH", "FRACTION_PECH"))
+    capt <- cols_to_numeric(capt, col_names = c(
+        "FRACTION_ECH",
+        "FRACTION_ECH_P",
+        "FRACTION_PECH",
+        "FRACTION_PECH_P",
+        "NBR_CAPT",
+        "NBR_ECH",
+        "PDS_CAPT",
+        "PDS_CAPT_P",
+        "PDS_ECH",
+        "PDS_ECH_P",
+        "COD_DESCRIP_CAPT"
+        ))
 
     return(capt)
 }
@@ -141,24 +153,101 @@ get_capture_mollusque <- function(andes_db_connection, engin = NULL, code_filter
 #' Perform validation checks on the dataframe before writing to a database table
 #' @export
 validate_capture_mollusque <- function(df) {
-    not_null_columns <- c(
+    is_valid <- TRUE
+    # check all required cols are present
+    result <- check_columns_present(df, col_names = c(
         "COD_SOURCE_INFO",
-        "COD_ESP_GEN",
         "NO_RELEVE",
-        "COD_ENG_GEN",
-        "IDENT_NO_TRAIT",
-        "COD_TYP_PANIER",
         "COD_NBPC",
-        "FRACTION_PECH",
+        "IDENT_NO_TRAIT",
+        "COD_ENG_GEN",
+        "COD_TYP_PANIER",
         "NO_ENGIN",
+        "COD_ESP_GEN",
         "FRACTION_ECH",
-        "COD_TYP_MESURE"
-    )
-    if (cols_contains_na(df, col_names = not_null_columns)) {
-        logger::log_error("dataframe cannot be written as DB table")
-        return(FALSE)
-    }
-    return(TRUE)
+        "FRACTION_ECH_P",
+        "FRACTION_PECH",
+        "FRACTION_PECH_P",
+        "COD_DESCRIP_CAPT",
+        "COD_TYP_MESURE",
+        "NBR_CAPT",
+        "NBR_ECH",
+        "PDS_CAPT",
+        "PDS_CAPT_P",
+        "PDS_ECH",
+        "PDS_ECH_P",
+        "NO_CHARGEMENT",
+        "COD_COUVERTURE_EPIBIONT",
+        "COD_ABONDANCE_EPIBIONT"
+    ))
+    is_valid <- is_valid & result
+
+    # check all not-null columns do not have nulls
+    result <- check_cols_contains_na(df, col_names = c(
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "COD_NBPC",
+        "IDENT_NO_TRAIT",
+        "COD_ENG_GEN",
+        "COD_TYP_PANIER",
+        "NO_ENGIN",
+        "COD_ESP_GEN"
+    ))
+    is_valid <- is_valid & result
+
+    result <- check_other_columns(df, col_names = c(
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "COD_NBPC",
+        "IDENT_NO_TRAIT",
+        "COD_ENG_GEN",
+        "COD_TYP_PANIER",
+        "NO_ENGIN",
+        "COD_ESP_GEN",
+        "FRACTION_ECH",
+        "FRACTION_ECH_P",
+        "FRACTION_PECH",
+        "FRACTION_PECH_P",
+        "COD_DESCRIP_CAPT",
+        "COD_TYP_MESURE",
+        "NBR_CAPT",
+        "NBR_ECH",
+        "PDS_CAPT",
+        "PDS_CAPT_P",
+        "PDS_ECH",
+        "PDS_ECH_P",
+        "NO_CHARGEMENT",
+        "COD_COUVERTURE_EPIBIONT",
+        "COD_ABONDANCE_EPIBIONT"
+    ))
+    is_valid <- is_valid & result
+
+    result <- check_numeric_columns(df, col_names = c(
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "IDENT_NO_TRAIT",
+        "COD_ENG_GEN",
+        "COD_TYP_PANIER",
+        "NO_ENGIN",
+        "COD_ESP_GEN",
+        "FRACTION_ECH",
+        "FRACTION_ECH_P",
+        "FRACTION_PECH",
+        "FRACTION_PECH_P",
+        "COD_DESCRIP_CAPT",
+        "COD_TYP_MESURE",
+        "NBR_CAPT",
+        "NBR_ECH",
+        "PDS_CAPT",
+        "PDS_CAPT_P",
+        "PDS_ECH",
+        "PDS_ECH_P",
+        "NO_CHARGEMENT",
+        "COD_COUVERTURE_EPIBIONT",
+        "COD_ABONDANCE_EPIBIONT"
+    ))
+    is_valid <- is_valid & result
+    return(is_valid)
 }
 
 #' @export

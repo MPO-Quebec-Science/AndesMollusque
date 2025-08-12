@@ -30,8 +30,8 @@ proj <- get_projet_mollusque(andes_db_connection)
 proj <- init_cod_serie_hist(proj, desc_serie_hist_f)
 validate_projet_mollusque(proj)
 
-# proj -> trait -> engine -> capture -> FreqLongMollusque -> 
-# BiometrieMollusque 
+# proj -> trait -> engine -> capture -> FreqLongMollusque ->
+# BiometrieMollusque
 # PoidsBiometrie
 
 devtools::load_all()
@@ -64,10 +64,10 @@ for (p_i in seq_len(nrow(proj))) {
   validate_capture_mollusque(capt)
 
   freq <- get_freq_long_mollusque(andes_db_connection, capt)
+  validate_freq_long_mollusque(freq)
+
 }
 
-
- 
 
 
 

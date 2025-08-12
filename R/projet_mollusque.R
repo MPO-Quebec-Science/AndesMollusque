@@ -57,6 +57,7 @@ get_projet_mollusque <- function(andes_db_connection) {
     proj <- add_hard_coded_value(proj, col_name = "DUREE_TRAIT_VISEE_P", value = 0.1)
     proj <- add_hard_coded_value(proj, col_name = "VIT_TOUAGE_VISEE_P", value = 0.1)
     proj <- add_hard_coded_value(proj, col_name = "RAPPORT_FUNE_VISEE_P", value = 1.0)
+    proj <- add_hard_coded_value(proj, col_name = "DIST_CHALUTE_VISEE_P", value = 1.0)
 
     # # TODO, this value could be obtained as a set observation type ?
     # # Oracle is structured as a mission variable, not set (which does not reflect reality)
@@ -66,6 +67,11 @@ get_projet_mollusque <- function(andes_db_connection) {
 
     proj <- add_hard_coded_value(proj, col_name = "NO_CHARGEMENT", value = NA)
 
+    proj <- cols_to_numeric(proj, col_names = c("NO_CHARGEMENT"))
+
+    # drop id
+    proj <- subset(proj, select = -c(id))
+
     return(proj)
 
 }
@@ -73,18 +79,92 @@ get_projet_mollusque <- function(andes_db_connection) {
 #' Perform validation checks on the dataframe before writing to a database table
 #' @export
 validate_projet_mollusque <- function(df) {
-    not_null_columns <- c(
+    is_valid <- TRUE
+    # check all required cols are present
+    result <- check_columns_present(df, col_names = c(
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "COD_NBPC",
+        "ANNEE",
+        "COD_SERIE_HIST",
+        "COD_TYP_STRATIF",
+        "DATE_DEB_PROJET",
+        "DATE_FIN_PROJET",
+        "NO_NOTIF_IML",
+        "CHEF_MISSION",
+        "SEQ_PECHEUR",
+        "DUREE_TRAIT_VISEE",
+        "DUREE_TRAIT_VISEE_P",
+        "VIT_TOUAGE_VISEE",
+        "VIT_TOUAGE_VISEE_P",
+        "DIST_CHALUTE_VISEE",
+        "DIST_CHALUTE_VISEE_P",
+        "RAPPORT_FUNE_VISEE",
+        "RAPPORT_FUNE_VISEE_P",
+        "NOM_EQUIPE_NAVIRE",
+        "NOM_SCIENCE_NAVIRE",
+        "REM_PROJET_MOLL",
+        "NO_CHARGEMENT"
+    ))
+    is_valid <- is_valid & result
+
+    # check all not-null columns do not have nulls
+    result <- check_cols_contains_na(df, col_names = c(
         "COD_SOURCE_INFO",
         "NO_RELEVE",
         "COD_NBPC",
         "COD_SERIE_HIST",
         "COD_TYP_STRATIF"
-    )
-    if (cols_contains_na(df, col_names = not_null_columns)) {
-        logger::log_error("dataframe cannot be written as DB table")
-        return(FALSE)
-    }
-    return(TRUE)
+    ))
+    is_valid <- is_valid & result
+
+    result <- check_other_columns(df, col_names = c(
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "COD_NBPC",
+        "ANNEE",
+        "COD_SERIE_HIST",
+        "COD_TYP_STRATIF",
+        "DATE_DEB_PROJET",
+        "DATE_FIN_PROJET",
+        "NO_NOTIF_IML",
+        "CHEF_MISSION",
+        "SEQ_PECHEUR",
+        "DUREE_TRAIT_VISEE",
+        "DUREE_TRAIT_VISEE_P",
+        "VIT_TOUAGE_VISEE",
+        "VIT_TOUAGE_VISEE_P",
+        "DIST_CHALUTE_VISEE",
+        "DIST_CHALUTE_VISEE_P",
+        "RAPPORT_FUNE_VISEE",
+        "RAPPORT_FUNE_VISEE_P",
+        "NOM_EQUIPE_NAVIRE",
+        "NOM_SCIENCE_NAVIRE",
+        "REM_PROJET_MOLL",
+        "NO_CHARGEMENT"
+    ))
+    is_valid <- is_valid & result
+
+    result <- check_numeric_columns(df, col_names = c(
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "ANNEE",
+        "COD_SERIE_HIST",
+        "COD_TYP_STRATIF",
+        "SEQ_PECHEUR",
+        "DUREE_TRAIT_VISEE",
+        "DUREE_TRAIT_VISEE_P",
+        "VIT_TOUAGE_VISEE",
+        "VIT_TOUAGE_VISEE_P",
+        "DIST_CHALUTE_VISEE",
+        "DIST_CHALUTE_VISEE_P",
+        "RAPPORT_FUNE_VISEE",
+        "RAPPORT_FUNE_VISEE_P",
+        "NO_CHARGEMENT"
+    ))
+    is_valid <- is_valid & result
+
+    return(is_valid)
 }
 
 #' @export

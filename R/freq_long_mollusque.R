@@ -87,18 +87,22 @@ get_freq_long_mollusque <- function(andes_db_connection, capt = NULL) {
 
     freq <- format_no_mollusque(freq)
 
-    # convert these strings to numeric
-    freq <- cols_to_numeric(freq, col_names = c("VALEUR_LONG_MOLL"))
+    # can get rid of temporary columns
+    freq <- subset(freq, select = -c(id, sample_number, strap_code, description_fra, observation_type_id))
 
+
+
+    # convert these strings to numeric
+    freq <- cols_to_numeric(freq, col_names = c("VALEUR_LONG_MOLL", "VALEUR_LONG_MOLL_P"))
 
 }
 
 #' Perform validation checks on the dataframe before writing to a database table
-#' @param delete_extra If True, it delete extra columns
 #' @export
 validate_freq_long_mollusque <- function(df) {
+    is_valid <- TRUE
     # check all required cols are present
-    check_columns_present(df, col_names = c(
+    result <- check_columns_present(df, col_names = c(
         "COD_ESP_GEN",
         "COD_ENG_GEN",
         "COD_SOURCE_INFO",
@@ -115,9 +119,10 @@ validate_freq_long_mollusque <- function(df) {
         "NO_CHARGEMENT",
         "COD_TECH_MESURE_LONG"
     ))
+    is_valid <- is_valid & result
 
     # check all not-null columns do not have nulls
-    check_cols_contains_na(df, col_names = c(
+    result <- check_cols_contains_na(df, col_names = c(
         "COD_ESP_GEN",
         "IDENT_NO_TRAIT",
         "NO_RELEVE",
@@ -130,13 +135,9 @@ validate_freq_long_mollusque <- function(df) {
         "COD_TYP_ETAT",
         "COD_TECH_MESURE_LONG"
     ))
+    is_valid <- is_valid & result
 
-    # check if extra columns are in the dataframe
-    # SELECT COLUMN_NAME
-    # FROM INFORMATION_SCHEMA.COLUMNS
-    # WHERE TABLE_NAME = 'FREQ_LONG_MOLLUSQUE';
-
-    check_other_columns(df, col_names = c(
+    result <- check_other_columns(df, col_names = c(
         "COD_ESP_GEN",
         "IDENT_NO_TRAIT",
         "NO_RELEVE",
@@ -153,6 +154,24 @@ validate_freq_long_mollusque <- function(df) {
         "COD_TECH_MESURE_LONG",
         "NO_CHARGEMENT"
     ))
+    is_valid <- is_valid & result
 
-    return(TRUE)
+    result <- check_numeric_columns(df, col_names = c(
+        "COD_ESP_GEN",
+        "IDENT_NO_TRAIT",
+        "NO_RELEVE",
+        "COD_SOURCE_INFO",
+        "COD_ENG_GEN",
+        "COD_TYP_PANIER",
+        "NO_ENGIN",
+        "NO_MOLLUSQUE",
+        "COD_TYP_LONG",
+        "VALEUR_LONG_MOLL",
+        "VALEUR_LONG_MOLL_P",
+        "COD_TECH_MESURE_LONG",
+        "NO_CHARGEMENT"
+    ))
+    is_valid <- is_valid & result
+
+    return(is_valid)
 }

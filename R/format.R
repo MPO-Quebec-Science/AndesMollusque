@@ -209,6 +209,7 @@ cols_to_numeric <- function(df, col_names = NULL) {
 #' This is useful to validate if a dataframe can be written to a DB table (where some columns values cannot be null)
 #' @param df: the dataframe to modify
 #' @param col_names: a list of column names which will be converted to numeric
+#' @returns A boolean representing if the dataframe is compliant.
 #' @export
 check_cols_contains_na <- function(df, col_names = NULL) {
     if (is.null(col_names)) {
@@ -222,42 +223,82 @@ check_cols_contains_na <- function(df, col_names = NULL) {
         if (any(is.na(df[, col_name == names(df)]))) {
             logger::log_error("Found NA in column {col_name}")
             logger::log_error("dataframe cannot be written as DB table. It contains NULL values in a column that should not.")
-            return(TRUE)
-        }
-    }
-
-    return(FALSE)
-}
-
-#' Make sure the columns listed in col_names are present in the dataframe
-#' @param df: the dataframe to verify
-#' @param col_names: A list of column names. This will verify if the names in the list are present.
-#' @export
-check_columns_present <- function(df, col_names = NULL) {
-    if (is.null(col_names)) {
-        stop("Must supply a list of required columns to verify")
-    }
-    for (col_name in col_names) {
-        if (!(col_name %in% names(df))) {
-            logger::log_error("Missing required column. The column {col_name} is not in dataframe")
             return(FALSE)
         }
     }
     return(TRUE)
 }
 
-#' 
+#' Make sure the columns listed in col_names are present in the dataframe
+#' @param df: the dataframe to verify
+#' @param col_names: A list of column names. This will verify if the names in the list are present.
+#' @param coerce: A boolean (false by default) to see if the dataframe can be coerced into compliance
+#' @returns A boolean representing if the dataframe is compliant.
+#' @export
+check_columns_present <- function(df, col_names = NULL, coerce = FALSE) {
+    if (is.null(col_names)) {
+        stop("Must supply a list of required columns to verify")
+    }
+    for (col_name in col_names) {
+        if (!(col_name %in% names(df))) {
+            if (! coerce) {
+                logger::log_error("Missing required column. The column {col_name} is not in dataframe")
+                return(FALSE)
+            } else {
+                logger::log_error("Missing required column. Will add a NULL column")
+                stop("NOT IMPLEMENTED")
+            }
+        }
+    }
+    return(TRUE)
+}
+
+#' Make sure no other columns than the ones listed in col_names are present in the dataframe
 #' @param df: the dataframe to verify
 #' @param col_names: A list of column names. This will veridy if columns not in the list is present
+#' @param coerce: A boolean (false by default) to see if the dataframe can be coerced into compliance
+#' @returns A boolean representing if the dataframe is compliant.
 #' @export
-check_other_columns <- function(df, col_names = NULL) {
+check_other_columns <- function(df, col_names = NULL, coerce = FALSE) {
     if (is.null(col_names)) {
         stop("Must supply a list of required columns to verify")
     }
     for (col_name in names(df)) {
         if (!(col_name %in% col_names)) {
-            logger::log_warn("An unexpected column was found in the dataframe: {col_name}")
-            return(FALSE)
+            if (! coerce) {
+                logger::log_warn("An unexpected column was found in the dataframe: {col_name}")
+                return(FALSE)
+            } else {
+                logger::log_error("An unexpected column was found removed from the dataframe: {col_name}")
+                stop("NOT IMPLEMENTED, drop unneeded columns manually")
+            }
+        }
+    }
+    return(TRUE)
+}
+
+#' Make sure the columns listed in col_names have numeric (or NA) values
+#' @param df: the dataframe to verify
+#' @param col_names: A list of column names. This will veridy if columns not in the list is present
+#' @param coerce: A boolean (false by default) to see if the dataframe can be coerced into compliance
+#' @returns A boolean representing if the dataframe is compliant.
+#' @export
+check_numeric_columns <- function(df, col_names = NULL, coerce = FALSE) {
+    if (is.null(col_names)) {
+        stop("Must supply a list of required columns to verify")
+    }
+
+    for (col_name in col_names) {
+        col_class <- class(df[, names(df) == col_name])
+        if (!(col_class %in% c("integer", "numeric"))) {
+            if (! coerce) {
+                logger::log_warn("The dataframe contains a column that is with the wrong datatype. {col_name} needs to be a number.")
+                return(FALSE)
+            } else {
+                logger::log_error("An unexpected column was found removed from the dataframe: {col_name}")
+                # df[, names(df) == col_name] <- as.numeric(df[, names(df) == col_name])
+                stop("NOT IMPLEMENTED, use cols_to_numeric to prepare the dataframe")
+            }
         }
     }
     return(TRUE)
