@@ -1,0 +1,20 @@
+Package: ANDESMollusque
+Type: Package
+Title: Helper functions to access ANDES mission data as a Dataframe.
+Version: 0.1.0
+Author: Les amis de l'IML
+Maintainer: Sean-Fortin, David (DFO/MPO) <David.Sean-Fortin@dfo-mpo.gc.ca>
+Description: Ce package contient une collection de fonctions utilitaires pour
+    accéder facilement aux données des mission ANDES sous forme conviviale de dataframes.
+    Ce package a été dévéloppé pour l'équipe d'évaluation de stocks de pétoncle et buccins.
+    Il comporte principalement des requêtes SQL pour intérroger la base de données ANDES, et certain fonctions pour
+    reformater les données selon les exigences de l'équipe.
+License: MIT
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.2
+Imports:
+    odbc,
+    DBI,
+    readr,
+    logger
