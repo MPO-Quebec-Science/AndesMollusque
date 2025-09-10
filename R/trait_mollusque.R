@@ -42,10 +42,15 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     trait <- get_trait_mollusque_db(andes_db_connection)
 
     # Take data from projet_mollusque
-    trait$COD_SOURCE_INFO <- proj$COD_SOURCE_INFO
-    trait$NO_RELEVE <- proj$NO_RELEVE
-    trait$COD_NBPC <- proj$COD_NBPC
-    trait$NO_CHARGEMENT <- proj$NO_CHARGEMENT
+    cols_from_parent <- c(
+        "COD_SOURCE_INFO",
+        "NO_RELEVE",
+        "COD_NBPC",
+        "NO_CHARGEMENT"
+    )
+    data_from_parent <- proj[, names(proj) %in% cols_from_parent]
+    freq <- left_join(freq, data_from_parent, on = "andes_mission_id")
+
 
     # temporarily get desc_serie_hist_f from proj to trait, it will provide the context to correctly get the zone/strate
     desc_serie_hist_f <- get_ref_key(
@@ -171,7 +176,10 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     return(trait)
 }
 
-#' Perform validation checks on the dataframe before writing to a database table
+#' Perform database validation checks on the dataframe
+#' @details This compares the dataframe columns and values to the requirements of the database
+#' @param df The dataframe to validate
+#' @return Boolean representing if all the validation tests have passed
 #' @export
 validate_trait_mollusque <- function(df) {
     is_valid <- TRUE

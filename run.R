@@ -4,7 +4,9 @@ devtools::load_all()
 devtools::document()
 
 url_bd <- "iml-science-4.ent.dfo-mpo.ca"
-port_bd <- 25988
+port_bd <- 25988 #IML-2025-012 Minganie petconle
+# port_bd <- 25960 #IML-2025-040 speciale buccin
+
 nom_bd <- "andesdb"
 nom_usager <- Sys.getenv("NOM_USAGER_BD")
 mot_de_passe <- Sys.getenv("MOT_DE_PASSE_BD")
@@ -20,13 +22,18 @@ andes_db_connection <- andes_db_connect(
 
 ################################################
 # EXTERNAL INPUT
+# This needs to be manually defined
+# "Indice d'abondance zone 16E - pétoncle"
+# "Indice d'abondance zone 16F - pétoncle"
+# "Indice d'abondance zone 20 - pétoncle"
+# "Indice d'abondance buccin"
 desc_serie_hist_f <- "Indice d'abondance zone 16E - pétoncle"
+# desc_serie_hist_f <- "Indice d'abondance buccin"
 
 devtools::load_all()
 
 
 proj <- get_projet_mollusque(andes_db_connection)
-
 proj <- init_cod_serie_hist(proj, desc_serie_hist_f)
 validate_projet_mollusque(proj)
 
@@ -40,7 +47,9 @@ devtools::load_all()
 # usefull strap codes:
 cod_petoncle_island <- 4167
 cod_petoncle_geant <- 4179
+cod_buccin_commun <- 3517
 code_filter <- c(cod_petoncle_island, cod_petoncle_geant)
+# code_filter <- c(cod_buccin_commun)
 
 # choose which basket class have using basket_class_filter
 # useful basket classes
@@ -59,6 +68,7 @@ for (p_i in seq_len(nrow(proj))) {
 
   engin <- get_engin_mollusque(andes_db_connection, proj = proj[p_i, ])
   validate_engin_mollusque(engin)
+
   # Captures should only use the basket_class filter to select 1 - Vivant intact
   capt <- get_capture_mollusque(andes_db_connection, engin, code_filter = code_filter, basket_class_filter = basket_class_filter)
   validate_capture_mollusque(capt)
@@ -68,10 +78,7 @@ for (p_i in seq_len(nrow(proj))) {
 
 }
 
-
-
-
-names(trait)
+View(freq)
 
 
 devtools::load_all()
@@ -86,5 +93,7 @@ write_trait_mollusque(trait, access_db_write_connection)
 write_engin_mollusque(engin, access_db_write_connection)
 
 write_capture_mollusque(capt, access_db_write_connection)
+
+write_freq_long_mollusque(freq, access_db_write_connection)
 
 DBI::dbDisconnect(access_db_write_connection)

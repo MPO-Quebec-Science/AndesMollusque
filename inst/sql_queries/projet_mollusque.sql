@@ -1,6 +1,6 @@
 -- This is meant to be executed against an ANDES DB
 SELECT
-	shared_models_mission.id,
+	shared_models_mission.id as andes_mission_id,
 	shared_models_mission.description as DESC_SOURCE_INFO_F, -- this descr will be mapped to COD_SOURCE_INFO
     shared_models_mission.survey_number as NO_RELEVE,
     shared_models_mission.vessel_nbpc as COD_NBPC,

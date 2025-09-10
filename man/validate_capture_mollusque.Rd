@@ -2,10 +2,19 @@
 % Please edit documentation in R/capture_mollusque.R
 \name{validate_capture_mollusque}
 \alias{validate_capture_mollusque}
-\title{Perform validation checks on the dataframe before writing to a database table}
+\title{Perform database validation checks on the dataframe}
 \usage{
 validate_capture_mollusque(df)
 }
+\arguments{
+\item{df}{The dataframe to validate}
+}
+\value{
+Boolean representing if all the validation tests have passed
+}
 \description{
-Perform validation checks on the dataframe before writing to a database table
+Perform database validation checks on the dataframe
+}
+\details{
+This compares the dataframe columns and values to the requirements of the database
 }
