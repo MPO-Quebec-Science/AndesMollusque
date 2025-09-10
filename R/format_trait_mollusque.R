@@ -3,7 +3,7 @@
 #' @export
 format_cod_secteur_releve <- function(trait, desc_secteur_releve_f) {
     # from the des ription, desc_secteur_releve_f
-    #  the first letter, capitalized and without accents becomes secteur_releve
+    # the first letter, capitalized and without accents becomes secteur_releve
     secteur_releve <- toupper(substr(desc_secteur_releve_f, 1, 1))
 
     cod_secteur_releve <- get_ref_key(
@@ -62,18 +62,33 @@ format_cod_strate <- function(trait, desc_serie_hist_f) {
 get_strate <- function(nom_station, desc_serie_hist_f) {
     # This requires opening station reference data to determine the zone.
     lookup_station <- function(station_name = NULL, zone = NULL, species = NULL) {
-        logger::log_error("lookup_station is not fully implemented.")
 
-        # file_path <- system.file("ref_data",
-        #         "STATION_MOLL.csv",
-        #         package = "ANDESMollusque")
+        file_path <- system.file("ref_data",
+                "STATION_MOLL.csv",
+                package = "ANDESMollusque")
 
-        # ref_station <- read.csv(file_path, sep = ",")
-        # # filter out survey target species
-        # ref_station < ref_station[ref_station$ESPECE == "BUCCIN", ]
-        # zone <-
-        logger::log_warn("Whelk zone determination is not implemented, returning default zone 1.")
-        return("1")
+        ref_station <- read.csv(file_path, sep = ",")
+
+        # filter out station
+        if (!is.null(station_name)) {
+            ref_station <- ref_station[ref_station$NOM_STATION == station_name, ]
+        }
+        # filter out zone
+        if (!is.null(zone)) {
+            ref_station <- ref_station[ref_station$ZONE_MOLL == zone, ]
+        }
+        # filter out survey target species
+        if (!is.null(species)) {
+            ref_station <- ref_station[ref_station$ESPECE == species, ]
+        }
+
+        # At this point there should be a singleton
+        if (nrow(ref_station) != 1) {
+            logger::log_error("lookup_station filter did not yield a singleton. station: {station_name} zone: {zone} species: {species}")
+            stop("lookup_station filter did not yield a singleton")
+        }
+
+        return(ref_station[1, ])
     }
 
 

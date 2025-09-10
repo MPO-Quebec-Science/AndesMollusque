@@ -8,7 +8,6 @@ format_cod_source_info <- function(df) {
 
 #' @export
 lookup_cod_source_info <- function(desc_source_info_f) {
-
     # HACK, hard-code the lookup here
     # cod_source_info_map <- c(
     #     "Évaluation de stocks IML - Pétoncle Minganie" = "18",
