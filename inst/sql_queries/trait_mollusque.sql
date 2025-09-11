@@ -1,6 +1,7 @@
 -- This is meant to be executed against an ANDES DB
 SELECT
     shared_models_sample.sample_number AS IDENT_NO_TRAIT,
+    shared_models_mission.id as andes_mission_id,
     shared_models_station.name AS NO_STATION, -- this needs to be numeric, will have to strip alphabetic characters
     shared_models_mission.area_of_operation AS desc_secteur_releve_f, -- this ANDES field take a special role to determine COD_SECTEUR_RELEVE
     shared_models_operation.abbrev AS operation, -- fish or ctd, will help with COD_TYP_TRAIT if ctd
@@ -36,6 +37,7 @@ LEFT JOIN shared_models_stratificationtype
 -- Just data for the active mission
 WHERE shared_models_mission.is_active=1
 GROUP BY
+    andes_mission_id,
     IDENT_NO_TRAIT,
     NO_STATION, -- this needs to be numeric, will have to strip alphabetic characters
     desc_secteur_releve_f, -- this ANDES field take a special role to determine COD_SECTEUR_RELEVE
