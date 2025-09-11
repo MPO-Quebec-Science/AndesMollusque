@@ -1,7 +1,7 @@
 # AndesMollusque
 [![Docs](https://github.com/MPO-Quebec-Science/AndesMollusque/actions/workflows/documentation.yml/badge.svg?branch=main)](https://github.com/iml-gddaiss/AndesMollusque/actions/workflows/documentation.yml)
 
-Ce dépot contient des wrappers en `R` de commandes `SQL` pour extraire des données de crabe des neiges (équipe IML de la région du Québec) fait avec ANDES.
+Ce dépot contient des wrappers en `R` de commandes `SQL` pour extraire des données équipe IML de la région du Québec fait avec ANDES.
 
 
 
