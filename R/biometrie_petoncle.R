@@ -31,11 +31,19 @@ get_biometrie_petoncle_db <- function(andes_db_connection, collection_name = NUL
             )
     }
 
-    query <- paste(query, "GROUP BY shared_models_specimen.id, shared_models_sample.sample_number, shared_models_specimen.comment")
+    query <- paste(
+        query,
+        "GROUP BY",
+        "shared_models_specimen.id,",
+        "shared_models_sample.sample_number,",
+        "shared_models_sample.start_date,",
+        "shared_models_specimen.comment,",
+        "shared_models_referencecatch.code"
+    )
     # important, only select those specimens that we chose to keep!
     query <- paste(query, "HAVING collect_specimen=1")
-    # order by code collection coquil
-    query <- paste(query, "ORDER BY no ASC")
+    # order by code collection coquille
+    query <- paste(query, "ORDER BY code_coquille ASC")
 
     result <- DBI::dbSendQuery(andes_db_connection, query)
     df <- DBI::dbFetch(result, n = Inf)
@@ -70,6 +78,7 @@ get_legal_collection_names <- function() {
 #' @seealso [get_biometrie_petoncle_db(), get_legal_collection_names()] for the db results
 #' @export
 get_biometrie_petoncle <- function(andes_db_connection, collection_name = NULL) {
+
     # Validate input
     if (is.null(collection_name)) {
         logger::log_error("Must provide a formatted collection_name string.")
@@ -81,19 +90,10 @@ get_biometrie_petoncle <- function(andes_db_connection, collection_name = NULL) 
     }
 
     biometrie <- get_biometrie_petoncle_db(andes_db_connection, collection_name = collection_name)
-    # TODO
-    # need to delete columns :
-    #  - collection
-    #  - station
-    #  - collect_specimen
 
-    # need to add a secteur column. use the last poartt of the collection_name
-    split_string <- strsplit(collection_name, " ")[[1]]
-    secteur <- split_string[length(split_string)]
-    biometrie$secteur <- secteur
 
-    # can get rid of columns: collection, station, collect_specimen
-    biometrie <- subset(biometrie, select = -c(collection, station, collect_specimen))
+    # can get rid of columns: collect_specimen
+    biometrie <- subset(biometrie, select = -c(collect_specimen))
 
     return(biometrie)
 }
