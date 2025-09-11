@@ -2,7 +2,7 @@
 % Please edit documentation in R/access_db_connect.R
 \name{get_ref_key}
 \alias{get_ref_key}
-\title{gets the reference key corresponding to a value (usually from the Oracle / MSAccess reference database)}
+\title{Get the reference key corresponding to a value (usually from the Oracle / MSAccess reference database)}
 \usage{
 get_ref_key(
   table = "tablename",
@@ -27,5 +27,5 @@ get_ref_key(
 : The value found in the pkey column for the entry with the value
 }
 \description{
-gets the reference key corresponding to a value (usually from the Oracle / MSAccess reference database)
+Get the reference key corresponding to a value (usually from the Oracle / MSAccess reference database)
 }

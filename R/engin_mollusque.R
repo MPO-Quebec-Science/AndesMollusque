@@ -73,7 +73,10 @@ get_engin_mollusque <- function(andes_db_connection, proj = NULL) {
     return(engin)
 }
 
-#' Perform validation checks on the dataframe before writing to a database table
+#' Perform database validation checks on the dataframe
+#' @details This compares the dataframe columns and values to the requirements of the database
+#' @param df The dataframe to validate
+#' @return Boolean representing if all the validation tests have passed
 #' @export
 validate_engin_mollusque <- function(df) {
     is_valid <- TRUE

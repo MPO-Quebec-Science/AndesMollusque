@@ -3,9 +3,8 @@
 #' Establish a connection to an MS Access database
 #'
 #' This is a wrapper for the `DBI::dbConnect`, see it's documentation for more details.
-#' @param file_path full path to the MS Access file
-#' The default will be the Access template database
-#' @return A connection object to the MS ACCESS database.
+#' @param file_path full path to the MS Access file. The default (if NULL) will be the Access template database
+#' @return A DBI connection object to the MS ACCESS database.
 #' @export
 access_db_connect <- function(file_path = NULL) {
 
@@ -50,7 +49,7 @@ create_new_access_db <- function(fname = "new_access_db.mdb") {
 
 
 
-#' gets the reference key corresponding to a value (usually from the Oracle / MSAccess reference database)
+#' Get the reference key corresponding to a value (usually from the Oracle / MSAccess reference database)
 #' @param table: The name of the Oracle table, defaults to "tablename"
 #' @param pkey_col: The column name that holds the key, defaults to "columnofprimarykey"
 #' @param col: The column that holds the value to match, defaults to "columnname"
@@ -98,6 +97,11 @@ get_ref_key <- function(table = "tablename",
 }
 
 #' Builds a list of legal choices (descriptions) for get ref key
+#' @details This essentially returns a list of values in table
+#' @param table: The name of the Oracle table, defaults to "tablename"
+#' @param col: The column that holds the value to match, defaults to "columnname"
+#' @param optional_query: additional string to append to the query
+#' @return: The value found in the pkey column for the entry with the value
 #' @export
 get_ref_choices <- function(table = "tablename",
                         col = "columnname",

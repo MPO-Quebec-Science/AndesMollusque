@@ -7,11 +7,10 @@
 access_db_connect(file_path = NULL)
 }
 \arguments{
-\item{file_path}{full path to the MS Access file
-The default will be the Access template database}
+\item{file_path}{full path to the MS Access file. The default (if NULL) will be the Access template database}
 }
 \value{
-A connection object to the MS ACCESS database.
+A DBI connection object to the MS ACCESS database.
 }
 \description{
 This is a wrapper for the `DBI::dbConnect`, see it's documentation for more details.
