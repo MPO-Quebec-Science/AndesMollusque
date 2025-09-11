@@ -49,7 +49,7 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
         "NO_CHARGEMENT"
     )
     data_from_parent <- proj[, names(proj) %in% cols_from_parent]
-    freq <- left_join(freq, data_from_parent, on = "andes_mission_id")
+    trait <- left_join(trait, data_from_parent, on = "andes_mission_id")
 
 
     # temporarily get desc_serie_hist_f from proj to trait, it will provide the context to correctly get the zone/strate
@@ -97,6 +97,10 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     trait <- format_cod_typ_trait(trait, desc_stratification)
     # can get rid of operation column
     trait <- subset(trait, select = -c(operation))
+
+    # can get rid of andes_mission_id column
+    trait <- subset(trait, select = -c(andes_mission_id))
+
 
 
     # make a copy for for the times before we format the dates
