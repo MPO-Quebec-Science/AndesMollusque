@@ -34,9 +34,11 @@ get_biometrie_petoncle_db <- function(andes_db_connection, collection_name = NUL
     query <- paste(
         query,
         "GROUP BY",
-        "shared_models_specimen.id,",
+        "shared_models_completespecimen.specimen_id,",
         "shared_models_sample.sample_number,",
         "shared_models_sample.start_date,",
+        "shared_models_station.name,",
+        "shared_models_observationgroup.nom,",
         "shared_models_specimen.comment,",
         "shared_models_referencecatch.code"
     )
@@ -44,7 +46,6 @@ get_biometrie_petoncle_db <- function(andes_db_connection, collection_name = NUL
     query <- paste(query, "HAVING collect_specimen=1")
     # order by code collection coquille
     query <- paste(query, "ORDER BY code_coquille ASC")
-
     result <- DBI::dbSendQuery(andes_db_connection, query)
     df <- DBI::dbFetch(result, n = Inf)
     DBI::dbClearResult(result)
