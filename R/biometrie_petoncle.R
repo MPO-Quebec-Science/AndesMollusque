@@ -67,7 +67,6 @@ get_legal_collection_names <- function() {
   ))
 }
 
-
 #' Gets get_biometrie_petoncle (formatted results)
 #'
 #' This function executes a SQL query to retrieve the needed andes data to construct the biometry table.
@@ -92,6 +91,11 @@ get_biometrie_petoncle <- function(andes_db_connection, collection_name = NULL) 
 
     biometrie <- get_biometrie_petoncle_db(andes_db_connection, collection_name = collection_name)
 
+    # format the date column, apply function andes_str_to_oracle_date() 
+    biometrie$date <-  unlist(lapply(biometrie$set_start_date, andes_str_to_oracle_date))
+
+    # can get rid of columns: set_start_date
+    biometrie <- subset(biometrie, select = -c(set_start_date))
 
     # can get rid of columns: collect_specimen
     biometrie <- subset(biometrie, select = -c(collect_specimen))
