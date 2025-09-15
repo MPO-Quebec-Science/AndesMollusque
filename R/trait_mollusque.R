@@ -51,7 +51,6 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     data_from_parent <- proj[, names(proj) %in% cols_from_parent]
     trait <- left_join(trait, data_from_parent, on = "andes_mission_id")
 
-
     # temporarily get desc_serie_hist_f from proj to trait, it will provide the context to correctly get the zone/strate
     desc_serie_hist_f <- get_ref_key(
         table = "Indice_Suivi_Etat_Stock",
@@ -82,7 +81,6 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     # it is now fine to rename (if needed) the stations
     trait <- format_no_station(trait)
 
-
     # The mission-level desc_stratification was part of the set
     # they are all the same, as it should be be, so just take the first one)
     if (length(unique(trait$desc_stratification)) != 1) {
@@ -100,8 +98,6 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
 
     # can get rid of andes_mission_id column
     trait <- subset(trait, select = -c(andes_mission_id))
-
-
 
     # make a copy for for the times before we format the dates
     trait$HRE_DEB_TRAIT <- trait$DATE_DEB_TRAIT
@@ -123,7 +119,6 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
             val="Québec")
 
     trait <- add_hard_coded_value(trait, col_name = "COD_FUSEAU_HORAIRE", value = cod_fuseau_horaire)
-
 
     # 0 -> Inconnue
     # 1 -> Estimation
@@ -154,8 +149,6 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
 
     # trait <- add_hard_coded_value(trait, col_name = "SALINITE_FOND", value = NA)
     # trait <- add_hard_coded_value(trait, col_name = "SALINITE_FOND_P", value = NA)
-
-
     # trait <- add_hard_coded_value(trait, col_name = "COD_TYP_ECH_TRAIT", value = NA)
 
     # convert these strings to numeric

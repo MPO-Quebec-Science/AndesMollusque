@@ -4,7 +4,7 @@ devtools::load_all()
 devtools::document()
 
 url_bd <- "iml-science-4.ent.dfo-mpo.ca"
-port_bd <- 25988 #IML-2025-012 Minganie petconle
+port_bd <- 25988 #IML-2025-012 Minganie petoncle
 # port_bd <- 25960 #IML-2025-040 speciale buccin
 
 nom_bd <- "andesdb"
@@ -19,6 +19,16 @@ andes_db_connection <- andes_db_connect(
   mot_de_passe = mot_de_passe,
   nom_bd = nom_bd
 )
+
+# BIOMETRIE PETONCLE
+# select collection_name as one of the following
+# "Conserver pour biométrie 16E"
+# "Conserver pour biométrie 16F"
+# "Conserver pour biométrie centre"
+# "Conserver pour biométrie ouest"
+collection_name <- "Conserver pour biométrie 16F"
+bio <- get_biometrie_petoncle(andes_db_connection, collection_name = collection_name)
+head(bio)
 
 ################################################
 # EXTERNAL INPUT
@@ -59,6 +69,20 @@ code_filter <- c(cod_petoncle_island, cod_petoncle_geant)
 # 9 - Biodiversité
 
 basket_class_filter <- c(1)
+
+trait <- get_trait_mollusque(andes_db_connection, proj = proj)
+validate_trait_mollusque(trait)
+
+engin <- get_engin_mollusque(andes_db_connection, proj = proj)
+validate_engin_mollusque(engin)
+
+# Captures should only use the basket_class filter to select 1 - Vivant intact
+capt <- get_capture_mollusque(andes_db_connection, engin, code_filter = code_filter, basket_class_filter = basket_class_filter)
+validate_capture_mollusque(capt)
+
+freq <- get_freq_long_mollusque(andes_db_connection, capt)
+validate_freq_long_mollusque(freq)
+
 
 
 p_i <- 1
