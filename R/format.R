@@ -129,6 +129,8 @@ sanitize_sql_value <- function(value) {
 # '       whole_minutes = 9
 #'        decimal_minues = 35562
 #'        and yields: 4709.35562
+#'
+#'        The Oracle Coordinates (including longitude) are not negative.
 #' @param coord Input coordinate
 #' @return Formatted coordinate
 #' @export
@@ -139,11 +141,8 @@ to_oracle_coord <- function(coord) {
     degrees <- floor(abs(coord))
     minutes_decimal <- (abs(coord) - degrees) * 60
 
-    if (coord < 0) {
-        return(-1 * (degrees * 100 + minutes_decimal))
-    } else {
-        return(degrees * 100 + minutes_decimal)
-    }
+    # the return value is never negative, as per historical oracle data
+    return(degrees * 100 + minutes_decimal)
 }
 
 #' generate a SQL inster statement for the single dataframe row as a new row into table_name
