@@ -5,6 +5,8 @@
 .Ruserdata
 .Renviron
 
+old/*
+
 # ignore this for now to prevent annoying projectId changes
 *.Rproj
 

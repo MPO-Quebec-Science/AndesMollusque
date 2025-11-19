@@ -99,6 +99,10 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     # can get rid of andes_mission_id column
     trait <- subset(trait, select = -c(andes_mission_id))
 
+    #validate set_result : conistency between set_is_valid and COD_RESULT_OPER.
+
+    trait <- validate_set_result(trait)
+
     # make a copy for for the times before we format the dates
     trait$HRE_DEB_TRAIT <- trait$DATE_DEB_TRAIT
     trait$HRE_FIN_TRAIT <- trait$DATE_FIN_TRAIT

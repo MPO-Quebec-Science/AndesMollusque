@@ -1,7 +1,8 @@
 -- This is meant to be executed against an ANDES DB
 SELECT
     shared_models_sample.sample_number AS IDENT_NO_TRAIT,
-    shared_models_mission.id as andes_mission_id,
+    shared_models_sample.is_valid AS set_is_valid,
+    shared_models_mission.id AS andes_mission_id,
     shared_models_station.name AS NO_STATION, -- this needs to be numeric, will have to strip alphabetic characters
     shared_models_mission.area_of_operation AS desc_secteur_releve_f, -- this ANDES field take a special role to determine COD_SECTEUR_RELEVE
     shared_models_operation.abbrev AS operation, -- fish or ctd, will help with COD_TYP_TRAIT if ctd
@@ -17,7 +18,6 @@ SELECT
     MAX(CASE WHEN (shared_models_sampleobservationtype.export_name='start_depth_m') THEN value ELSE '' END) AS PROF_DEB,
     MAX(CASE WHEN (shared_models_sampleobservationtype.export_name='end_depth_m') THEN value ELSE '' END) AS PROF_FIN,
     shared_models_sample.remarks AS REM_TRAIT_MOLL
-
 FROM shared_models_sampleobservation
 LEFT JOIN shared_models_sampleobservationtype
 	ON shared_models_sampleobservationtype.id=shared_models_sampleobservation.sample_observation_type_id
@@ -38,6 +38,7 @@ LEFT JOIN shared_models_stratificationtype
 WHERE shared_models_mission.is_active=1
 GROUP BY
     andes_mission_id,
+    set_is_valid,
     IDENT_NO_TRAIT,
     NO_STATION, -- this needs to be numeric, will have to strip alphabetic characters
     desc_secteur_releve_f, -- this ANDES field take a special role to determine COD_SECTEUR_RELEVE
