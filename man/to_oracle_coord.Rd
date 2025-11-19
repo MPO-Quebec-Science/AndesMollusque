@@ -19,3 +19,6 @@ For example, the latitude of 47.155927
        decimal_minues = 35562
        and yields: 4709.35562
 }
+\details{
+The Oracle Coordinates (including longitude) are not negative.
+}

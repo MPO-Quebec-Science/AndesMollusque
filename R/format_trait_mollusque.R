@@ -322,3 +322,57 @@ format_coordinates <- function(trait) {
     trait$LONG_FIN_TRAIT <- unlist(lapply(trait$LONG_FIN_TRAIT, to_oracle_coord))
     return(trait)
 }
+
+#' Validate set result consistency
+#'
+#' ANDES has a mecanism to tag valid sets, but we also inserted a
+#' legacy set observation for a similar reason. This functions makes
+#' sure both point in the same direction and prints an error code if
+#' there are contradictions.
+#'
+#' @param trait Input dataframe
+#' @return Formatted dataframe
+#' @export
+validate_set_result <- function(trait) {
+
+    atomic_compare_both <- function(row) {
+        # COD_RESULT_OPER. is one of:
+        #   1 - OK
+        #   2 - OK
+        #   3 - FAILED
+        #   4 - FAILED
+        #   5 - FAILED
+        #   6 - FAILED
+        # set_is_valid is one of:
+        #    NULL - UNKNOWN STATE
+        #    0 - FAILED
+        #    1 - OK
+
+        set_is_valid <- as.numeric(row["set_is_valid"])
+        COD_RESULT_OPER <- as.numeric(row["COD_RESULT_OPER"])
+        IDENT_NO_TRAIT <- as.numeric(row["IDENT_NO_TRAIT"])
+
+        msg <- NULL
+
+        if (is.na(set_is_valid)) {
+            msg <- sprintf("Set %s has no defined set_is_valid. Please define the result and re-run.", IDENT_NO_TRAIT)
+        } else if (is.na(COD_RESULT_OPER)) {
+            msg <- sprintf("Set %s has no defined COD_RESULT_OPER. Please define and re-run.", IDENT_NO_TRAIT)
+        } else if ((set_is_valid == 1) && (COD_RESULT_OPER %in% c(3, 4, 5, 6))) {
+            msg <- sprintf("INTEGRITY ERROR: Valid Set %s has failed COD_RESULT_OPER. Please correct and re-run.", IDENT_NO_TRAIT)
+        } else if ((set_is_valid == 0) && (COD_RESULT_OPER %in% c(1, 2))) {
+            msg <- sprintf("INTEGRITY ERROR: Invalid Set %s has normal COD_RESULT_OPER. Please correct and re-run.", IDENT_NO_TRAIT)
+        }
+        if (!is.null(msg)) {
+            logger::log_error(msg)
+        }
+        return()
+    }
+
+    # run the compare_both() function over all rows
+    res <- apply(trait, MARGIN = 1, atomic_compare_both)
+
+    # can now remove is_valid column
+    trait <- subset(trait, select = -c(set_is_valid))
+    return (trait)
+}
