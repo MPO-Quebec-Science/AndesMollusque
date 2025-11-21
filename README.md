@@ -17,6 +17,7 @@ library(ANDESMollusque)
 ```
 
 ### Installation des pilots SQL sur un poste Windows du MPO
+Si ce n'est pas fait, il faut installer des pilotes de BD. Cèst possible de le faire à partir du `Centre Logiciel`.
  - Pour connection BD ANDES, installer `My SQL Connecteur ODBC 8.0.22`
  - Pour BD MS ACCESS, rien a faire de plus. Office 365 deja présent.
  - (facultatif) Pour connexion Oracle, installer `Oracle 12 (Instant Client) x64` qui va mettre les libraries sous "C:\Oracle\12.2.0_Instant_x64".
