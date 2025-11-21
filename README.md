@@ -18,9 +18,9 @@ library(ANDESMollusque)
 
 ### Installation des pilots SQL sur un poste Windows du MPO
 Si ce n'est pas fait, il faut installer des pilotes de BD. Cèst possible de le faire à partir du `Centre Logiciel`.
- - Pour connection BD ANDES, installer `My SQL Connecteur ODBC 8.0.22`
+ - Pour connexion BD ANDES, installer `My SQL Connecteur ODBC 8.0.22`
  - Pour BD MS ACCESS, rien a faire de plus. Office 365 deja présent.
- - (facultatif) Pour connexion Oracle, installer `Oracle 12 (Instant Client) x64` qui va mettre les libraries sous "C:\Oracle\12.2.0_Instant_x64".
+ - (facultatif) Pour connexion Oracle, installer `Oracle 12 (Instant Client) x64` qui va mettre les libraries sous `C:\Oracle\12.2.0_Instant_x64`.
 
 ## Connexion BD ANDES
 ``` R
@@ -148,7 +148,6 @@ devtools::document()
 ```
 to load the library in memory without installing it.
 
-
 To test the github package, detach an re-install
 ``` R
 detach("package:ANDESMollusque", unload=TRUE)
@@ -156,16 +155,4 @@ devtools::install_github("MPO-Quebec-Science/ANDESMollusque")
 library(ANDESMollusque)
 ```
 
-
-
-
-
-
-Map entre la BD Andes et les tables mollusque de PSENTINELLE_PRO
-
 The old documentation available at: [https://iml-gddaiss.github.io/AndesMollusque/](https://iml-gddaiss.github.io/AndesMollusque/)
-
-
-copy the `.env_sample` to `.env` and fill in required values.
-
-
