@@ -4,18 +4,22 @@
 Ce dépot contient des wrappers en `R` de commandes `SQL` pour extraire des données équipe IML de la région du Québec fait avec ANDES.
 
 
-
 # Utilisation
 1. Installer
 2. Établir un connexion a la BD ANDES
 3. Obtenir les tables en dataframs
 4. Faire une BD Access
 
-## Installation
+## Installation du package
 ``` R
 devtools::install_github("MPO-Quebec-Science/AndesMollusque")
 library(ANDESMollusque)
 ```
+
+### Installation des pilots SQL sur un poste Windows du MPO
+ - Pour connection BD ANDES, installer `My SQL Connecteur ODBC 8.0.22`
+ - Pour BD MS ACCESS, rien a faire de plus. Office 365 deja présent.
+ - (facultatif) Pour connexion Oracle, installer `Oracle 12 (Instant Client) x64` qui va mettre les libraries sous "C:\Oracle\12.2.0_Instant_x64".
 
 ## Connexion BD ANDES
 ``` R
@@ -162,10 +166,5 @@ The old documentation available at: [https://iml-gddaiss.github.io/AndesMollusqu
 
 
 copy the `.env_sample` to `.env` and fill in required values.
-
-# DFO Windows oracleDb instant client
-From centre logiciel, install `Oracle 12 (Instant Client) x64` which should create the client libraries under "C:\Oracle\12.2.0_Instant_x64".
-This path is needed by the python client to use thick-mode `oracledb.init_oracle_client(lib_dir=r"C:\Oracle\12.2.0_Instant_x64")`
-
 
 
