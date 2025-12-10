@@ -11,8 +11,9 @@ name: R
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  # Do not use PR triggers for selfhosted action runners 
+  # pull_request:
+  #   branches: [ "main" ]
 
 permissions:
   contents: read
