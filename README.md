@@ -153,6 +153,14 @@ To test the github package, detach an re-install
 detach("package:ANDESMollusque", unload=TRUE)
 devtools::install_github("MPO-Quebec-Science/ANDESMollusque")
 library(ANDESMollusque)
+
+# run unittests
+devtools::test()
+
+devtools::document()
+
+rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
+
 ```
 
 The old documentation available at: [https://iml-gddaiss.github.io/AndesMollusque/](https://iml-gddaiss.github.io/AndesMollusque/)
