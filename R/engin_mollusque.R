@@ -1,5 +1,3 @@
-
-
 #' Gets engin_mollusc_db (raw database results)
 #'
 #' This function executes a SQL query to retrieve the needed andes data to construct the ENGIN_MOLLUSC table.
@@ -14,8 +12,9 @@
 #' @export
 get_engin_mollusque_db <- function(andes_db_connection) {
     query <- readr::read_file(system.file("sql_queries",
-                                          "engin_mollusque.sql",
-                                          package = "ANDESMollusque"))
+        "engin_mollusque.sql",
+        package = "ANDESMollusque"
+    ))
     result <- DBI::dbSendQuery(andes_db_connection, query)
     df <- DBI::dbFetch(result, n = Inf)
     DBI::dbClearResult(result)
@@ -68,7 +67,7 @@ get_engin_mollusque <- function(andes_db_connection, proj = NULL) {
         "REMPLISSAGE_P",
         "LONG_FUNE",
         "LONG_FUNE_P"
-        ))
+    ))
 
     return(engin)
 }
@@ -147,7 +146,7 @@ validate_engin_mollusque <- function(df) {
 
 #' @export
 write_engin_mollusque <- function(engin, access_db_write_connection = NULL) {
-   # write the dataframe to the database
+    # write the dataframe to the database
     if (is.null(access_db_write_connection)) {
         logger::log_error("Failed to provide a new MS Access connection.")
         stop("Failed to provide a new MS Access connection")

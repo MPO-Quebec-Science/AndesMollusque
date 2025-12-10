@@ -1,5 +1,3 @@
-
-
 #' Gets fishing projet_mollusque (raw database results)
 #'
 #' This function executes a SQL query to retrieve the needed andes data to construct the PROJET_MOLLUSQUE table.
@@ -14,8 +12,9 @@
 #' @export
 get_projet_mollusque_db <- function(andes_db_connection) {
     query <- readr::read_file(system.file("sql_queries",
-                                          "projet_mollusque.sql",
-                                          package = "ANDESMollusque"))
+        "projet_mollusque.sql",
+        package = "ANDESMollusque"
+    ))
     result <- DBI::dbSendQuery(andes_db_connection, query)
     proj <- DBI::dbFetch(result, n = Inf)
     DBI::dbClearResult(result)
@@ -70,7 +69,6 @@ get_projet_mollusque <- function(andes_db_connection) {
     proj <- cols_to_numeric(proj, col_names = c("NO_CHARGEMENT"))
 
     return(proj)
-
 }
 
 #' Perform database validation checks on the dataframe

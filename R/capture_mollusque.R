@@ -1,5 +1,3 @@
-
-
 #' Gets capture_mollusc_db (raw database results)
 #'
 #' This function executes a SQL query to retrieve the needed andes data to construct the CAPTURE_MOLLUSC table.
@@ -14,8 +12,9 @@
 #' @export
 get_capture_mollusque_db <- function(andes_db_connection, code_filter = NULL, basket_class_filter = NULL) {
     query <- readr::read_file(system.file("sql_queries",
-                                          "capture_mollusque.sql",
-                                          package = "ANDESMollusque"))
+        "capture_mollusque.sql",
+        package = "ANDESMollusque"
+    ))
 
     # add mission filter
     # use the active misison, one day you can choose a different mission,
@@ -144,7 +143,7 @@ get_capture_mollusque <- function(andes_db_connection, engin = NULL, code_filter
         "PDS_ECH",
         "PDS_ECH_P",
         "COD_DESCRIP_CAPT"
-        ))
+    ))
 
     return(capt)
 }
@@ -254,7 +253,7 @@ validate_capture_mollusque <- function(df) {
 
 #' @export
 write_capture_mollusque <- function(df, access_db_write_connection = NULL) {
-   # write the dataframe to the database
+    # write the dataframe to the database
     if (is.null(access_db_write_connection)) {
         logger::log_error("Failed to provide a new MS Access connection.")
         stop("Failed to provide a new MS Access connection")

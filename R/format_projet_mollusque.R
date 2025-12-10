@@ -1,7 +1,6 @@
-
 #' @export
 format_cod_source_info <- function(df) {
-    desc_source_info_f <-  df[, which(names(df) == "DESC_SOURCE_INFO_F")]
+    desc_source_info_f <- df[, which(names(df) == "DESC_SOURCE_INFO_F")]
     df["COD_SOURCE_INFO"] <- unlist(lapply(desc_source_info_f, lookup_cod_source_info))
     return(df)
 }
@@ -21,7 +20,8 @@ lookup_cod_source_info <- function(desc_source_info_f) {
         table = "Source_Info",
         pkey_col = "COD_SOURCE_INFO",
         col = "DESC_SOURCE_INFO_F",
-        val = desc_source_info_f)
+        val = desc_source_info_f
+    )
     return(key)
 }
 
@@ -66,7 +66,8 @@ lookup_cod_serie_hist <- function(desc_serie_hist_f) {
         table = "Indice_Suivi_Etat_Stock",
         pkey_col = "COD_SERIE_HIST",
         col = "DESC_SERIE_HIST_F",
-        val = desc_serie_hist_f)
+        val = desc_serie_hist_f
+    )
     return(key)
 }
 
@@ -100,10 +101,12 @@ format_seq_pecheur <- function(df) {
 
     logger::log_info("Assuming {pecheur} as NOM_PECHEUR (from the vessel {vessel_name})")
 
-    seq_pecheur <- get_ref_key(table = "Pecheur",
-                                pkey_col = "SEQ_PECHEUR",
-                                col = "NOM_PECHEUR",
-                                val = pecheur)
+    seq_pecheur <- get_ref_key(
+        table = "Pecheur",
+        pkey_col = "SEQ_PECHEUR",
+        col = "NOM_PECHEUR",
+        val = pecheur
+    )
 
     df["SEQ_PECHEUR"] <- seq_pecheur
     # we are done with, the vessel_name column, it can be deleted.

@@ -13,8 +13,9 @@
 #' @export
 get_biometrie_petoncle_db <- function(andes_db_connection, collection_name = NULL) {
     query <- readr::read_file(system.file("sql_queries",
-                                          "biometrie_petoncle.sql",
-                                          package = "ANDESMollusque"))
+        "biometrie_petoncle.sql",
+        package = "ANDESMollusque"
+    ))
 
     # add mission filter
     # use the active misison, one day you can choose a different mission,
@@ -28,7 +29,7 @@ get_biometrie_petoncle_db <- function(andes_db_connection, collection_name = NUL
             collection_name,
             "'",
             sep = ""
-            )
+        )
     }
 
     query <- paste(
@@ -54,17 +55,17 @@ get_biometrie_petoncle_db <- function(andes_db_connection, collection_name = NUL
 }
 
 #' Get a list of legal collection names as a filter for get_biometrie_petoncle()
-#' 
+#'
 #' These must match the shared_models_observationgroup.nom as the ANDES collection.
 #' The secteur (16E, 16F, centre, ouest) are taken from the last part of the string.
 #' @return A dataframe containing get_biometrie_petoncle table data.
 get_legal_collection_names <- function() {
-  return(c(
-    "Conserver pour biométrie 16E",
-    "Conserver pour biométrie 16F",
-    "Conserver pour biométrie centre",
-    "Conserver pour biométrie ouest"
-  ))
+    return(c(
+        "Conserver pour biométrie 16E",
+        "Conserver pour biométrie 16F",
+        "Conserver pour biométrie centre",
+        "Conserver pour biométrie ouest"
+    ))
 }
 
 #' Gets get_biometrie_petoncle (formatted results)
@@ -78,21 +79,20 @@ get_legal_collection_names <- function() {
 #' @seealso [get_biometrie_petoncle_db(), get_legal_collection_names()] for the db results
 #' @export
 get_biometrie_petoncle <- function(andes_db_connection, collection_name = NULL) {
-
     # Validate input
     if (is.null(collection_name)) {
         logger::log_error("Must provide a formatted collection_name string.")
         stop("Must provide a formatted collection_name string.")
     }
-    if (! collection_name %in% get_legal_collection_names()) {
+    if (!collection_name %in% get_legal_collection_names()) {
         logger::log_error(paste0("collection_name must be one of: ", paste(get_legal_collection_names(), collapse = ", ")))
         stop(paste0("collection_name must be one of: ", paste(get_legal_collection_names(), collapse = ", ")))
     }
 
     biometrie <- get_biometrie_petoncle_db(andes_db_connection, collection_name = collection_name)
 
-    # format the date column, apply function andes_str_to_oracle_date() 
-    biometrie$date <-  unlist(lapply(biometrie$set_start_date, andes_str_to_oracle_date))
+    # format the date column, apply function andes_str_to_oracle_date()
+    biometrie$date <- unlist(lapply(biometrie$set_start_date, andes_str_to_oracle_date))
 
     # can get rid of columns: set_start_date
     biometrie <- subset(biometrie, select = -c(set_start_date))

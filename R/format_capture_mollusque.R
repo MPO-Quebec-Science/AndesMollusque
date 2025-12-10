@@ -1,4 +1,3 @@
-
 #' Formated COD_COUVERTURE_EPIBIONT column to the dataframe
 #' This categorizes AND includes the of the following definition:
 #' ave_coverage to cod_couverture :
@@ -14,11 +13,11 @@
 #' 3 -> 41% à 60%% des pétonlces portent des balanes
 #' 4 -> 61% à 80%% despétoncles portent des balanes
 #' 5 -> 81% à 100%% des pétonlces portent des balanes
-#' @param epibiont_data the dataframe must contain columns "ave_with_barnacles" and "ave_coverage"
+#' @param andes_db_connection A connection object to the ANDES database.
+#' @param code_filter a list of species code to filter on, or NULL for no filtering
 #' @return The input dataframe with columns for categorical codes
 #' @export
-format_epibiont <- function(capt, andes_db_connection, code_filter) {
-
+format_epibiont <- function(andes_db_connection, code_filter) {
     epibiont_data <- get_epibiont(andes_db_connection, code_filter)
 
     assert_col(epibiont_data, "ave_with_barnacles")
@@ -77,11 +76,14 @@ format_epibiont <- function(capt, andes_db_connection, code_filter) {
 
 #' This fetches the specimen-level coverage data and
 #' coverts it to an average set-level metric in accordance to the legacy Oracle database.
+#' @param andes_db_connection A connection object to the ANDES database.
+#' @param code_filter a list of species code to filter on, or NULL for no filtering
 #' @export
 get_epibiont <- function(andes_db_connection, code_filter) {
     query <- readr::read_file(system.file("sql_queries",
-                                          "epibiont_cte.sql",
-                                          package = "ANDESMollusque"))
+        "epibiont_cte.sql",
+        package = "ANDESMollusque"
+    ))
     # finish the query from the primed CTE statement
     # the easy way is to grab the final epibiont_cte table
     # query <- paste(query,"SELECT * FROM epibiont_cte")
@@ -136,8 +138,9 @@ get_epibiont <- function(andes_db_connection, code_filter) {
 #' @export
 format_cod_esp_gen <- function(capt) {
     query <- readr::read_file(system.file("sql_queries",
-                                          "esp_gen_code_map.sql",
-                                          package = "ANDESMollusque"))
+        "esp_gen_code_map.sql",
+        package = "ANDESMollusque"
+    ))
 
     # manually delete the comments from the SQL query... because ACCESS...
     query <- gsub("--.*?\n", "", query)
@@ -163,7 +166,6 @@ format_cod_esp_gen <- function(capt) {
 #' One day, this function should be generalized to also lookup the data and determine it.
 #' @export
 format_cod_typ_mesure <- function(capt) {
-
     quantitative_code <- get_ref_key(
         table = "TYPE_MESURE_MOLL",
         pkey_col = "COD_TYP_MESURE",

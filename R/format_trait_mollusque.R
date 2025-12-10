@@ -1,5 +1,3 @@
-
-
 #' @export
 format_cod_secteur_releve <- function(trait, desc_secteur_releve_f) {
     # from the des ription, desc_secteur_releve_f
@@ -10,7 +8,8 @@ format_cod_secteur_releve <- function(trait, desc_secteur_releve_f) {
         table = "SECTEUR_RELEVE_MOLL",
         pkey_col = "COD_SECTEUR_RELEVE",
         col = "SECTEUR_RELEVE",
-        val = secteur_releve)
+        val = secteur_releve
+    )
 
     trait$COD_SECTEUR_RELEVE <- cod_secteur_releve
     return(trait)
@@ -26,7 +25,8 @@ format_cod_strate <- function(trait, desc_serie_hist_f) {
             pkey_col = "COD_STRATE",
             col = "STRATE",
             val = strate_name,
-            optional_query = optional_query)
+            optional_query = optional_query
+        )
         return(key)
     }
 
@@ -62,10 +62,10 @@ format_cod_strate <- function(trait, desc_serie_hist_f) {
 get_strate <- function(nom_station, desc_serie_hist_f) {
     # This requires opening station reference data to determine the zone.
     lookup_station <- function(station_name = NULL, zone = NULL, species = NULL) {
-
         file_path <- system.file("ref_data",
-                "STATION_MOLL.csv",
-                package = "ANDESMollusque")
+            "STATION_MOLL.csv",
+            package = "ANDESMollusque"
+        )
 
         ref_station <- read.csv(file_path, sep = ",")
 
@@ -119,7 +119,6 @@ get_strate <- function(nom_station, desc_serie_hist_f) {
 
 #' @export
 format_zone <- function(trait, desc_serie_hist_f) {
-
     get_zone <- function(nom_station, desc_serie_hist_f) {
         if (desc_serie_hist_f == "Indice d'abondance zone 16E - pétoncle") {
             # For 16E
@@ -153,7 +152,8 @@ format_zone <- function(trait, desc_serie_hist_f) {
             table = "ZONE_GEST_MOLL",
             pkey_col = "COD_ZONE_GEST_MOLL",
             col = "ZONE_GEST_MOLL",
-            val = zone_name)
+            val = zone_name
+        )
         return(key)
     }
 
@@ -195,13 +195,13 @@ strip_alphabetic <- function(my_string) {
 
 
 format_cod_typ_trait <- function(trait, desc_stratification) {
-
     lookup_cod_typ_trait <- function(desc_typ_trait) {
-            key <- get_ref_key(
+        key <- get_ref_key(
             table = "TYPE_TRAIT",
             pkey_col = "COD_TYP_TRAIT",
             col = "DESC_TYP_TRAIT_F",
-            val = desc_typ_trait)
+            val = desc_typ_trait
+        )
         return(key)
     }
 
@@ -211,7 +211,7 @@ format_cod_typ_trait <- function(trait, desc_stratification) {
     # trait$cod_typ_trait <- lapply(desc_typ_trait, lookup_cod_typ_trait)
 
     # make a lookup table
-    desc <-  unique(desc_typ_trait)
+    desc <- unique(desc_typ_trait)
     code <- lapply(desc, lookup_cod_typ_trait)
     code_map <- data.frame(code = unlist(code), desc = unlist(desc))
 
@@ -222,7 +222,6 @@ format_cod_typ_trait <- function(trait, desc_stratification) {
 
     trait$COD_TYP_TRAIT <- res$code
     return(trait)
-
 }
 
 get_desc_typ_trait <- function(operation, desc_stratification) {
@@ -268,7 +267,6 @@ format_date_hre_trait <- function(trait) {
 
 #' @export
 format_cod_typ_heure <- function(trait) {
-
     lookup_cod_typ_heure <- function(is_dst) {
         if (is.na(is_dst)) {
             return(NA)
@@ -284,7 +282,8 @@ format_cod_typ_heure <- function(trait) {
             table = "TYPE_HEURE",
             pkey_col = "COD_TYP_HEURE",
             col = "DESC_TYP_HEURE_F",
-            val = desc)
+            val = desc
+        )
         return(key)
     }
     # use set start as reference
@@ -293,7 +292,7 @@ format_cod_typ_heure <- function(trait) {
 
     # we can how map to cod_type_heure
     # make a lookup table
-    desc <-  unique(is_dst)
+    desc <- unique(is_dst)
     code <- lapply(desc, lookup_cod_typ_heure)
     code_map <- data.frame(code = unlist(code), desc = unlist(desc))
 
@@ -334,7 +333,6 @@ format_coordinates <- function(trait) {
 #' @return Formatted dataframe
 #' @export
 validate_set_result <- function(trait) {
-
     atomic_compare_both <- function(row) {
         # COD_RESULT_OPER. is one of:
         #   1 - OK
@@ -374,5 +372,5 @@ validate_set_result <- function(trait) {
 
     # can now remove is_valid column
     trait <- subset(trait, select = -c(set_is_valid))
-    return (trait)
+    return(trait)
 }

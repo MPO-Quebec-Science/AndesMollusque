@@ -1,4 +1,3 @@
-
 #' Gets freq_long_mollusque_db (raw database results)
 #'
 #' This function executes a SQL query to retrieve the needed andes data to construct the FREQ_LONG_MOLLUSQUE table.
@@ -12,7 +11,6 @@
 #' @seealso [get_freq_long_mollusque()] for the formatted results
 #' @export
 get_freq_long_mollusque_db <- function(andes_db_connection) {
-
     # mnake a small pre-query to get the observation type for length.
     # this is purposefully not inside the main query in case we want to change it later ...
 
@@ -25,8 +23,9 @@ get_freq_long_mollusque_db <- function(andes_db_connection) {
 
 
     query <- readr::read_file(system.file("sql_queries",
-                                          "freq_long_mollusque.sql",
-                                          package = "ANDESMollusque"))
+        "freq_long_mollusque.sql",
+        package = "ANDESMollusque"
+    ))
 
     # Select active mission
     query <- paste(query, "WHERE shared_models_mission.is_active=1 ")
@@ -92,7 +91,6 @@ get_freq_long_mollusque <- function(andes_db_connection, capt = NULL) {
 
     # convert these strings to numeric
     freq <- cols_to_numeric(freq, col_names = c("VALEUR_LONG_MOLL", "VALEUR_LONG_MOLL_P"))
-
 }
 
 #' Perform database validation checks on the dataframe
@@ -180,7 +178,7 @@ validate_freq_long_mollusque <- function(df) {
 
 #' @export
 write_freq_long_mollusque <- function(df, access_db_write_connection = NULL) {
-   # write the dataframe to the database
+    # write the dataframe to the database
     if (is.null(access_db_write_connection)) {
         logger::log_error("Failed to provide a new MS Access connection.")
         stop("Failed to provide a new MS Access connection")
