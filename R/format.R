@@ -32,6 +32,9 @@ cleanup_text <- function(df, col_name = NULL, max_chars = NULL) {
     return(df)
 }
 
+#' Convert andes datetime string form DB to Oracle date format
+#' 
+#' @param datetime_str The string representing the datetime from ANDES DB
 #' @export
 andes_str_to_oracle_date <- function(datetime_str) {
     # as posixlt
@@ -40,6 +43,9 @@ andes_str_to_oracle_date <- function(datetime_str) {
     return(format(posixct_date, format = "%Y-%m-%d"))
 }
 
+#' Convert andes datetime string form DB to Oracle datetime format
+#' 
+#' @param datetime_str The string representing the datetime from ANDES DB
 #' @export
 andes_str_to_oracle_datetime <- function(datetime_str) {
     # as posixlt
@@ -49,6 +55,10 @@ andes_str_to_oracle_datetime <- function(datetime_str) {
     return(format(posixct_date, format = "%Y-%m-%d %H:%M:%S", tz = timezone_str))
 }
 
+#' Verify is the ANDES dattime string is in daylight savings time
+#'
+#' @param datetime_str The string representing the datetime from ANDES DB
+#' @return A boolean representing if the time is in DST
 #' @export
 is_andes_time_str_dst <- function(datetime_str) {
     is_dst <- NA
@@ -72,7 +82,10 @@ is_andes_time_str_dst <- function(datetime_str) {
     return(is_dst)
 }
 
-#' takes a standard ANDES UTC time string and converts it to a POSIXct object
+#' Convert ANDES UTC time string and converts it to a POSIXct object
+#'
+#' @param andes_time_str The string representing the datetime from ANDES DB
+#' @return POSIXct object representing the time in UTC
 #' @export
 parse_andes_datetime <- function(andes_time_str) {
     # if (is.na(andes_time_str)==TRUE) {
@@ -83,6 +96,13 @@ parse_andes_datetime <- function(andes_time_str) {
     return(parsed_time)
 }
 
+#' Add a hard-coded column with a specific value to the dataframe
+#'
+#' @param df The original dataframe to modify with a new column
+#' @param col_name The new column name
+#' @param value The value to add to every row in this column. 
+#' To add null values in the column use NA and not NULL.
+#' @return The original dataframe with the new column added
 #' @export
 add_hard_coded_value <- function(df, col_name = NULL, value = NULL) {
     if (is.null(col_name)) {

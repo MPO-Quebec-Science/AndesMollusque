@@ -8,9 +8,9 @@ This is useful to validate if a dataframe can be written to a DB table (where so
 check_cols_contains_na(df, col_names = NULL)
 }
 \arguments{
-\item{df:}{the dataframe to modify}
+\item{df}{The dataframe to modify}
 
-\item{col_names:}{a list of column names which will be converted to numeric}
+\item{col_names}{A list of column names which will be converted to numeric}
 }
 \value{
 A boolean representing if the dataframe is compliant.

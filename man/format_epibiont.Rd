@@ -10,10 +10,12 @@ ave_coverage to cod_couverture :
 2 -> 1/3 à 2/3 surface colonisée
 3 -> 2/3 et plus surface colonisée}
 \usage{
-format_epibiont(capt, andes_db_connection, code_filter)
+format_epibiont(andes_db_connection, code_filter)
 }
 \arguments{
-\item{epibiont_data}{the dataframe must contain columns "ave_with_barnacles" and "ave_coverage"}
+\item{andes_db_connection}{A connection object to the ANDES database.}
+
+\item{code_filter}{a list of species code to filter on, or NULL for no filtering}
 }
 \value{
 The input dataframe with columns for categorical codes
