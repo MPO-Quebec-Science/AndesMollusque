@@ -23,5 +23,3 @@ Même chose que pétoncle, avec deux tables additionelles (pour le poids des oeu
 
 6. `BIOMETRIE_MOLLUSQUE`
 7. `POIDS_BIOMETRIE`
-
-
