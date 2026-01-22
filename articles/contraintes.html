@@ -81,7 +81,7 @@ le champ de mission “Numéro de mission alternatif”, voir figure. <img src="
 <h3 id="distance-de-trait-visée-par-la-mission">Distance de trait visée par la mission<a class="anchor" aria-label="anchor" href="#distance-de-trait-vis%C3%A9e-par-la-mission"></a>
 </h3>
 <div class="float">
-<img src="_static/shared_models.cruise.targeted_vessel_speed.png" alt="targeted_vessel_speed&gt;"><div class="figcaption">targeted_vessel_speed&gt;</div>
+<img src="_static/shared_models.cruise.targeted_vessel_speed.png" alt="targeted_vessel_speed"><div class="figcaption">targeted_vessel_speed</div>
 </div>
 <p>Dans l’ancien outil de saisie, il faut saisir des métadonnées de
 mission tel que i) la vitesse visée
@@ -108,7 +108,7 @@ seulement pré-calculé et saisir la durée requise pour donner la distance
 voulu. Cette approche étant la plus simple ne demande aucune
 modifications d’Andes. Un durée de <code>8,09935205</code> minutes à un
 vitesse de <code>2,0</code> noeuds est de 500 mètres (soit
-<code>0.269978</code> miles nautiques).</p>
+<code>0,269978</code> miles nautiques).</p>
 <p>N.B. Ces distances sont utilisé comme métadonnées de mission. Il est
 possible que la distances visées de traits différent entre les stations.
 Ceux-ci devront être saisie autrement.</p>
@@ -122,10 +122,15 @@ Ceux-ci devront être saisie autrement.</p>
 <p>Doit corréspondre à une entrée de la table
 <code>PROJET_MOLLUSQUE</code> ayant une valeur éxistante pour la colonne
 <code>DESC_SOURCE_INFO_F</code></p>
-<p>Pour les mission pétoncle, un de ces choix: -
-<code>Évaluation de stocks IML - Pétoncle I de M</code> -
-<code>Évaluation de stocks IML - Pétoncle Minganie</code> Pour les
-missions buccin: - <code>Relevé buccin Haute Côte-Nord</code></p>
+<p>Pour les mission pétoncle, un de ces choix:</p>
+<ul>
+<li><code>Évaluation de stocks IML - Pétoncle I de M</code></li>
+<li><code>Évaluation de stocks IML - Pétoncle Minganie</code></li>
+</ul>
+<p>Pour les missions buccin:</p>
+<ul>
+<li><code>Relevé buccin Haute Côte-Nord</code></li>
+</ul>
 </div>
 <div class="section level3">
 <h3 id="région-échantilonnée---secteur-du-relevé">Région échantilonnée -&gt; Secteur du relevé<a class="anchor" aria-label="anchor" href="#r%C3%A9gion-%C3%A9chantilonn%C3%A9e---secteur-du-relev%C3%A9"></a>
@@ -136,23 +141,33 @@ missions buccin: - <code>Relevé buccin Haute Côte-Nord</code></p>
 <p>Doit corréspondre à une entrée de la table
 <code>TRAIT_MOLLUSQUE</code> ayant une valeur éxistante pour la colonne
 <code>DESC_SECTEUR_RELEVE_F</code></p>
-<p>Pour les mission pétoncle, un de ces choix: -
-<code>Îles-de-la-Madeleine</code> - <code>Côte-Nord</code> Pour les
-missions buccin: - <code>Haute Côte-Nord</code></p>
-<p>Pour les missions buccin: - <code>Haute Côte-Nord</code></p>
+<p>Pour les mission pétoncle, un de ces choix:</p>
+<ul>
+<li><code>Îles-de-la-Madeleine</code></li>
+<li><code>Côte-Nord</code></li>
+</ul>
+<p>Pour les missions buccin:</p>
+<ul>
+<li><code>Haute Côte-Nord</code></li>
+</ul>
 <div class="section level4">
 <h4 id="attention">ATTENTION!<a class="anchor" aria-label="anchor" href="#attention"></a>
 </h4>
 <p>Certaine tables de reference n’ont pas les memes valeurs entre la BD
-de MS Access la BD Peche_Sentinelle (IMLP). En cas de doute la BD
+de MS Access la BD Peche_Sentinelle (PSE). En cas de doute la BD
 PecheSentinelle devrait etre considéreé comme étant la bonne. Cetaines
 Tables/colonnes ne sont pas présente dans la BD Access.</p>
 <div class="section level5">
 <h5 id="projet_mollusque">PROJET_MOLLUSQUE<a class="anchor" aria-label="anchor" href="#projet_mollusque"></a>
 </h5>
 <p>Table: <code>PROJET_MOLLUSQUE</code></p>
-<p>Inconsistance dans le nom de colonne - IMLP:
-<code>REM_PROJET_MOLL</code> - ACCESS: <code>REM_PROJ_MOLL</code></p>
+<p>Inconsistance dans le nom de colonne:</p>
+<ul>
+<li>PSE: <code>REM_PROJET_MOLL</code>
+</li>
+<li>ACCESS: <code>REM_PROJ_MOLL</code>
+</li>
+</ul>
 </div>
 <div class="section level5">
 <h5 id="trait_mollusque">TRAIT_MOLLUSQUE<a class="anchor" aria-label="anchor" href="#trait_mollusque"></a>
@@ -166,23 +181,34 @@ Tables/colonnes ne sont pas présente dans la BD Access.</p>
 <li><code>COD_TYP_ECH_TRAIT</code></li>
 </ul>
 <p>Ne sont pas dans la table <code>TRAIT_MOLLUSQUE</code> de la BD
-Access, mais est presente dans sur IMLP. Étant donné que ces valeurs
+Access, mais est presente dans sur PSE. Étant donné que ces valeurs
 peuvent etre null (et le sont pour la plupart des relevées récents),
 nous allons simplement insérer une valeur null. (relevé 32 a trois
-traits avec une valeur non null !?) #### TYPE_ECHANT_TRAIT La table IMLP
-<code>TYPE_ECHANT_TRAIT</code> n’éxiste pas dans la BD ACccess:</p>
+traits avec une valeur non null !?)</p>
+</div>
+<div class="section level5">
+<h5 id="type_echant_trait">TYPE_ECHANT_TRAIT<a class="anchor" aria-label="anchor" href="#type_echant_trait"></a>
+</h5>
+<p>La table PSE <code>TYPE_ECHANT_TRAIT</code> n’éxiste pas dans la BD
+ACccess:</p>
 </div>
 <div class="section level5">
 <h5 id="type_heure">TYPE_HEURE<a class="anchor" aria-label="anchor" href="#type_heure"></a>
 </h5>
 <ul>
-<li><p>IMLP</p></li>
-<li><p>0 -&gt; Normale Standard</p></li>
-<li><p>1 -&gt; Avancée Daylight saving</p></li>
-<li><p>2 -&gt; GMT GMT</p></li>
-<li><p>Acces</p></li>
-<li><p>0 -&gt; Normale Standard</p></li>
-<li><p>1 -&gt; Avancée Daylight saving</p></li>
+<li>PSE
+<ul>
+<li>0 -&gt; Normale Standard</li>
+<li>1 -&gt; Avancée Daylight saving</li>
+<li>2 -&gt; GMT GMT</li>
+</ul>
+</li>
+<li>Acces
+<ul>
+<li>0 -&gt; Normale Standard</li>
+<li>1 -&gt; Avancée Daylight saving</li>
+</ul>
+</li>
 </ul>
 <p>Donc meme si Andes utilise l’heure GMT (selon les bonnes pratiques)
 l’option n’éxiste pas dans Access, donc les dates/heures sont converti
@@ -192,17 +218,71 @@ en heure normal standard de l’est (EST).</p>
 <h5 id="secteur_releve_moll">SECTEUR_RELEVE_MOLL<a class="anchor" aria-label="anchor" href="#secteur_releve_moll"></a>
 </h5>
 <p>Certaine tables de reference n’ont pas les memes valeurs entre la BD
-de MS Access la BD Peche_Sentinelle (IMLP). En cas de doute la BD
+de MS Access la BD Peche_Sentinelle (PSE). En cas de doute la BD
 PecheSentinelle devrait etre considéreé comme étant la bonne.</p>
-<p>Table: <code>SECTEUR_RELEVE_MOLL</code> Colonne:
-<code>DESC_SECTEUR_RELEVE_F</code></p>
-<p>IMLP: <code>Îles-de-la-Madeleine</code> ACCESS:
-<code>Îles de la Madeleine</code></p>
-<p>IMLP: | COD_SECTEUR_RELEVE | DESC_SECTEUR_RELEVE_F | SECTEUR_RELEVE |
-|——————–|———————–|—————-| | 1 | Côte-Nord | C | | 2 | Estuaire | E | | 3
-| Gaspésie | G | | 4 | Îles-de-la-Madeleine | I | | 5 | Québec | Q | | 6
-| Basse Côte-Nord | B | | 7 | Haute Côte-Nord | H | | 8 | Moyenne
-Côte-Nord | M | | 9 | Anticosti | A |</p>
+<p>Table: <code>SECTEUR_RELEVE_MOLL</code></p>
+<p>Colonne: <code>DESC_SECTEUR_RELEVE_F</code></p>
+<ul>
+<li>PSE: <code>Îles-de-la-Madeleine</code>
+</li>
+<li>ACCESS: <code>Îles de la Madeleine</code>
+</li>
+</ul>
+<p>PSE:</p>
+<table class="table">
+<thead><tr class="header">
+<th>COD_SECTEUR_RELEVE</th>
+<th>DESC_SECTEUR_RELEVE_F</th>
+<th>SECTEUR_RELEVE</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Côte-Nord</td>
+<td>C</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Estuaire</td>
+<td>E</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Gaspésie</td>
+<td>G</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Îles-de-la-Madeleine</td>
+<td>I</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Québec</td>
+<td>Q</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Basse Côte-Nord</td>
+<td>B</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Haute Côte-Nord</td>
+<td>H</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>Moyenne Côte-Nord</td>
+<td>M</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>Anticosti</td>
+<td>A</td>
+</tr>
+</tbody>
+</table>
 <p>Le problème est évité en suivant un approche plus robuste en fesant
 le lien via la valeur dans la colonne <code>SECTEUR_RELEVE</code>.</p>
 <p>Cette valeur est extrait de la premier lettre (apres un nettoyage
@@ -219,12 +299,12 @@ avec cette approche.</p>
 <h5 id="source_info">SOURCE_INFO<a class="anchor" aria-label="anchor" href="#source_info"></a>
 </h5>
 <p>Certaine tables de reference n’ont pas les memes valeurs entre la BD
-de MS Access la BD Peche_Sentinelle (IMLP). En cas de doute la BD
+de MS Access la BD Peche_Sentinelle (PSE). En cas de doute la BD
 PecheSentinelle devrait etre considéreé comme étant la bonne.</p>
-<p>IMLP:
-<code>Évaluation de stocks IML - Pétoncle Îles-de-la-Madeleine</code>
-MSACCESS:<code>Évaluation de stocks IML - Pétoncle I de M</code></p>
-<p>IMLP:</p>
+<p>PSE:
+<code>Évaluation de stocks IML - Pétoncle Îles-de-la-Madeleine</code></p>
+<p>MSACCESS:<code>Évaluation de stocks IML - Pétoncle I de M</code></p>
+<p>PSE:</p>
 <table class="table">
 <colgroup>
 <col width="10%">
@@ -311,35 +391,72 @@ MSACCESS:<code>Évaluation de stocks IML - Pétoncle I de M</code></p>
 <h5 id="engin_mollusque">ENGIN_MOLLUSQUE<a class="anchor" aria-label="anchor" href="#engin_mollusque"></a>
 </h5>
 <p>Certaine tables de reference n’ont pas les memes valeurs entre la BD
-de MS Access la BD Peche_Sentinelle (IMLP). En cas de doute la BD
+de MS Access la BD Peche_Sentinelle (PSE). En cas de doute la BD
 PecheSentinelle devrait etre considéreé comme étant la bonne.</p>
 <p>La colonne <code>REM_ENGIN_MOLL</code> dans la table
-<code>ENGIN_MOLLUSQUE</code> existe sur IMLP, mais n’est pas présente
-sur Access.</p>
+<code>ENGIN_MOLLUSQUE</code> existe sur PSE, mais n’est pas présente sur
+Access.</p>
 </div>
 <div class="section level5">
 <h5 id="type_panier">TYPE_PANIER<a class="anchor" aria-label="anchor" href="#type_panier"></a>
 </h5>
 <p>Certaine tables de reference n’ont pas les memes valeurs entre la BD
-de MS Access la BD Peche_Sentinelle (IMLP). En cas de doute la BD
+de MS Access la BD Peche_Sentinelle (PSE). En cas de doute la BD
 PecheSentinelle devrait etre considéreé comme étant la bonne.</p>
-<p>IMLP: |COD_TYPE_PANIER | DESC_TYPE_PANIER | |—————–|—————————| |0
-|Pas de panier dans l’engin | |1 |Panier standard | |2 |Panier doublé
-|</p>
-<p>ACCESS: |COD_TYPE_PANIER | DESC_TYPE_PANIER | |—————–|—————————| |1
-|Panier standard | |2 |Panier doublé | |3 |Aucun |</p>
+<p>PSE:</p>
+<table class="table">
+<thead><tr class="header">
+<th>COD_TYPE_PANIER</th>
+<th>DESC_TYPE_PANIER</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>Pas de panier dans l’engin</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Panier standard</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Panier doublé</td>
+</tr>
+</tbody>
+</table>
+<p>ACCESS:</p>
+<table class="table">
+<thead><tr class="header">
+<th>COD_TYPE_PANIER</th>
+<th>DESC_TYPE_PANIER</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Panier standard</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Panier doublé</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Aucun</td>
+</tr>
+</tbody>
+</table>
 <p>Il faudrait chercher (et valider) l’existance de type <code>0</code>
-et <code>3</code> dans ACCESS et IMLP (respectivement).</p>
+et <code>3</code> dans ACCESS et PSE (respectivement).</p>
 </div>
 <div class="section level5">
 <h5 id="capture_mollusque">CAPTURE_MOLLUSQUE<a class="anchor" aria-label="anchor" href="#capture_mollusque"></a>
 </h5>
 <p>Certaine tables de reference n’ont pas les memes valeurs entre la BD
-de MS Access la BD Peche_Sentinelle (IMLP). En cas de doute la BD
+de MS Access la BD Peche_Sentinelle (PSE). En cas de doute la BD
 PecheSentinelle devrait etre considéreé comme étant la bonne.</p>
 <p>La colonne <code>REM_CATURE_MOLL</code> dans la table
-<code>ENGINCAPTURE_MOLLUSQUE_MOLLUSQUE</code> existe sur IMLP, mais
-n’est pas présente sur Access.</p>
+<code>ENGINCAPTURE_MOLLUSQUE_MOLLUSQUE</code> existe sur PSE, mais n’est
+pas présente sur Access.</p>
 </div>
 </div>
 </div>
@@ -347,20 +464,47 @@ n’est pas présente sur Access.</p>
 <h3 id="résumeé-de-contraintes-où-les-valeurs-sur-andes-doivent-correspondre-avec-oracle">Résumeé de contraintes où les valeurs sur Andes doivent correspondre
 avec Oracle<a class="anchor" aria-label="anchor" href="#r%C3%A9sume%C3%A9-de-contraintes-o%C3%B9-les-valeurs-sur-andes-doivent-correspondre-avec-oracle"></a>
 </h3>
-<p>Évaluation de stocks IML - Pétoncle I de M |Andes | PSentinelle |
-exemple | notes | |——–|—————|———-|——-|
-|<code>shared_models_cruise.description</code>
-|<code>PROJET_MOLLUSQUE.DESC_SOURCE_INFO_F</code>
-|<code>Évaluation de stocks IML - Pétoncle I de M</code> | texte
-verbatim| |<code>shared_models_cruise.area_of_operation</code> |
-<code>TRAIT_MOLLUSQUE.SECTEUR</code> | <code>Côte-Nord</code> | Permiere
-lettre seulement (devient <code>C</code>)
-|<code>shared_models_station.name</code> |
-<code>TRAIT_MOLLUSQUE.NO_STATION</code> | <code>N531</code> | Parti
-numérique extrait (devient <code>531</code>) |
-|<code>shared_models_stratificationtype.description_fra</code>|<code>TYPE_TRAIT.DESC_TYP_TRAIT_F</code>|
-<code>Échantillonnage aléatoire</code> | map manuel, (devient
-<code>Aléatoire simple</code>)|</p>
+<p>Évaluation de stocks IML - Pétoncle I de M</p>
+<table class="table">
+<colgroup>
+<col width="20%">
+<col width="37%">
+<col width="25%">
+<col width="17%">
+</colgroup>
+<thead><tr class="header">
+<th>Andes</th>
+<th>PSentinelle</th>
+<th>exemple</th>
+<th>notes</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>shared_models_cruise.description</code></td>
+<td><code>PROJET_MOLLUSQUE.DESC_SOURCE_INFO_F</code></td>
+<td><code>Évaluation de stocks IML - Pétoncle I de M</code></td>
+<td>texte verbatim</td>
+</tr>
+<tr class="even">
+<td><code>shared_models_cruise.area_of_operation</code></td>
+<td><code>TRAIT_MOLLUSQUE.SECTEUR</code></td>
+<td><code>Côte-Nord</code></td>
+<td>Permiere lettre seulement (devient <code>C</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>shared_models_station.name</code></td>
+<td><code>TRAIT_MOLLUSQUE.NO_STATION</code></td>
+<td><code>N531</code></td>
+<td>Parti numérique extrait (devient <code>531</code>)</td>
+</tr>
+<tr class="even">
+<td><code>shared_models_stratificationtype.description_fra</code></td>
+<td><code>TYPE_TRAIT.DESC_TYP_TRAIT_F</code></td>
+<td><code>Échantillonnage aléatoire</code></td>
+<td>map manuel, (devient <code>Aléatoire simple</code>)</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -370,7 +514,7 @@ numérique extrait (devient <code>531</code>) |
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Sean-Fortin.</p>
+  <p>Developed by David Sean-Fortin.</p>
 </div>
 
 <div class="pkgdown-footer-right">

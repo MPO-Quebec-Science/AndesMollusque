@@ -1,6 +1,7 @@
 # AndesMollusque
 
-[![R](https://github.com/MPO-Quebec-Science/AndesMollusque/actions/workflows/run-tests.yml/badge.svg)](https://github.com/MPO-Quebec-Science/AndesMollusque/actions/workflows/run-tests.yml)
+[![rcmdcheck](https://github.com/MPO-Quebec-Science/AndesMollusque/actions/workflows/rcmdcheck.yml/badge.svg)](https://github.com/MPO-Quebec-Science/AndesMollusque/actions/workflows/rcmdcheck.yml)
+[![Docs](https://github.com/MPO-Quebec-Science/AndesMollusque/actions/workflows/documentation.yml/badge.svg)](https://github.com/MPO-Quebec-Science/AndesMollusque/actions/workflows/documentation.yml)
 
 Documentation disponible icit:
 <https://mpo-quebec-science.github.io/AndesMollusque/>

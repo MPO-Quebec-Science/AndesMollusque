@@ -13,9 +13,9 @@ de mission “Numéro de mission alternatif”, voir figure.
 
 ### Distance de trait visée par la mission
 
-![targeted_vessel_speed\>](_static/shared_models.cruise.targeted_vessel_speed.png)
+![targeted_vessel_speed](_static/shared_models.cruise.targeted_vessel_speed.png)
 
-targeted_vessel_speed\>
+targeted_vessel_speed
 
 Dans l’ancien outil de saisie, il faut saisir des métadonnées de mission
 tel que i) la vitesse visée ($v$), ii) la durée visée ($t$) et ii) la
@@ -38,7 +38,7 @@ indépendent au lieu de la vitesse, il était jugé plus simple de
 seulement pré-calculé et saisir la durée requise pour donner la distance
 voulu. Cette approche étant la plus simple ne demande aucune
 modifications d’Andes. Un durée de `8,09935205` minutes à un vitesse de
-`2,0` noeuds est de 500 mètres (soit `0.269978` miles nautiques).
+`2,0` noeuds est de 500 mètres (soit `0,269978` miles nautiques).
 
 N.B. Ces distances sont utilisé comme métadonnées de mission. Il est
 possible que la distances visées de traits différent entre les stations.
@@ -53,10 +53,14 @@ description
 Doit corréspondre à une entrée de la table `PROJET_MOLLUSQUE` ayant une
 valeur éxistante pour la colonne `DESC_SOURCE_INFO_F`
 
-Pour les mission pétoncle, un de ces choix: -
-`Évaluation de stocks IML - Pétoncle I de M` -
-`Évaluation de stocks IML - Pétoncle Minganie` Pour les missions
-buccin: - `Relevé buccin Haute Côte-Nord`
+Pour les mission pétoncle, un de ces choix:
+
+- `Évaluation de stocks IML - Pétoncle I de M`
+- `Évaluation de stocks IML - Pétoncle Minganie`
+
+Pour les missions buccin:
+
+- `Relevé buccin Haute Côte-Nord`
 
 ### Région échantilonnée -\> Secteur du relevé
 
@@ -67,15 +71,19 @@ area_of_operation
 Doit corréspondre à une entrée de la table `TRAIT_MOLLUSQUE` ayant une
 valeur éxistante pour la colonne `DESC_SECTEUR_RELEVE_F`
 
-Pour les mission pétoncle, un de ces choix: - `Îles-de-la-Madeleine` -
-`Côte-Nord` Pour les missions buccin: - `Haute Côte-Nord`
+Pour les mission pétoncle, un de ces choix:
 
-Pour les missions buccin: - `Haute Côte-Nord`
+- `Îles-de-la-Madeleine`
+- `Côte-Nord`
+
+Pour les missions buccin:
+
+- `Haute Côte-Nord`
 
 #### ATTENTION!
 
 Certaine tables de reference n’ont pas les memes valeurs entre la BD de
-MS Access la BD Peche_Sentinelle (IMLP). En cas de doute la BD
+MS Access la BD Peche_Sentinelle (PSE). En cas de doute la BD
 PecheSentinelle devrait etre considéreé comme étant la bonne. Cetaines
 Tables/colonnes ne sont pas présente dans la BD Access.
 
@@ -83,8 +91,10 @@ Tables/colonnes ne sont pas présente dans la BD Access.
 
 Table: `PROJET_MOLLUSQUE`
 
-Inconsistance dans le nom de colonne - IMLP: `REM_PROJET_MOLL` - ACCESS:
-`REM_PROJ_MOLL`
+Inconsistance dans le nom de colonne:
+
+- PSE: `REM_PROJET_MOLL`
+- ACCESS: `REM_PROJ_MOLL`
 
 ##### TRAIT_MOLLUSQUE
 
@@ -97,27 +107,24 @@ les colonnes:
 - `COD_TYP_ECH_TRAIT`
 
 Ne sont pas dans la table `TRAIT_MOLLUSQUE` de la BD Access, mais est
-presente dans sur IMLP. Étant donné que ces valeurs peuvent etre null
-(et le sont pour la plupart des relevées récents), nous allons
-simplement insérer une valeur null. (relevé 32 a trois traits avec une
-valeur non null !?) \#### TYPE_ECHANT_TRAIT La table IMLP
-`TYPE_ECHANT_TRAIT` n’éxiste pas dans la BD ACccess:
+presente dans sur PSE. Étant donné que ces valeurs peuvent etre null (et
+le sont pour la plupart des relevées récents), nous allons simplement
+insérer une valeur null. (relevé 32 a trois traits avec une valeur non
+null !?)
+
+##### TYPE_ECHANT_TRAIT
+
+La table PSE `TYPE_ECHANT_TRAIT` n’éxiste pas dans la BD ACccess:
 
 ##### TYPE_HEURE
 
-- IMLP
-
-- 0 -\> Normale Standard
-
-- 1 -\> Avancée Daylight saving
-
-- 2 -\> GMT GMT
-
+- PSE
+  - 0 -\> Normale Standard
+  - 1 -\> Avancée Daylight saving
+  - 2 -\> GMT GMT
 - Acces
-
-- 0 -\> Normale Standard
-
-- 1 -\> Avancée Daylight saving
+  - 0 -\> Normale Standard
+  - 1 -\> Avancée Daylight saving
 
 Donc meme si Andes utilise l’heure GMT (selon les bonnes pratiques)
 l’option n’éxiste pas dans Access, donc les dates/heures sont converti
@@ -126,19 +133,29 @@ en heure normal standard de l’est (EST).
 ##### SECTEUR_RELEVE_MOLL
 
 Certaine tables de reference n’ont pas les memes valeurs entre la BD de
-MS Access la BD Peche_Sentinelle (IMLP). En cas de doute la BD
+MS Access la BD Peche_Sentinelle (PSE). En cas de doute la BD
 PecheSentinelle devrait etre considéreé comme étant la bonne.
 
-Table: `SECTEUR_RELEVE_MOLL` Colonne: `DESC_SECTEUR_RELEVE_F`
+Table: `SECTEUR_RELEVE_MOLL`
 
-IMLP: `Îles-de-la-Madeleine` ACCESS: `Îles de la Madeleine`
+Colonne: `DESC_SECTEUR_RELEVE_F`
 
-IMLP: \| COD_SECTEUR_RELEVE \| DESC_SECTEUR_RELEVE_F \| SECTEUR_RELEVE
-\| \|——————–\|———————–\|—————-\| \| 1 \| Côte-Nord \| C \| \| 2 \|
-Estuaire \| E \| \| 3 \| Gaspésie \| G \| \| 4 \| Îles-de-la-Madeleine
-\| I \| \| 5 \| Québec \| Q \| \| 6 \| Basse Côte-Nord \| B \| \| 7 \|
-Haute Côte-Nord \| H \| \| 8 \| Moyenne Côte-Nord \| M \| \| 9 \|
-Anticosti \| A \|
+- PSE: `Îles-de-la-Madeleine`
+- ACCESS: `Îles de la Madeleine`
+
+PSE:
+
+| COD_SECTEUR_RELEVE | DESC_SECTEUR_RELEVE_F | SECTEUR_RELEVE |
+|--------------------|-----------------------|----------------|
+| 1                  | Côte-Nord             | C              |
+| 2                  | Estuaire              | E              |
+| 3                  | Gaspésie              | G              |
+| 4                  | Îles-de-la-Madeleine  | I              |
+| 5                  | Québec                | Q              |
+| 6                  | Basse Côte-Nord       | B              |
+| 7                  | Haute Côte-Nord       | H              |
+| 8                  | Moyenne Côte-Nord     | M              |
+| 9                  | Anticosti             | A              |
 
 Le problème est évité en suivant un approche plus robuste en fesant le
 lien via la valeur dans la colonne `SECTEUR_RELEVE`.
@@ -154,13 +171,14 @@ soit compatible avec cette approche.
 ##### SOURCE_INFO
 
 Certaine tables de reference n’ont pas les memes valeurs entre la BD de
-MS Access la BD Peche_Sentinelle (IMLP). En cas de doute la BD
+MS Access la BD Peche_Sentinelle (PSE). En cas de doute la BD
 PecheSentinelle devrait etre considéreé comme étant la bonne.
 
-IMLP: `Évaluation de stocks IML - Pétoncle Îles-de-la-Madeleine`
+PSE: `Évaluation de stocks IML - Pétoncle Îles-de-la-Madeleine`
+
 MSACCESS:`Évaluation de stocks IML - Pétoncle I de M`
 
-IMLP:
+PSE:
 
 | COD_SOURCE_INFO | COD_CLASSE_PROJET | DESC_SOURCE_INFO_F                                       | DESC_SOURCE_INFO_A                                 |
 |-----------------|-------------------|----------------------------------------------------------|----------------------------------------------------|
@@ -186,49 +204,54 @@ DESC_SOURCE_INFO_F = f"Évaluation de stocks IML {self.zone} - {self.espece}"
 ##### ENGIN_MOLLUSQUE
 
 Certaine tables de reference n’ont pas les memes valeurs entre la BD de
-MS Access la BD Peche_Sentinelle (IMLP). En cas de doute la BD
+MS Access la BD Peche_Sentinelle (PSE). En cas de doute la BD
 PecheSentinelle devrait etre considéreé comme étant la bonne.
 
 La colonne `REM_ENGIN_MOLL` dans la table `ENGIN_MOLLUSQUE` existe sur
-IMLP, mais n’est pas présente sur Access.
+PSE, mais n’est pas présente sur Access.
 
 ##### TYPE_PANIER
 
 Certaine tables de reference n’ont pas les memes valeurs entre la BD de
-MS Access la BD Peche_Sentinelle (IMLP). En cas de doute la BD
+MS Access la BD Peche_Sentinelle (PSE). En cas de doute la BD
 PecheSentinelle devrait etre considéreé comme étant la bonne.
 
-IMLP: \|COD_TYPE_PANIER \| DESC_TYPE_PANIER \| \|—————–\|—————————\| \|0
-\|Pas de panier dans l’engin \| \|1 \|Panier standard \| \|2 \|Panier
-doublé \|
+PSE:
 
-ACCESS: \|COD_TYPE_PANIER \| DESC_TYPE_PANIER \| \|—————–\|—————————\|
-\|1 \|Panier standard \| \|2 \|Panier doublé \| \|3 \|Aucun \|
+| COD_TYPE_PANIER | DESC_TYPE_PANIER           |
+|-----------------|----------------------------|
+| 0               | Pas de panier dans l’engin |
+| 1               | Panier standard            |
+| 2               | Panier doublé              |
+
+ACCESS:
+
+| COD_TYPE_PANIER | DESC_TYPE_PANIER |
+|-----------------|------------------|
+| 1               | Panier standard  |
+| 2               | Panier doublé    |
+| 3               | Aucun            |
 
 Il faudrait chercher (et valider) l’existance de type `0` et `3` dans
-ACCESS et IMLP (respectivement).
+ACCESS et PSE (respectivement).
 
 ##### CAPTURE_MOLLUSQUE
 
 Certaine tables de reference n’ont pas les memes valeurs entre la BD de
-MS Access la BD Peche_Sentinelle (IMLP). En cas de doute la BD
+MS Access la BD Peche_Sentinelle (PSE). En cas de doute la BD
 PecheSentinelle devrait etre considéreé comme étant la bonne.
 
 La colonne `REM_CATURE_MOLL` dans la table
-`ENGINCAPTURE_MOLLUSQUE_MOLLUSQUE` existe sur IMLP, mais n’est pas
+`ENGINCAPTURE_MOLLUSQUE_MOLLUSQUE` existe sur PSE, mais n’est pas
 présente sur Access.
 
 ### Résumeé de contraintes où les valeurs sur Andes doivent correspondre avec Oracle
 
-Évaluation de stocks IML - Pétoncle I de M \|Andes \| PSentinelle \|
-exemple \| notes \| \|——–\|—————\|———-\|——-\|
-\|`shared_models_cruise.description`
-\|`PROJET_MOLLUSQUE.DESC_SOURCE_INFO_F`
-\|`Évaluation de stocks IML - Pétoncle I de M` \| texte verbatim\|
-\|`shared_models_cruise.area_of_operation` \| `TRAIT_MOLLUSQUE.SECTEUR`
-\| `Côte-Nord` \| Permiere lettre seulement (devient `C`)
-\|`shared_models_station.name` \| `TRAIT_MOLLUSQUE.NO_STATION` \| `N531`
-\| Parti numérique extrait (devient `531`) \|
-\|`shared_models_stratificationtype.description_fra`\|`TYPE_TRAIT.DESC_TYP_TRAIT_F`\|
-`Échantillonnage aléatoire` \| map manuel, (devient
-`Aléatoire simple`)\|
+Évaluation de stocks IML - Pétoncle I de M
+
+| Andes                                              | PSentinelle                           | exemple                                      | notes                                    |
+|----------------------------------------------------|---------------------------------------|----------------------------------------------|------------------------------------------|
+| `shared_models_cruise.description`                 | `PROJET_MOLLUSQUE.DESC_SOURCE_INFO_F` | `Évaluation de stocks IML - Pétoncle I de M` | texte verbatim                           |
+| `shared_models_cruise.area_of_operation`           | `TRAIT_MOLLUSQUE.SECTEUR`             | `Côte-Nord`                                  | Permiere lettre seulement (devient `C`)  |
+| `shared_models_station.name`                       | `TRAIT_MOLLUSQUE.NO_STATION`          | `N531`                                       | Parti numérique extrait (devient `531`)  |
+| `shared_models_stratificationtype.description_fra` | `TYPE_TRAIT.DESC_TYP_TRAIT_F`         | `Échantillonnage aléatoire`                  | map manuel, (devient `Aléatoire simple`) |

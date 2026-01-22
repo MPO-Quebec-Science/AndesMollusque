@@ -2,10 +2,7 @@
 
 ## Authors
 
-- **Sean-Fortin**. Maintainer.
-
-- **David**. .  
-  DFO/MPO
+- **David Sean-Fortin**. Maintainer.
 
 ## Citation
 
