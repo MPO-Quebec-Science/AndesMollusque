@@ -2,10 +2,16 @@
 % Please edit documentation in R/format.R
 \name{parse_andes_datetime}
 \alias{parse_andes_datetime}
-\title{takes a standard ANDES UTC time string and converts it to a POSIXct object}
+\title{Convert ANDES UTC time string and converts it to a POSIXct object}
 \usage{
 parse_andes_datetime(andes_time_str)
 }
+\arguments{
+\item{andes_time_str}{The string representing the datetime from ANDES DB}
+}
+\value{
+POSIXct object representing the time in UTC
+}
 \description{
-takes a standard ANDES UTC time string and converts it to a POSIXct object
+Convert ANDES UTC time string and converts it to a POSIXct object
 }

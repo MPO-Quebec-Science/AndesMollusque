@@ -7,6 +7,11 @@ coverts it to an average set-level metric in accordance to the legacy Oracle dat
 \usage{
 get_epibiont(andes_db_connection, code_filter)
 }
+\arguments{
+\item{andes_db_connection}{A connection object to the ANDES database.}
+
+\item{code_filter}{a list of species code to filter on, or NULL for no filtering}
+}
 \description{
 This fetches the specimen-level coverage data and
 coverts it to an average set-level metric in accordance to the legacy Oracle database.

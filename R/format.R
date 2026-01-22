@@ -1,4 +1,3 @@
-
 #' a merge that preserves row and column order
 #' shamelessly stolen from https://stackoverflow.com/questions/17878048/merge-two-data-frames-while-keeping-the-original-row-order
 #' @param x, the "left" dataframe (all.x=TRUE)
@@ -10,8 +9,10 @@ left_join <- function(x, y, ...) {
     joined <- merge(x = x, y = y, all.x = TRUE, sort = FALSE, ...)
 
     cols <- unique(c(colnames(x), colnames(y)))
-    return(joined[order(joined$join_id),
-         cols[cols %in% colnames(joined) & cols != "join_id_"]])
+    return(joined[
+        order(joined$join_id),
+        cols[cols %in% colnames(joined) & cols != "join_id_"]
+    ])
 }
 
 #' @export
@@ -21,7 +22,7 @@ cleanup_text <- function(df, col_name = NULL, max_chars = NULL) {
     # cleanup, remove line breaks from the text block
     andes_text <- gsub("\r?\n|\r", " ", andes_text)
 
-    if (! is.null(max_chars) && nchar(andes_text) > max_chars) {
+    if (!is.null(max_chars) && nchar(andes_text) > max_chars) {
         # truncate the text to max_chars
         andes_text <- substr(andes_text, 1, max_chars)
         logger::log_warn("The text in column {col_name} was truncated to {max_chars} characters.")
@@ -31,6 +32,9 @@ cleanup_text <- function(df, col_name = NULL, max_chars = NULL) {
     return(df)
 }
 
+#' Convert andes datetime string form DB to Oracle date format
+#' 
+#' @param datetime_str The string representing the datetime from ANDES DB
 #' @export
 andes_str_to_oracle_date <- function(datetime_str) {
     # as posixlt
@@ -39,6 +43,9 @@ andes_str_to_oracle_date <- function(datetime_str) {
     return(format(posixct_date, format = "%Y-%m-%d"))
 }
 
+#' Convert andes datetime string form DB to Oracle datetime format
+#' 
+#' @param datetime_str The string representing the datetime from ANDES DB
 #' @export
 andes_str_to_oracle_datetime <- function(datetime_str) {
     # as posixlt
@@ -48,6 +55,10 @@ andes_str_to_oracle_datetime <- function(datetime_str) {
     return(format(posixct_date, format = "%Y-%m-%d %H:%M:%S", tz = timezone_str))
 }
 
+#' Verify is the ANDES dattime string is in daylight savings time
+#'
+#' @param datetime_str The string representing the datetime from ANDES DB
+#' @return A boolean representing if the time is in DST
 #' @export
 is_andes_time_str_dst <- function(datetime_str) {
     is_dst <- NA
@@ -71,17 +82,27 @@ is_andes_time_str_dst <- function(datetime_str) {
     return(is_dst)
 }
 
-#' takes a standard ANDES UTC time string and converts it to a POSIXct object
+#' Convert ANDES UTC time string and converts it to a POSIXct object
+#'
+#' @param andes_time_str The string representing the datetime from ANDES DB
+#' @return POSIXct object representing the time in UTC
 #' @export
 parse_andes_datetime <- function(andes_time_str) {
-  # if (is.na(andes_time_str)==TRUE) {
-  #   return(NA)
-  # }
-  parsed_time <- as.POSIXct(andes_time_str, format = "%Y-%m-%d %H:%M:%S", tz = "UTC", optional = TRUE)
-  # Convert ISO 8601 time to POSIXlt, ANDES DB time values are implicitly in UTC
-  return(parsed_time)
+    # if (is.na(andes_time_str)==TRUE) {
+    #   return(NA)
+    # }
+    parsed_time <- as.POSIXct(andes_time_str, format = "%Y-%m-%d %H:%M:%S", tz = "UTC", optional = TRUE)
+    # Convert ISO 8601 time to POSIXlt, ANDES DB time values are implicitly in UTC
+    return(parsed_time)
 }
 
+#' Add a hard-coded column with a specific value to the dataframe
+#'
+#' @param df The original dataframe to modify with a new column
+#' @param col_name The new column name
+#' @param value The value to add to every row in this column. 
+#' To add null values in the column use NA and not NULL.
+#' @return The original dataframe with the new column added
 #' @export
 add_hard_coded_value <- function(df, col_name = NULL, value = NULL) {
     if (is.null(col_name)) {
@@ -173,13 +194,14 @@ generate_sql_insert_statement <- function(df_row, table_name) {
     col_values_str <- paste("(", col_values_str, ") ", sep = "")
     # the list is now build, we can create the INSERT statement.
     statement <- paste(
-                    "INSERT INTO",
-                    table_name,
-                    col_names,
-                    "VALUES",
-                    col_values_str,
-                    ";",
-                    sep = " ")
+        "INSERT INTO",
+        table_name,
+        col_names,
+        "VALUES",
+        col_values_str,
+        ";",
+        sep = " "
+    )
     return(statement)
 }
 
@@ -193,7 +215,7 @@ cols_to_numeric <- function(df, col_names = NULL) {
         stop("Must supply a list of column names")
     }
     for (i in seq_len(length(col_names))) {
-        if (! col_names[i] %in% names(df)) {
+        if (!col_names[i] %in% names(df)) {
             logger::log_error("Cannot convert type, {col_names[i]} is not a column name")
             stop("Cannot convert type, not a column name")
         }
@@ -206,8 +228,8 @@ cols_to_numeric <- function(df, col_names = NULL) {
 #'
 #' Checks if all dataframe cols named in the col_names contain NA
 #' This is useful to validate if a dataframe can be written to a DB table (where some columns values cannot be null)
-#' @param df: the dataframe to modify
-#' @param col_names: a list of column names which will be converted to numeric
+#' @param df The dataframe to modify
+#' @param col_names A list of column names which will be converted to numeric
 #' @returns A boolean representing if the dataframe is compliant.
 #' @export
 check_cols_contains_na <- function(df, col_names = NULL) {
@@ -215,7 +237,7 @@ check_cols_contains_na <- function(df, col_names = NULL) {
         stop("Must supply a list of column names")
     }
     for (col_name in col_names) {
-        if (! col_name %in% names(df)) {
+        if (!col_name %in% names(df)) {
             logger::log_error("Cannot verify, {col_name} is not a column in the dataframe")
             stop("Cannot verify, not a column name")
         }
@@ -240,7 +262,7 @@ check_columns_present <- function(df, col_names = NULL, coerce = FALSE) {
     }
     for (col_name in col_names) {
         if (!(col_name %in% names(df))) {
-            if (! coerce) {
+            if (!coerce) {
                 logger::log_error("Missing required column. The column {col_name} is not in dataframe")
                 return(FALSE)
             } else {
@@ -264,7 +286,7 @@ check_other_columns <- function(df, col_names = NULL, coerce = FALSE) {
     }
     for (col_name in names(df)) {
         if (!(col_name %in% col_names)) {
-            if (! coerce) {
+            if (!coerce) {
                 logger::log_warn("An unexpected column was found in the dataframe: {col_name}")
                 return(FALSE)
             } else {
@@ -290,7 +312,7 @@ check_numeric_columns <- function(df, col_names = NULL, coerce = FALSE) {
     for (col_name in col_names) {
         col_class <- class(df[, names(df) == col_name])
         if (!(col_class %in% c("integer", "numeric"))) {
-            if (! coerce) {
+            if (!coerce) {
                 logger::log_warn("The dataframe contains a column that is with the wrong datatype. {col_name} needs to be a number.")
                 return(FALSE)
             } else {

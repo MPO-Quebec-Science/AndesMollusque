@@ -14,7 +14,6 @@ format_cod_typ_long <- function(freq) {
 #'
 #' @export
 format_cod_tech_mesure_long <- function(freq) {
-
     code_class_proj <- get_ref_key(
         table = "Classe_Projet",
         pkey_col = "COD_CLASSE_PROJET",
@@ -54,7 +53,7 @@ format_cod_typ_etat <- function(freq) {
     type_etat_map <- data.frame(
         description_fra = c("Vivant intact", "Claquette ouverte, int. nacré, ressort dans charnière"),
         COD_TYP_ETAT = c(code_vivant, code_claquette)
-        )
+    )
 
     freq <- left_join(freq, type_etat_map, on = "description_fra")
 

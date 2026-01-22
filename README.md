@@ -1,6 +1,8 @@
 # AndesMollusque
 [![R](https://github.com/MPO-Quebec-Science/AndesMollusque/actions/workflows/run-tests.yml/badge.svg)](https://github.com/MPO-Quebec-Science/AndesMollusque/actions/workflows/run-tests.yml)
 
+Documentation disponible icit: [https://mpo-quebec-science.github.io/AndesMollusque/](https://mpo-quebec-science.github.io/AndesMollusque/)
+
 Ce dépot contient des wrappers en `R` de commandes `SQL` pour extraire des données équipe IML de la région du Québec fait avec ANDES.
 
 
@@ -163,4 +165,3 @@ rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
 
 ```
 
-The old documentation available at: [https://iml-gddaiss.github.io/AndesMollusque/](https://iml-gddaiss.github.io/AndesMollusque/)

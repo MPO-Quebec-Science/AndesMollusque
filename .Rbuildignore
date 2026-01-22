@@ -1,3 +1,8 @@
 ^renv$
 ^renv\.lock$
 ^requirements\.txt$
+
+.github
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

@@ -23,9 +23,9 @@ jobs:
     runs-on: self-hosted
     strategy:
       matrix:
-      # D.S-F et T.B. 4.2.2
-      # J. L-O. 4.3.1
-      # M.D. 4.4.3
+      # 4.2.2
+      # 4.3.1
+      # 4.4.3
         r-version: ['4.4.3']
 
     steps:
@@ -34,17 +34,24 @@ jobs:
         uses: r-lib/actions/setup-r@6f6e5bc62fba3a704f74e7ad7ef7676c5c6a2590
         with:
           r-version: ${{ matrix.r-version }}
+
       - name: Copy .Renviron for test runner
         run: |
           cp  /root/actions-runner/.Renviron .
         shell: bash
-      - name: Install dependencies
-        run: |
-          options(repos = c(CRAN = "cran.mirror.rafal.ca"))
-          install.packages(c("remotes", "rcmdcheck", "testthat"))
-          remotes::install_deps(dependencies = TRUE,  upgrade = "never")
 
-        shell: Rscript {0}
+      - name: Install dependencies
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck, survival=?ignore
+          needs: check
+      # - name: Install dependencies
+      #   run: |
+      #     options(repos = c(CRAN = "cran.mirror.rafal.ca"))
+      #     install.packages(c("remotes", "rcmdcheck", "testthat"))
+      #     remotes::install_deps(dependencies = TRUE,  upgrade = "never")
+      #   shell: Rscript {0}
+
       - name: Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
         shell: Rscript {0}

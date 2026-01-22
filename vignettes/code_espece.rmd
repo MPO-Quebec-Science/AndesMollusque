@@ -1,3 +1,15 @@
+---
+title: "Code Espèce"
+output: rmarkdown::html_document
+nocite: '@*'
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 # Codes espèce: Saisie vs archivage
 
 Il faut faire une distinction entre le codes espèces pour les besoins de de saisie et codes espèces pour les besoins d'archivage.

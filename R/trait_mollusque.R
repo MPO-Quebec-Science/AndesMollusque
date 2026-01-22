@@ -1,4 +1,3 @@
-
 #' Gets trait_mollusque_db (raw database results)
 #'
 #' This function executes a SQL query to retrieve the needed andes data to construct the TRAIT_MOLLUSQUE table.
@@ -13,8 +12,9 @@
 #' @export
 get_trait_mollusque_db <- function(andes_db_connection) {
     query <- readr::read_file(system.file("sql_queries",
-                                          "trait_mollusque.sql",
-                                          package = "ANDESMollusque"))
+        "trait_mollusque.sql",
+        package = "ANDESMollusque"
+    ))
     result <- DBI::dbSendQuery(andes_db_connection, query)
     proj <- DBI::dbFetch(result, n = Inf)
     DBI::dbClearResult(result)
@@ -56,7 +56,8 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
         table = "Indice_Suivi_Etat_Stock",
         pkey_col = "DESC_SERIE_HIST_F",
         col = "COD_SERIE_HIST",
-        val = proj$COD_SERIE_HIST)
+        val = proj$COD_SERIE_HIST
+    )
 
     # temporarily get cod_sect_releve, this is obtained from desc_secteur_releve_f
     # all sets shold have the same desc_serie_hist_f, verify this
@@ -99,7 +100,7 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     # can get rid of andes_mission_id column
     trait <- subset(trait, select = -c(andes_mission_id))
 
-    #validate set_result : conistency between set_is_valid and COD_RESULT_OPER.
+    # validate set_result : conistency between set_is_valid and COD_RESULT_OPER.
 
     trait <- validate_set_result(trait)
 
@@ -117,10 +118,11 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
 
     # all times are cast to America/Toronto, which is called "Québec"
     cod_fuseau_horaire <- get_ref_key(
-            table="FUSEAU_HORAIRE",
-            pkey_col="COD_FUSEAU_HORAIRE",
-            col="DESC_FUSEAU_HORAIRE_F",
-            val="Québec")
+        table = "FUSEAU_HORAIRE",
+        pkey_col = "COD_FUSEAU_HORAIRE",
+        col = "DESC_FUSEAU_HORAIRE_F",
+        val = "Québec"
+    )
 
     trait <- add_hard_coded_value(trait, col_name = "COD_FUSEAU_HORAIRE", value = cod_fuseau_horaire)
 
@@ -327,7 +329,7 @@ write_trait_mollusque <- function(trait, access_db_write_connection = NULL) {
         statement <- generate_sql_insert_statement(trait[i, ], "TRAIT_MOLLUSQUE")
         logger::log_debug("Writing the following statement to the database: {statement}")
         result <- DBI::dbExecute(access_db_write_connection, statement)
-        if (result!=1) {
+        if (result != 1) {
             logger::log_error("Failed to write a row to the TRAIT_MOLLUSQUE Table, row: {i}")
             stop("Failed to write a row to the TRAIT_MOLLUSQUE Table")
         } else {
