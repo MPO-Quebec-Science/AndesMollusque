@@ -3,7 +3,7 @@ Type: Package
 Title: Helper functions to access ANDES mission data as a Dataframe.
 Version: 0.1.1
 Author: Les amis de l'IML
-Maintainer: Sean-Fortin, David (DFO/MPO) <David.Sean-Fortin@dfo-mpo.gc.ca>
+Maintainer: David Sean-Fortin <David.Sean-Fortin@dfo-mpo.gc.ca>
 Description: Ce package contient une collection de fonctions utilitaires pour
     accéder facilement aux données des mission ANDES sous forme conviviale de dataframes.
     Ce package a été dévéloppé pour l'équipe d'évaluation de stocks de pétoncle et buccins.
