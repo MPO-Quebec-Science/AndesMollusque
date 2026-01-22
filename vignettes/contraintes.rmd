@@ -86,7 +86,6 @@ Ne sont pas dans la table `TRAIT_MOLLUSQUE` de la BD Access, mais est presente d
 (relevé 32 a trois traits avec une valeur non null !?)
 #### TYPE_ECHANT_TRAIT
 La table IMLP `TYPE_ECHANT_TRAIT` n'éxiste pas dans la BD ACccess:
-![area_of_operation](_static/TYPE_ECHANT_TRAIT.png)
 
 #### TYPE_HEURE
 - IMLP
