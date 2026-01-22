@@ -3,3 +3,6 @@
 ^requirements\.txt$
 
 .github
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
