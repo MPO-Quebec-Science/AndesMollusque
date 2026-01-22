@@ -1,0 +1,328 @@
+# AndesMollusque
+
+[![R](https://github.com/MPO-Quebec-Science/AndesMollusque/actions/workflows/run-tests.yml/badge.svg)](https://github.com/MPO-Quebec-Science/AndesMollusque/actions/workflows/run-tests.yml)
+
+Documentation disponible icit:
+<https://mpo-quebec-science.github.io/AndesMollusque/>
+
+Ce dépot contient des wrappers en `R` de commandes `SQL` pour extraire
+des données équipe IML de la région du Québec fait avec ANDES.
+
+# Utilisation
+
+1.  Installer
+2.  Établir un connexion a la BD ANDES
+3.  Obtenir les tables en dataframs
+4.  Faire une BD Access
+
+## Installation du package
+
+``` r
+devtools::install_github("MPO-Quebec-Science/AndesMollusque")
+library(ANDESMollusque)
+```
+
+### Installation des pilots SQL sur un poste Windows du MPO
+
+Si ce n’est pas fait, il faut installer des pilotes de BD. Cèst possible
+de le faire à partir du `Centre Logiciel`. - Pour connexion BD ANDES,
+installer `My SQL Connecteur ODBC 8.0.22` - Pour BD MS ACCESS, rien a
+faire de plus. Office 365 deja présent. - (facultatif) Pour connexion
+Oracle, installer `Oracle 12 (Instant Client) x64` qui va mettre les
+libraries sous `C:\Oracle\12.2.0_Instant_x64`.
+
+## Connexion BD ANDES
+
+``` r
+# Infos connexion BD, voir section Authentification Connexion BD
+url_bd <- "iml-science-4.ent.dfo-mpo.ca"
+port_bd <- 25993
+nom_bd <- "andesdb"
+nom_usager <- Sys.getenv("NOM_USAGER_BD")
+mot_de_passe <- Sys.getenv("MOT_DE_PASSE_BD")
+
+# établir connexion BD (il faut être sur le réseau MPO)
+andes_db_connection <- andes_db_connect(
+  url_bd = url_bd,
+  port_bd = port_bd,
+  nom_usager = nom_usager,
+  mot_de_passe = mot_de_passe,
+  nom_bd = nom_bd
+)
+```
+
+## Obtenir les tables en dataframes
+
+### Tables Access
+
+Il faut avant tout définir certains parametres, dont certain qui ne sont
+PAS dans le BD ANDES. Entre autres: - `desc_serie_hist_f` -
+`code_filter` (list de code strap) - `basket_class_filter` (list de code
+de types de paniers andes)
+
+Les tables Access suivent une hiearchy `proj` -\> `trait` -\> `engin`
+-\> `capture` -\> `FreqLongMollusque`
+
+``` r
+################################################
+# EXTERNAL INPUT
+# This needs to be manually defined
+# "Indice d'abondance zone 16E - pétoncle"
+# "Indice d'abondance zone 16F - pétoncle"
+# "Indice d'abondance zone 20 - pétoncle"
+# "Indice d'abondance buccin"
+desc_serie_hist_f <- "Indice d'abondance zone 16E - pétoncle"
+
+proj <- get_projet_mollusque(andes_db_connection)
+# définir dans le projet, la desc_serie_hist_f
+proj <- init_cod_serie_hist(proj, desc_serie_hist_f)
+
+validate_projet_mollusque(proj)
+
+# choose which species we want to have using code_filter
+# usefull strap codes:
+cod_petoncle_island <- 4167
+cod_petoncle_geant <- 4179
+code_filter <- c(cod_petoncle_island, cod_petoncle_geant)
+
+# choose which basket class have using basket_class_filter
+# useful basket classes
+# 0 - NA
+# 1 - Vivant intact
+# 2 - Claquette ouverte, int. nacré, ressort dans charnière
+# 9 - Biodiversité
+
+basket_class_filter <- c(1)
+
+trait <- get_trait_mollusque(andes_db_connection, proj = proj)
+validate_trait_mollusque(trait)
+
+engin <- get_engin_mollusque(andes_db_connection, proj = proj)
+validate_engin_mollusque(engin)
+
+# Captures should only use the basket_class filter to select 1 - Vivant intact
+capt <- get_capture_mollusque(andes_db_connection, engin, code_filter = code_filter, basket_class_filter = basket_class_filter)
+validate_capture_mollusque(capt)
+
+freq <- get_freq_long_mollusque(andes_db_connection, capt)
+validate_freq_long_mollusque(freq)
+```
+
+### Biométrie Pétoncle
+
+Pour les données de biométrie pétconle, il faut définir le nom de la
+collection lié au champ `conserver pour biométrie?`. Nous allons alors
+pourvoir obtenir les spécimens de la mission ou la réponse a été
+`1=OUI`. Normalement, les données de biométrie sont présent pour ces
+spécimens.
+
+Utilisé ensuite la fonction
+[`get_biometrie_petoncle()`](reference/get_biometrie_petoncle.md)
+
+``` r
+# BIOMETRIE PETONCLE
+# select collection_name as one of the following
+# "Conserver pour biométrie 16E"
+# "Conserver pour biométrie 16F"
+# "Conserver pour biométrie centre"
+# "Conserver pour biométrie ouest"
+bio <- get_biometrie_petoncle(andes_db_connection, collection_name = "Conserver pour biométrie 16E")
+```
+
+## Écrire une BD Access
+
+Les tables en dataframes peuvent être sauvegardé en format BD Access.
+
+``` r
+# Faire une BD acces vide
+file_path <- create_new_access_db()
+# etablir la connexion a cette BD
+access_db_write_connection <- access_db_connect(paste("./", file_path, sep = ""))
+# écrire la table projet
+write_projet_mollusque(proj, access_db_write_connection)
+# écrire la table trait
+write_trait_mollusque(trait, access_db_write_connection)
+# écrire la table engin
+write_engin_mollusque(engin, access_db_write_connection)
+# écrire la table capture_mollusque
+write_capture_mollusque(capt, access_db_write_connection)
+# écrire la table freq_long_mollusque
+write_freq_long_mollusque(freq, access_db_write_connection)
+# fermer la connexion a la BD Access
+DBI::dbDisconnect(access_db_write_connection)
+```
+
+## Authentification Connexion BD
+
+Il faut faire une copie du fichier gabarit `exemple.Renviron` et le
+nomer `.Renviron`. Par la suite il faut remplir le nom d’usagé et le mot
+de passe pour pouvoir faire une connexion a la BD. Il est possible de
+falloir redémarré `R` apres avoir modifier `.Renviron` car la lecture
+est uniquement fait au démarage de `R`. Le fichier `.Renviron` peut être
+placé au dossier home de l’usager `C:\Users\TON_NOM` (sur windows) ou
+`/home/TON_NOM` (sur Linux).
+
+# Developpement
+
+checkout the repo and use
+
+``` r
+devtools::load_all()
+devtools::document()
+```
+
+to load the library in memory without installing it.
+
+To test the github package, detach an re-install
+
+``` r
+detach("package:ANDESMollusque", unload=TRUE)
+devtools::install_github("MPO-Quebec-Science/ANDESMollusque")
+library(ANDESMollusque)
+
+# run unittests
+devtools::test()
+
+devtools::document()
+
+rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
+```
+
+# Package index
+
+## All functions
+
+- [`access_db_connect()`](access_db_connect.md) : Establish a connection
+  to an MS Access database
+- [`add_hard_coded_value()`](add_hard_coded_value.md) : Add a hard-coded
+  column with a specific value to the dataframe
+- [`andes_db_connect()`](andes_db_connect.md) : Establish a connection
+  to the andes database
+- [`andes_str_to_oracle_date()`](andes_str_to_oracle_date.md) : Convert
+  andes datetime string form DB to Oracle date format
+- [`andes_str_to_oracle_datetime()`](andes_str_to_oracle_datetime.md) :
+  Convert andes datetime string form DB to Oracle datetime format
+- [`check_cols_contains_na()`](check_cols_contains_na.md) : Checks if
+  all dataframe cols named in the col_names contain NA This is useful to
+  validate if a dataframe can be written to a DB table (where some
+  columns values cannot be null)
+- [`check_columns_present()`](check_columns_present.md) : Make sure the
+  columns listed in col_names are present in the dataframe
+- [`check_numeric_columns()`](check_numeric_columns.md) : Make sure the
+  columns listed in col_names have numeric (or NA) values
+- [`check_other_columns()`](check_other_columns.md) : Make sure no other
+  columns than the ones listed in col_names are present in the dataframe
+- [`cols_to_numeric()`](cols_to_numeric.md) : Convert all dataframe cols
+  named in the col_names to a numeric value
+- [`format_cod_descrip_capt()`](format_cod_descrip_capt.md) : For now,
+  we will just keep this blank It is a function here so that one day we
+  can use the ANDES relative abundance category But it is not used for
+  commercial stocks, so we skip it
+- [`format_cod_typ_mesure()`](format_cod_typ_mesure.md) : For now, we
+  will just assume all data is quantitative since we are limiting
+  ourselves to commercial (scallops and whelk). One day, this function
+  should be generalized to also lookup the data and determine it.
+- [`format_cod_typ_panier()`](format_cod_typ_panier.md) : Add the
+  formated COD_TYP_PANIER column to the dataframe This is currently
+  hard-coded to Panier doublé TODO: implement different types depending
+  on chosen gear code, for exmaple:
+- [`format_coordinates()`](format_coordinates.md) : Format coordinates
+  for TRAIT_MOLLUSQUE
+- [`format_date_hre_trait()`](format_date_hre_trait.md) : Format dates
+  for TRAIT_MOLLUSQUE
+- [`format_date_trait()`](format_date_trait.md) : Format dates for
+  TRAIT_MOLLUSQUE
+- [`format_epibiont()`](format_epibiont.md) : Formated
+  COD_COUVERTURE_EPIBIONT column to the dataframe This categorizes AND
+  includes the of the following definition: ave_coverage to
+  cod_couverture : 0 -\> Aucune balane 1 -\> 1/3 et moins surface
+  colonisée 2 -\> 1/3 à 2/3 surface colonisée 3 -\> 2/3 et plus surface
+  colonisée
+- [`generate_sql_insert_statement()`](generate_sql_insert_statement.md)
+  : generate a SQL inster statement for the single dataframe row as a
+  new row into table_name The dataframe must have named columns that
+  correspond to the columns of the table The values must have the
+  correct data types t(here will be some SQL value sanitizing) The
+  statement will look like:" INSERT INTO table_name col_names_str VALUES
+  col_values_str" Where col_names_str is list of column names with
+  parentheses: "(NO_RELEVE COD_NBPC ANNEE COD_TYP_STRATIF
+  DATE_DEB_PROJET...)" and col_values_str is list of column values with
+  parentheses: "(36 4 2025 7 '2025-05-03'...)"
+- [`get_access_table_properties()`](get_access_table_properties.md) :
+  this function is meant to help the validation automatically getting
+  colnames, no-null cols and datatypes. but I cannot get it to work here
+  yet... (but works in Dbeaver)
+- [`get_biometrie_petoncle()`](get_biometrie_petoncle.md) : Gets
+  get_biometrie_petoncle (formatted results)
+- [`get_biometrie_petoncle_db()`](get_biometrie_petoncle_db.md) : Gets
+  capture_mollusc_db (raw database results)
+- [`get_capture_mollusque()`](get_capture_mollusque.md) : Gets
+  capture_mollusque (formatted results)
+- [`get_capture_mollusque_db()`](get_capture_mollusque_db.md) : Gets
+  capture_mollusc_db (raw database results)
+- [`get_engin_mollusque()`](get_engin_mollusque.md) : Gets engin_mollusc
+  (formatted results)
+- [`get_engin_mollusque_db()`](get_engin_mollusque_db.md) : Gets
+  engin_mollusc_db (raw database results)
+- [`get_epibiont()`](get_epibiont.md) : This fetches the specimen-level
+  coverage data and coverts it to an average set-level metric in
+  accordance to the legacy Oracle database.
+- [`get_freq_long_mollusque()`](get_freq_long_mollusque.md) : Gets
+  freq_long_mollusque (formatted results)
+- [`get_freq_long_mollusque_db()`](get_freq_long_mollusque_db.md) : Gets
+  freq_long_mollusque_db (raw database results)
+- [`get_legal_collection_names()`](get_legal_collection_names.md) : Get
+  a list of legal collection names as a filter for
+  get_biometrie_petoncle()
+- [`get_projet_mollusque()`](get_projet_mollusque.md) : Gets fishing
+  projet_mollusque (formatted results)
+- [`get_projet_mollusque_db()`](get_projet_mollusque_db.md) : Gets
+  fishing projet_mollusque (raw database results)
+- [`get_ref_choices()`](get_ref_choices.md) : Builds a list of legal
+  choices (descriptions) for get ref key
+- [`get_ref_key()`](get_ref_key.md) : Get the reference key
+  corresponding to a value (usually from the Oracle / MSAccess reference
+  database)
+- [`get_trait_mollusque()`](get_trait_mollusque.md) : Gets
+  trait_mollusque (formatted results)
+- [`get_trait_mollusque_db()`](get_trait_mollusque_db.md) : Gets
+  trait_mollusque_db (raw database results)
+- [`init_cod_serie_hist()`](init_cod_serie_hist.md) : Add the
+  cod_serie_hist to the whole dataframe This value is not present in
+  ANDES so it will have to be specified here. Run this without
+  desc_serie_hist_f to get a list of choices.
+- [`is_andes_time_str_dst()`](is_andes_time_str_dst.md) : Verify is the
+  ANDES dattime string is in daylight savings time
+- [`left_join()`](left_join.md) : a merge that preserves row and column
+  order shamelessly stolen from
+  https://stackoverflow.com/questions/17878048/merge-two-data-frames-while-keeping-the-original-row-order
+- [`parse_andes_datetime()`](parse_andes_datetime.md) : Convert ANDES
+  UTC time string and converts it to a POSIXct object
+- [`sanitize_sql_value()`](sanitize_sql_value.md) : It will wrap string
+  with an extra set of single quotes. It will escape every single quote
+  by doubling it up This usualy does nothing to the value itself except
+  inject the NULL string for NA/null and empty strings
+- [`strip_alphabetic()`](strip_alphabetic.md) : This function removes
+  alphabetic characters from a string
+- [`to_oracle_coord()`](to_oracle_coord.md) : Convert coordinate to
+  Oracle format
+- [`validate_capture_mollusque()`](validate_capture_mollusque.md) :
+  Perform database validation checks on the dataframe
+- [`validate_engin_mollusque()`](validate_engin_mollusque.md) : Perform
+  database validation checks on the dataframe
+- [`validate_freq_long_mollusque()`](validate_freq_long_mollusque.md) :
+  Perform database validation checks on the dataframe
+- [`validate_projet_mollusque()`](validate_projet_mollusque.md) :
+  Perform database validation checks on the dataframe
+- [`validate_set_result()`](validate_set_result.md) : Validate set
+  result consistency
+- [`validate_trait_mollusque()`](validate_trait_mollusque.md) : Perform
+  database validation checks on the dataframe
+
+# Articles
+
+### All vignettes
+
+- [Code Espèce](code_espece.md):
+- [Fusionner BD Access](combiner_bd.md):
+- [Contraints de missions Andes](contraintes.md):
