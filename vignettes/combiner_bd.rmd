@@ -1,3 +1,16 @@
+---
+title: "Fusionner BD Access"
+output: rmarkdown::html_document
+nocite: '@*'
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
 # Combiner deux BD MS Access
 FAIRE UNE SAUVEGARDE DES DEUX BDS AVANT DE COMMENCER!
 
