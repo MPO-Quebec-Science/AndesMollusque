@@ -11,7 +11,8 @@
 #' @seealso [get_engin_mollusque()] for the formatted results
 #' @export
 get_engin_mollusque_db <- function(andes_db_connection) {
-    query <- readr::read_file(system.file("sql_queries",
+    query <- readr::read_file(system.file(
+        "sql_queries",
         "engin_mollusque.sql",
         package = "ANDESMollusque"
     ))
@@ -20,7 +21,6 @@ get_engin_mollusque_db <- function(andes_db_connection) {
     DBI::dbClearResult(result)
     return(df)
 }
-
 
 
 #' Gets engin_mollusc (formatted results)
@@ -59,15 +59,17 @@ get_engin_mollusque <- function(andes_db_connection, proj = NULL) {
 
     # engin <- add_hard_coded_value(engin, col_name = "REM_ENGIN_MOLL", value = NA)
 
-
-    engin <- cols_to_numeric(engin, col_names = c(
-        "COD_ENG_GEN",
-        "NO_ENGIN",
-        "REMPLISSAGE",
-        "REMPLISSAGE_P",
-        "LONG_FUNE",
-        "LONG_FUNE_P"
-    ))
+    engin <- cols_to_numeric(
+        engin,
+        col_names = c(
+            "COD_ENG_GEN",
+            "NO_ENGIN",
+            "REMPLISSAGE",
+            "REMPLISSAGE_P",
+            "LONG_FUNE",
+            "LONG_FUNE_P"
+        )
+    )
 
     return(engin)
 }
@@ -80,66 +82,78 @@ get_engin_mollusque <- function(andes_db_connection, proj = NULL) {
 validate_engin_mollusque <- function(df) {
     is_valid <- TRUE
     # check all required cols are present
-    result <- check_columns_present(df, col_names = c(
-        "COD_SOURCE_INFO",
-        "NO_RELEVE",
-        "COD_NBPC",
-        "IDENT_NO_TRAIT",
-        "COD_ENG_GEN",
-        "COD_TYP_PANIER",
-        "NO_ENGIN",
-        "LONG_FUNE",
-        "LONG_FUNE_P",
-        "REMPLISSAGE",
-        "REMPLISSAGE_P",
-        "NB_PANIER",
-        "NO_CHARGEMENT"
-    ))
+    result <- check_columns_present(
+        df,
+        col_names = c(
+            "COD_SOURCE_INFO",
+            "NO_RELEVE",
+            "COD_NBPC",
+            "IDENT_NO_TRAIT",
+            "COD_ENG_GEN",
+            "COD_TYP_PANIER",
+            "NO_ENGIN",
+            "LONG_FUNE",
+            "LONG_FUNE_P",
+            "REMPLISSAGE",
+            "REMPLISSAGE_P",
+            "NB_PANIER",
+            "NO_CHARGEMENT"
+        )
+    )
     is_valid <- is_valid & result
 
     # check all not-null columns do not have nulls
-    result <- check_cols_contains_na(df, col_names = c(
-        "COD_SOURCE_INFO",
-        "NO_RELEVE",
-        "COD_NBPC",
-        "IDENT_NO_TRAIT",
-        "COD_ENG_GEN",
-        "COD_TYP_PANIER",
-        "NO_ENGIN"
-    ))
+    result <- check_cols_contains_na(
+        df,
+        col_names = c(
+            "COD_SOURCE_INFO",
+            "NO_RELEVE",
+            "COD_NBPC",
+            "IDENT_NO_TRAIT",
+            "COD_ENG_GEN",
+            "COD_TYP_PANIER",
+            "NO_ENGIN"
+        )
+    )
     is_valid <- is_valid & result
 
-    result <- check_other_columns(df, col_names = c(
-        "COD_SOURCE_INFO",
-        "NO_RELEVE",
-        "COD_NBPC",
-        "IDENT_NO_TRAIT",
-        "COD_ENG_GEN",
-        "COD_TYP_PANIER",
-        "NO_ENGIN",
-        "LONG_FUNE",
-        "LONG_FUNE_P",
-        "REMPLISSAGE",
-        "REMPLISSAGE_P",
-        "NB_PANIER",
-        "NO_CHARGEMENT"
-    ))
+    result <- check_other_columns(
+        df,
+        col_names = c(
+            "COD_SOURCE_INFO",
+            "NO_RELEVE",
+            "COD_NBPC",
+            "IDENT_NO_TRAIT",
+            "COD_ENG_GEN",
+            "COD_TYP_PANIER",
+            "NO_ENGIN",
+            "LONG_FUNE",
+            "LONG_FUNE_P",
+            "REMPLISSAGE",
+            "REMPLISSAGE_P",
+            "NB_PANIER",
+            "NO_CHARGEMENT"
+        )
+    )
     is_valid <- is_valid & result
 
-    result <- check_numeric_columns(df, col_names = c(
-        "COD_SOURCE_INFO",
-        "NO_RELEVE",
-        "IDENT_NO_TRAIT",
-        "COD_ENG_GEN",
-        "COD_TYP_PANIER",
-        "NO_ENGIN",
-        "LONG_FUNE",
-        "LONG_FUNE_P",
-        "REMPLISSAGE",
-        "REMPLISSAGE_P",
-        "NB_PANIER",
-        "NO_CHARGEMENT"
-    ))
+    result <- check_numeric_columns(
+        df,
+        col_names = c(
+            "COD_SOURCE_INFO",
+            "NO_RELEVE",
+            "IDENT_NO_TRAIT",
+            "COD_ENG_GEN",
+            "COD_TYP_PANIER",
+            "NO_ENGIN",
+            "LONG_FUNE",
+            "LONG_FUNE_P",
+            "REMPLISSAGE",
+            "REMPLISSAGE_P",
+            "NB_PANIER",
+            "NO_CHARGEMENT"
+        )
+    )
     is_valid <- is_valid & result
     return(is_valid)
 }
@@ -154,14 +168,23 @@ write_engin_mollusque <- function(engin, access_db_write_connection = NULL) {
 
     # insert make one row at a time
     for (i in seq_len(nrow(engin))) {
-        statement <- generate_sql_insert_statement(engin[i, ], "ENGIN_MOLLUSQUE")
-        logger::log_debug("Writing the following statement to the database: {statement}")
+        statement <- generate_sql_insert_statement(
+            engin[i, ],
+            "ENGIN_MOLLUSQUE"
+        )
+        logger::log_debug(
+            "Writing the following statement to the database: {statement}"
+        )
         result <- DBI::dbExecute(access_db_write_connection, statement)
         if (result != 1) {
-            logger::log_error("Failed to write a row to the ENGIN_MOLLUSQUE Table, row: {i}")
+            logger::log_error(
+                "Failed to write a row to the ENGIN_MOLLUSQUE Table, row: {i}"
+            )
             stop("Failed to write a row to the ENGIN_MOLLUSQUE Table")
         } else {
-            logger::log_debug("Successfully added a row to the ENGIN_MOLLUSQUE Table")
+            logger::log_debug(
+                "Successfully added a row to the ENGIN_MOLLUSQUE Table"
+            )
         }
     }
     logger::log_info("Successfully wrote the engin_mollusque to the database.")

@@ -28,7 +28,11 @@ format_cod_tech_mesure_long <- function(freq) {
         val = "Vernier électronique",
         optional_query = paste("AND COD_CLASSE_PROJET=", code_class_proj)
     )
-    freq <- add_hard_coded_value(freq, col_name = "COD_TECH_MESURE_LONG", value = code)
+    freq <- add_hard_coded_value(
+        freq,
+        col_name = "COD_TECH_MESURE_LONG",
+        value = code
+    )
     return(freq)
 }
 
@@ -51,7 +55,10 @@ format_cod_typ_etat <- function(freq) {
     )
 
     type_etat_map <- data.frame(
-        description_fra = c("Vivant intact", "Claquette ouverte, int. nacré, ressort dans charnière"),
+        description_fra = c(
+            "Vivant intact",
+            "Claquette ouverte, int. nacré, ressort dans charnière"
+        ),
         COD_TYP_ETAT = c(code_vivant, code_claquette)
     )
 

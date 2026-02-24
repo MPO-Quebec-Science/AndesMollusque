@@ -17,6 +17,10 @@ format_cod_typ_panier <- function(engin) {
         val = desc_typ_panier_f
     )
 
-    engin <- add_hard_coded_value(engin, col_name = "COD_TYP_PANIER", value = cod_typ_panier)
+    engin <- add_hard_coded_value(
+        engin,
+        col_name = "COD_TYP_PANIER",
+        value = cod_typ_panier
+    )
     return(engin)
 }

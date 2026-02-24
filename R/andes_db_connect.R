@@ -8,11 +8,13 @@
 #' @param nom_bd Name of the ANDES database. Default is "andesdb".
 #' @return A connection object to the ANDES database.
 #' @export
-andes_db_connect <- function(url_bd,
-                             port_bd,
-                             nom_usager,
-                             mot_de_passe,
-                             nom_bd = "andesdb") {
+andes_db_connect <- function(
+    url_bd,
+    port_bd,
+    nom_usager,
+    mot_de_passe,
+    nom_bd = "andesdb"
+) {
     # ODBC needs to to wrap the password string in {} in case the password contains semicolons
     mot_de_passe <- paste("{", mot_de_passe, "}", sep = "")
 
@@ -27,15 +29,25 @@ andes_db_connect <- function(url_bd,
 
     connection_string <- paste(
         "Driver={MySQL ODBC 8.0 Unicode Driver};",
-        "SERVER=", url_bd, ";",
-        "Port=", port_bd, ";",
-        "DATABASE=", nom_bd, ";",
-        "USER=", nom_usager, ";",
-        "PASSWORD=", mot_de_passe,
+        "SERVER=",
+        url_bd,
+        ";",
+        "Port=",
+        port_bd,
+        ";",
+        "DATABASE=",
+        nom_bd,
+        ";",
+        "USER=",
+        nom_usager,
+        ";",
+        "PASSWORD=",
+        mot_de_passe,
         sep = ""
     )
 
-    andes_db_connection <- DBI::dbConnect(odbc::odbc(),
+    andes_db_connection <- DBI::dbConnect(
+        odbc::odbc(),
         .connection_string = connection_string,
         timeout = 10
     )

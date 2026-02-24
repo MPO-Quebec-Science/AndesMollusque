@@ -25,7 +25,9 @@ cleanup_text <- function(df, col_name = NULL, max_chars = NULL) {
     if (!is.null(max_chars) && nchar(andes_text) > max_chars) {
         # truncate the text to max_chars
         andes_text <- substr(andes_text, 1, max_chars)
-        logger::log_warn("The text in column {col_name} was truncated to {max_chars} characters.")
+        logger::log_warn(
+            "The text in column {col_name} was truncated to {max_chars} characters."
+        )
     }
 
     df[col_name] <- andes_text
@@ -33,7 +35,7 @@ cleanup_text <- function(df, col_name = NULL, max_chars = NULL) {
 }
 
 #' Convert andes datetime string form DB to Oracle date format
-#' 
+#'
 #' @param datetime_str The string representing the datetime from ANDES DB
 #' @export
 andes_str_to_oracle_date <- function(datetime_str) {
@@ -44,7 +46,7 @@ andes_str_to_oracle_date <- function(datetime_str) {
 }
 
 #' Convert andes datetime string form DB to Oracle datetime format
-#' 
+#'
 #' @param datetime_str The string representing the datetime from ANDES DB
 #' @export
 andes_str_to_oracle_datetime <- function(datetime_str) {
@@ -52,7 +54,11 @@ andes_str_to_oracle_datetime <- function(datetime_str) {
     # posixct_date <- unlist(lapply(date_str, parse_andes_datetime))
     posixct_date <- parse_andes_datetime(datetime_str)
     timezone_str <- "America/Toronto"
-    return(format(posixct_date, format = "%Y-%m-%d %H:%M:%S", tz = timezone_str))
+    return(format(
+        posixct_date,
+        format = "%Y-%m-%d %H:%M:%S",
+        tz = timezone_str
+    ))
 }
 
 #' Verify is the ANDES dattime string is in daylight savings time
@@ -69,14 +75,18 @@ is_andes_time_str_dst <- function(datetime_str) {
 
     utc_offset <- format(posixct_date, format = "%z", tz = timezone_str)
     if (is.na(utc_offset)) {
-        logger::log_warn("Could not determine if Daylight savings is active for date: {datetime_str}")
+        logger::log_warn(
+            "Could not determine if Daylight savings is active for date: {datetime_str}"
+        )
         # stop("Could not determine if Daylight savings is active for date")
     } else if (utc_offset == "-0400") {
         is_dst <- TRUE
     } else if (utc_offset == "-0500") {
         is_dst <- FALSE
     } else {
-        logger::log_warn("Could not determine if Daylight savings is active for date: {datetime_str}")
+        logger::log_warn(
+            "Could not determine if Daylight savings is active for date: {datetime_str}"
+        )
         # stop("Could not determine if Daylight savings is active for date")
     }
     return(is_dst)
@@ -91,7 +101,12 @@ parse_andes_datetime <- function(andes_time_str) {
     # if (is.na(andes_time_str)==TRUE) {
     #   return(NA)
     # }
-    parsed_time <- as.POSIXct(andes_time_str, format = "%Y-%m-%d %H:%M:%S", tz = "UTC", optional = TRUE)
+    parsed_time <- as.POSIXct(
+        andes_time_str,
+        format = "%Y-%m-%d %H:%M:%S",
+        tz = "UTC",
+        optional = TRUE
+    )
     # Convert ISO 8601 time to POSIXlt, ANDES DB time values are implicitly in UTC
     return(parsed_time)
 }
@@ -100,7 +115,7 @@ parse_andes_datetime <- function(andes_time_str) {
 #'
 #' @param df The original dataframe to modify with a new column
 #' @param col_name The new column name
-#' @param value The value to add to every row in this column. 
+#' @param value The value to add to every row in this column.
 #' To add null values in the column use NA and not NULL.
 #' @return The original dataframe with the new column added
 #' @export
@@ -110,11 +125,17 @@ add_hard_coded_value <- function(df, col_name = NULL, value = NULL) {
         stop("Both col_name and value must be provided.")
     }
     if (is.null(value)) {
-        logger::log_error("A hard-coded NULL-value was added to column {col_name}")
+        logger::log_error(
+            "A hard-coded NULL-value was added to column {col_name}"
+        )
         # this is what sanitize_sql_value() actually ends up doing...
-        logger::log_error("DO NOT DO THIS! Please change to NA and switch to NULL when executing the statement")
+        logger::log_error(
+            "DO NOT DO THIS! Please change to NA and switch to NULL when executing the statement"
+        )
     } else {
-        logger::log_info("A hard-coded value of {value} was added to column {col_name}")
+        logger::log_info(
+            "A hard-coded value of {value} was added to column {col_name}"
+        )
     }
     # add a hard coded value to the dataframe
     df[col_name] <- value
@@ -176,7 +197,9 @@ to_oracle_coord <- function(coord) {
 generate_sql_insert_statement <- function(df_row, table_name) {
     col_names <- NULL
     # remove id col if present
-    if ("id" %in% names(df_row)) df_row <- subset(df_row, select = -c(id))
+    if ("id" %in% names(df_row)) {
+        df_row <- subset(df_row, select = -c(id))
+    }
 
     for (col in colnames(df_row)) {
         col_names <- paste(col_names, col, sep = ", ")
@@ -216,11 +239,15 @@ cols_to_numeric <- function(df, col_names = NULL) {
     }
     for (i in seq_len(length(col_names))) {
         if (!col_names[i] %in% names(df)) {
-            logger::log_error("Cannot convert type, {col_names[i]} is not a column name")
+            logger::log_error(
+                "Cannot convert type, {col_names[i]} is not a column name"
+            )
             stop("Cannot convert type, not a column name")
         }
         logger::log_debug("Converting column {col_names[i]} to numeric")
-        df[, names(df) == col_names[i]] <- as.numeric(df[, names(df) == col_names[i]])
+        df[, names(df) == col_names[i]] <- as.numeric(df[,
+            names(df) == col_names[i]
+        ])
     }
     return(df)
 }
@@ -238,12 +265,16 @@ check_cols_contains_na <- function(df, col_names = NULL) {
     }
     for (col_name in col_names) {
         if (!col_name %in% names(df)) {
-            logger::log_error("Cannot verify, {col_name} is not a column in the dataframe")
+            logger::log_error(
+                "Cannot verify, {col_name} is not a column in the dataframe"
+            )
             stop("Cannot verify, not a column name")
         }
         if (any(is.na(df[, col_name == names(df)]))) {
             logger::log_error("Found NA in column {col_name}")
-            logger::log_error("dataframe cannot be written as DB table. It contains NULL values in a column that should not.")
+            logger::log_error(
+                "dataframe cannot be written as DB table. It contains NULL values in a column that should not."
+            )
             return(FALSE)
         }
     }
@@ -263,10 +294,14 @@ check_columns_present <- function(df, col_names = NULL, coerce = FALSE) {
     for (col_name in col_names) {
         if (!(col_name %in% names(df))) {
             if (!coerce) {
-                logger::log_error("Missing required column. The column {col_name} is not in dataframe")
+                logger::log_error(
+                    "Missing required column. The column {col_name} is not in dataframe"
+                )
                 return(FALSE)
             } else {
-                logger::log_error("Missing required column. Will add a NULL column")
+                logger::log_error(
+                    "Missing required column. Will add a NULL column"
+                )
                 stop("NOT IMPLEMENTED")
             }
         }
@@ -287,10 +322,14 @@ check_other_columns <- function(df, col_names = NULL, coerce = FALSE) {
     for (col_name in names(df)) {
         if (!(col_name %in% col_names)) {
             if (!coerce) {
-                logger::log_warn("An unexpected column was found in the dataframe: {col_name}")
+                logger::log_warn(
+                    "An unexpected column was found in the dataframe: {col_name}"
+                )
                 return(FALSE)
             } else {
-                logger::log_error("An unexpected column was found removed from the dataframe: {col_name}")
+                logger::log_error(
+                    "An unexpected column was found removed from the dataframe: {col_name}"
+                )
                 stop("NOT IMPLEMENTED, drop unneeded columns manually")
             }
         }
@@ -313,12 +352,18 @@ check_numeric_columns <- function(df, col_names = NULL, coerce = FALSE) {
         col_class <- class(df[, names(df) == col_name])
         if (!(col_class %in% c("integer", "numeric"))) {
             if (!coerce) {
-                logger::log_warn("The dataframe contains a column that is with the wrong datatype. {col_name} needs to be a number.")
+                logger::log_warn(
+                    "The dataframe contains a column that is with the wrong datatype. {col_name} needs to be a number."
+                )
                 return(FALSE)
             } else {
-                logger::log_error("An unexpected column was found removed from the dataframe: {col_name}")
+                logger::log_error(
+                    "An unexpected column was found removed from the dataframe: {col_name}"
+                )
                 # df[, names(df) == col_name] <- as.numeric(df[, names(df) == col_name])
-                stop("NOT IMPLEMENTED, use cols_to_numeric to prepare the dataframe")
+                stop(
+                    "NOT IMPLEMENTED, use cols_to_numeric to prepare the dataframe"
+                )
             }
         }
     }

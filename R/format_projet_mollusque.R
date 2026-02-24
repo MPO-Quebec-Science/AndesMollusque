@@ -1,7 +1,10 @@
 #' @export
 format_cod_source_info <- function(df) {
     desc_source_info_f <- df[, which(names(df) == "DESC_SOURCE_INFO_F")]
-    df["COD_SOURCE_INFO"] <- unlist(lapply(desc_source_info_f, lookup_cod_source_info))
+    df["COD_SOURCE_INFO"] <- unlist(lapply(
+        desc_source_info_f,
+        lookup_cod_source_info
+    ))
     return(df)
 }
 
@@ -38,10 +41,17 @@ init_cod_serie_hist <- function(df, desc_serie_hist_f = NULL) {
             table = "Indice_Suivi_Etat_Stock",
             col = "DESC_SERIE_HIST_F"
         )
-        stop("Please specify desc_serie_hist_f. Choices are: ", paste(choices, collapse = ", "))
-        logger::log_error("Andes does not know about the COD_SERIE_HIST, showing possible choices...")
+        stop(
+            "Please specify desc_serie_hist_f. Choices are: ",
+            paste(choices, collapse = ", ")
+        )
+        logger::log_error(
+            "Andes does not know about the COD_SERIE_HIST, showing possible choices..."
+        )
     }
-    logger::log_info("Andes does not know about the COD_SERIE_HIST, so it was initialized as from {desc_serie_hist_f}.")
+    logger::log_info(
+        "Andes does not know about the COD_SERIE_HIST, so it was initialized as from {desc_serie_hist_f}."
+    )
 
     # do not need to validate desc_serie_hist_f, the lookup will raise an arror if it is not legal.
     cod_serie_hist <- lookup_cod_serie_hist(desc_serie_hist_f)
@@ -75,7 +85,10 @@ lookup_cod_serie_hist <- function(desc_serie_hist_f) {
 format_date_deb_projet <- function(df) {
     # get the col
     date_projet <- df[, which(names(df) == "DATE_DEB_PROJET")]
-    df["DATE_DEB_PROJET"] <- unlist(lapply(date_projet, andes_str_to_oracle_date))
+    df["DATE_DEB_PROJET"] <- unlist(lapply(
+        date_projet,
+        andes_str_to_oracle_date
+    ))
     return(df)
 }
 
@@ -83,7 +96,10 @@ format_date_deb_projet <- function(df) {
 format_date_fin_projet <- function(df) {
     # get the col
     date_projet <- df[, which(names(df) == "DATE_FIN_PROJET")]
-    df["DATE_FIN_PROJET"] <- unlist(lapply(date_projet, andes_str_to_oracle_date))
+    df["DATE_FIN_PROJET"] <- unlist(lapply(
+        date_projet,
+        andes_str_to_oracle_date
+    ))
     return(df)
 }
 
@@ -95,11 +111,18 @@ format_seq_pecheur <- function(df) {
     if (vessel_name == "Leim") {
         pecheur <- "Capitaine Leim"
     } else {
-        stop("The only supported vessel is the Leim for now. Cannot determine SEQ_PECHEUR for vessel: ", vessel_name)
-        logger::log_error("The only supported vessel is the Leim for now. Cannot determine SEQ_PECHEUR for vessel: {vessel_name}")
+        stop(
+            "The only supported vessel is the Leim for now. Cannot determine SEQ_PECHEUR for vessel: ",
+            vessel_name
+        )
+        logger::log_error(
+            "The only supported vessel is the Leim for now. Cannot determine SEQ_PECHEUR for vessel: {vessel_name}"
+        )
     }
 
-    logger::log_info("Assuming {pecheur} as NOM_PECHEUR (from the vessel {vessel_name})")
+    logger::log_info(
+        "Assuming {pecheur} as NOM_PECHEUR (from the vessel {vessel_name})"
+    )
 
     seq_pecheur <- get_ref_key(
         table = "Pecheur",

@@ -20,9 +20,8 @@ get_freq_long_mollusque_db <- function(andes_db_connection) {
     length_type <- DBI::dbFetch(result, n = Inf)
     DBI::dbClearResult(result)
 
-
-
-    query <- readr::read_file(system.file("sql_queries",
+    query <- readr::read_file(system.file(
+        "sql_queries",
         "freq_long_mollusque.sql",
         package = "ANDESMollusque"
     ))
@@ -31,9 +30,13 @@ get_freq_long_mollusque_db <- function(andes_db_connection) {
     query <- paste(query, "WHERE shared_models_mission.is_active=1 ")
 
     # just select the official length (obtained with pre-query above)
-    query <- paste(query, "AND shared_models_observationtype.id=", length_type, sep = "")
+    query <- paste(
+        query,
+        "AND shared_models_observationtype.id=",
+        length_type,
+        sep = ""
+    )
     query <- paste(query, "ORDER BY shared_models_specimen.id ASC")
-
 
     result <- DBI::dbSendQuery(andes_db_connection, query)
     freq <- DBI::dbFetch(result, n = Inf)
@@ -53,7 +56,9 @@ get_freq_long_mollusque_db <- function(andes_db_connection) {
 get_freq_long_mollusque <- function(andes_db_connection, capt = NULL) {
     # Validate input
     if (is.null(capt)) {
-        logger::log_error("Must provide a formatted captutre_mollusque dataframe.")
+        logger::log_error(
+            "Must provide a formatted captutre_mollusque dataframe."
+        )
         stop("Must provide a formatted captutre_mollusque dataframe.")
     }
 
@@ -76,7 +81,11 @@ get_freq_long_mollusque <- function(andes_db_connection, capt = NULL) {
 
     freq <- left_join(freq, data_from_capt, on = "IDENT_NO_TRAIT")
 
-    freq <- add_hard_coded_value(freq, col_name = "VALEUR_LONG_MOLL_P", value = NA)
+    freq <- add_hard_coded_value(
+        freq,
+        col_name = "VALEUR_LONG_MOLL_P",
+        value = NA
+    )
 
     freq <- format_cod_typ_long(freq)
 
@@ -87,10 +96,22 @@ get_freq_long_mollusque <- function(andes_db_connection, capt = NULL) {
     freq <- format_no_mollusque(freq)
 
     # can get rid of temporary columns
-    freq <- subset(freq, select = -c(id, sample_number, strap_code, description_fra, observation_type_id))
+    freq <- subset(
+        freq,
+        select = -c(
+            id,
+            sample_number,
+            strap_code,
+            description_fra,
+            observation_type_id
+        )
+    )
 
     # convert these strings to numeric
-    freq <- cols_to_numeric(freq, col_names = c("VALEUR_LONG_MOLL", "VALEUR_LONG_MOLL_P"))
+    freq <- cols_to_numeric(
+        freq,
+        col_names = c("VALEUR_LONG_MOLL", "VALEUR_LONG_MOLL_P")
+    )
 }
 
 #' Perform database validation checks on the dataframe
@@ -102,75 +123,87 @@ get_freq_long_mollusque <- function(andes_db_connection, capt = NULL) {
 validate_freq_long_mollusque <- function(df) {
     is_valid <- TRUE
     # check all required cols are present
-    result <- check_columns_present(df, col_names = c(
-        "COD_ESP_GEN",
-        "COD_ENG_GEN",
-        "COD_SOURCE_INFO",
-        "NO_RELEVE",
-        "IDENT_NO_TRAIT",
-        "COD_TYP_PANIER",
-        "COD_NBPC",
-        "NO_ENGIN",
-        "VALEUR_LONG_MOLL",
-        "NO_MOLLUSQUE",
-        "COD_TYP_LONG",
-        "VALEUR_LONG_MOLL_P",
-        "COD_TYP_ETAT",
-        "NO_CHARGEMENT",
-        "COD_TECH_MESURE_LONG"
-    ))
+    result <- check_columns_present(
+        df,
+        col_names = c(
+            "COD_ESP_GEN",
+            "COD_ENG_GEN",
+            "COD_SOURCE_INFO",
+            "NO_RELEVE",
+            "IDENT_NO_TRAIT",
+            "COD_TYP_PANIER",
+            "COD_NBPC",
+            "NO_ENGIN",
+            "VALEUR_LONG_MOLL",
+            "NO_MOLLUSQUE",
+            "COD_TYP_LONG",
+            "VALEUR_LONG_MOLL_P",
+            "COD_TYP_ETAT",
+            "NO_CHARGEMENT",
+            "COD_TECH_MESURE_LONG"
+        )
+    )
     is_valid <- is_valid & result
 
     # check all not-null columns do not have nulls
-    result <- check_cols_contains_na(df, col_names = c(
-        "COD_ESP_GEN",
-        "IDENT_NO_TRAIT",
-        "NO_RELEVE",
-        "COD_SOURCE_INFO",
-        "COD_NBPC",
-        "COD_ENG_GEN",
-        "COD_TYP_PANIER",
-        "NO_ENGIN",
-        "COD_TYP_LONG",
-        "COD_TYP_ETAT",
-        "COD_TECH_MESURE_LONG"
-    ))
+    result <- check_cols_contains_na(
+        df,
+        col_names = c(
+            "COD_ESP_GEN",
+            "IDENT_NO_TRAIT",
+            "NO_RELEVE",
+            "COD_SOURCE_INFO",
+            "COD_NBPC",
+            "COD_ENG_GEN",
+            "COD_TYP_PANIER",
+            "NO_ENGIN",
+            "COD_TYP_LONG",
+            "COD_TYP_ETAT",
+            "COD_TECH_MESURE_LONG"
+        )
+    )
     is_valid <- is_valid & result
 
-    result <- check_other_columns(df, col_names = c(
-        "COD_ESP_GEN",
-        "IDENT_NO_TRAIT",
-        "NO_RELEVE",
-        "COD_SOURCE_INFO",
-        "COD_NBPC",
-        "COD_ENG_GEN",
-        "COD_TYP_PANIER",
-        "NO_ENGIN",
-        "NO_MOLLUSQUE",
-        "COD_TYP_LONG",
-        "VALEUR_LONG_MOLL",
-        "VALEUR_LONG_MOLL_P",
-        "COD_TYP_ETAT",
-        "COD_TECH_MESURE_LONG",
-        "NO_CHARGEMENT"
-    ))
+    result <- check_other_columns(
+        df,
+        col_names = c(
+            "COD_ESP_GEN",
+            "IDENT_NO_TRAIT",
+            "NO_RELEVE",
+            "COD_SOURCE_INFO",
+            "COD_NBPC",
+            "COD_ENG_GEN",
+            "COD_TYP_PANIER",
+            "NO_ENGIN",
+            "NO_MOLLUSQUE",
+            "COD_TYP_LONG",
+            "VALEUR_LONG_MOLL",
+            "VALEUR_LONG_MOLL_P",
+            "COD_TYP_ETAT",
+            "COD_TECH_MESURE_LONG",
+            "NO_CHARGEMENT"
+        )
+    )
     is_valid <- is_valid & result
 
-    result <- check_numeric_columns(df, col_names = c(
-        "COD_ESP_GEN",
-        "IDENT_NO_TRAIT",
-        "NO_RELEVE",
-        "COD_SOURCE_INFO",
-        "COD_ENG_GEN",
-        "COD_TYP_PANIER",
-        "NO_ENGIN",
-        "NO_MOLLUSQUE",
-        "COD_TYP_LONG",
-        "VALEUR_LONG_MOLL",
-        "VALEUR_LONG_MOLL_P",
-        "COD_TECH_MESURE_LONG",
-        "NO_CHARGEMENT"
-    ))
+    result <- check_numeric_columns(
+        df,
+        col_names = c(
+            "COD_ESP_GEN",
+            "IDENT_NO_TRAIT",
+            "NO_RELEVE",
+            "COD_SOURCE_INFO",
+            "COD_ENG_GEN",
+            "COD_TYP_PANIER",
+            "NO_ENGIN",
+            "NO_MOLLUSQUE",
+            "COD_TYP_LONG",
+            "VALEUR_LONG_MOLL",
+            "VALEUR_LONG_MOLL_P",
+            "COD_TECH_MESURE_LONG",
+            "NO_CHARGEMENT"
+        )
+    )
     is_valid <- is_valid & result
 
     return(is_valid)
@@ -186,15 +219,26 @@ write_freq_long_mollusque <- function(df, access_db_write_connection = NULL) {
 
     # insert make one row at a time
     for (i in seq_len(nrow(df))) {
-        statement <- generate_sql_insert_statement(df[i, ], "FREQ_LONG_MOLLUSQUE")
-        logger::log_debug("Writing the following statement to the database: {statement}")
+        statement <- generate_sql_insert_statement(
+            df[i, ],
+            "FREQ_LONG_MOLLUSQUE"
+        )
+        logger::log_debug(
+            "Writing the following statement to the database: {statement}"
+        )
         result <- DBI::dbExecute(access_db_write_connection, statement)
         if (result != 1) {
-            logger::log_error("Failed to write a row to the FREQ_LONG_MOLLUSQUE Table, row: {i}")
+            logger::log_error(
+                "Failed to write a row to the FREQ_LONG_MOLLUSQUE Table, row: {i}"
+            )
             stop("Failed to write a row to the FREQ_LONG_MOLLUSQUE Table")
         } else {
-            logger::log_debug("Successfully added a row to the FREQ_LONG_MOLLUSQUE Table")
+            logger::log_debug(
+                "Successfully added a row to the FREQ_LONG_MOLLUSQUE Table"
+            )
         }
     }
-    logger::log_info("Successfully wrote the freq_long_mollusque dataframe to the database.")
+    logger::log_info(
+        "Successfully wrote the freq_long_mollusque dataframe to the database."
+    )
 }

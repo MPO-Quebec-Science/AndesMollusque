@@ -6,7 +6,8 @@
 #' @export
 access_db_connect <- function(file_path = NULL) {
     if (is.null(file_path)) {
-        file_path <- system.file("ref_data",
+        file_path <- system.file(
+            "ref_data",
             "access_template.mdb",
             package = "ANDESMollusque"
         )
@@ -14,19 +15,29 @@ access_db_connect <- function(file_path = NULL) {
 
     connection_string <- paste(
         "Driver={Microsoft Access Driver (*.mdb, *.accdb)};",
-        "DBQ=", file_path, ";",
+        "DBQ=",
+        file_path,
+        ";",
         sep = ""
     )
 
     # if opening the access template, set to read only.
-    if (file_path == system.file("ref_data", "access_template.mdb", package = "ANDESMollusque")) {
+    if (
+        file_path ==
+            system.file(
+                "ref_data",
+                "access_template.mdb",
+                package = "ANDESMollusque"
+            )
+    ) {
         connection_string <- paste(
             connection_string,
             "ReadOnly=1",
             sep = ""
         )
     }
-    access_db_connection <- DBI::dbConnect(odbc::odbc(),
+    access_db_connection <- DBI::dbConnect(
+        odbc::odbc(),
         .connection_string = connection_string,
         timeout = 10
     )
@@ -35,7 +46,8 @@ access_db_connect <- function(file_path = NULL) {
 
 #' @export
 create_new_access_db <- function(fname = "new_access_db.mdb") {
-    template_file_path <- system.file("ref_data",
+    template_file_path <- system.file(
+        "ref_data",
         "access_template.mdb",
         package = "ANDESMollusque"
     )
@@ -50,7 +62,6 @@ create_new_access_db <- function(fname = "new_access_db.mdb") {
 }
 
 
-
 #' Get the reference key corresponding to a value (usually from the Oracle / MSAccess reference database)
 #' @param table: The name of the Oracle table, defaults to "tablename"
 #' @param pkey_col: The column name that holds the key, defaults to "columnofprimarykey"
@@ -59,11 +70,13 @@ create_new_access_db <- function(fname = "new_access_db.mdb") {
 #' @param optional_query: additional string to append to the query
 #' @return: The value found in the pkey column for the entry with the value
 #' @export
-get_ref_key <- function(table = "tablename",
-                        pkey_col = "columnofprimarykey",
-                        col = "columnname",
-                        val = "entryvalue",
-                        optional_query = "") {
+get_ref_key <- function(
+    table = "tablename",
+    pkey_col = "columnofprimarykey",
+    col = "columnname",
+    val = "entryvalue",
+    optional_query = ""
+) {
     # sanitize the strings
     if (is.character(val)) {
         # sanitize the value, double up existing quotes
@@ -71,10 +84,17 @@ get_ref_key <- function(table = "tablename",
         # sanitize the value, wrap in single quotes
         val <- paste("'", val, "'", sep = "")
     }
-    query <- paste("SELECT ", pkey_col,
-        " FROM ", table,
-        " WHERE ", col, "=", val,
-        " ", optional_query,
+    query <- paste(
+        "SELECT ",
+        pkey_col,
+        " FROM ",
+        table,
+        " WHERE ",
+        col,
+        "=",
+        val,
+        " ",
+        optional_query,
         sep = ""
     )
     access_db_connection <- access_db_connect()
@@ -84,7 +104,13 @@ get_ref_key <- function(table = "tablename",
     DBI::dbDisconnect(access_db_connection)
 
     if (length(ref_key) != 1) {
-        stop("The reference query: ", query, " returned ", length(ref_key), " results. Expected 1 result.")
+        stop(
+            "The reference query: ",
+            query,
+            " returned ",
+            length(ref_key),
+            " results. Expected 1 result."
+        )
     }
     # TODO: add sanity checks,
     #     if len(res) == 1:
@@ -106,12 +132,18 @@ get_ref_key <- function(table = "tablename",
 #' @param optional_query: additional string to append to the query
 #' @return: The value found in the pkey column for the entry with the value
 #' @export
-get_ref_choices <- function(table = "tablename",
-                            col = "columnname",
-                            optional_query = "") {
-    query <- paste("SELECT ", col,
-        " FROM ", table,
-        " ", optional_query,
+get_ref_choices <- function(
+    table = "tablename",
+    col = "columnname",
+    optional_query = ""
+) {
+    query <- paste(
+        "SELECT ",
+        col,
+        " FROM ",
+        table,
+        " ",
+        optional_query,
         sep = ""
     )
     access_db_connection <- access_db_connect()
@@ -133,7 +165,8 @@ get_access_table_properties <- function(table_name = NULL) {
 
     access_db_connection <- access_db_connect()
 
-    query <- readr::read_file(system.file("sql_queries",
+    query <- readr::read_file(system.file(
+        "sql_queries",
         "table_property.sql",
         package = "ANDESMollusque"
     ))

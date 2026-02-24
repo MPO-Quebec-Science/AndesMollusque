@@ -33,12 +33,17 @@ format_epibiont <- function(andes_db_connection, code_filter) {
     # We will handle case 0 later, no barnacle cases should have ave_coverage=NA
 
     # this should take care of all legal values of area
-    cod_couverture <- cut(epibiont_data$ave_coverage, breaks = breaks, labels = categories, )
+    cod_couverture <- cut(
+        epibiont_data$ave_coverage,
+        breaks = breaks,
+        labels = categories,
+    )
     # we don't actually want a factor, but a list with values from categories
     cod_couverture <- categories[as.integer(cod_couverture)]
 
     # now handle edge case when there is no legal area (because there are no barnacles)
-    is_na_because_no_barnacles <- is.na(cod_couverture) & (epibiont_data$ave_with_barnacles == 0)
+    is_na_because_no_barnacles <- is.na(cod_couverture) &
+        (epibiont_data$ave_with_barnacles == 0)
     cod_couverture[is_na_because_no_barnacles] <- 0
 
     epibiont_data$COD_COUVERTURE_EPIBIONT <- cod_couverture
@@ -54,17 +59,28 @@ format_epibiont <- function(andes_db_connection, code_filter) {
     categories <- c(0, 1, 2, 3, 4, 5)
 
     # this should take care of all legal values of area
-    cod_abondance <- cut(epibiont_data$ave_with_barnacles, breaks = breaks, labels = categories, include.lowest = TRUE)
+    cod_abondance <- cut(
+        epibiont_data$ave_with_barnacles,
+        breaks = breaks,
+        labels = categories,
+        include.lowest = TRUE
+    )
     # we don't actually want a factor, but a list with values from categories
     cod_abondance <- categories[as.integer(cod_abondance)]
     epibiont_data$COD_ABONDANCE_EPIBIONT <- cod_abondance
 
     # rename columns for the merge
-    names(epibiont_data)[names(epibiont_data) == "sample_number"] <- "IDENT_NO_TRAIT"
+    names(epibiont_data)[
+        names(epibiont_data) == "sample_number"
+    ] <- "IDENT_NO_TRAIT"
     names(epibiont_data)[names(epibiont_data) == "code"] <- "strap_code"
 
     # merge
-    capt <- left_join(capt, epibiont_data, by = c("IDENT_NO_TRAIT", "strap_code"))
+    capt <- left_join(
+        capt,
+        epibiont_data,
+        by = c("IDENT_NO_TRAIT", "strap_code")
+    )
     # can get rid the extra
     capt <- subset(capt, select = -c(ave_with_barnacles))
     capt <- subset(capt, select = -c(ave_coverage))
@@ -80,7 +96,8 @@ format_epibiont <- function(andes_db_connection, code_filter) {
 #' @param code_filter a list of species code to filter on, or NULL for no filtering
 #' @export
 get_epibiont <- function(andes_db_connection, code_filter) {
-    query <- readr::read_file(system.file("sql_queries",
+    query <- readr::read_file(system.file(
+        "sql_queries",
         "epibiont_cte.sql",
         package = "ANDESMollusque"
     ))
@@ -113,7 +130,10 @@ get_epibiont <- function(andes_db_connection, code_filter) {
     # done with abondance_epibiont
 
     # assign each coverage category with a numerical value (based o the midpoint)
-    code_map <- data.frame(observation_value = c("1", "2", "3"), coverage = c((0 + 1) / 6., (1 + 2) / 6., (2 + 3) / 6.))
+    code_map <- data.frame(
+        observation_value = c("1", "2", "3"),
+        coverage = c((0 + 1) / 6., (1 + 2) / 6., (2 + 3) / 6.)
+    )
     # res <- merge(desc_typ_trait, code_map, by = "desc", all.x = TRUE, sort = FALSE)
     coverage <- left_join(df, code_map, by = "observation_value")$coverage
 
@@ -123,13 +143,19 @@ get_epibiont <- function(andes_db_connection, code_filter) {
     couverture_epibiont <- aggregate(
         x = list(ave_coverage = coverage),
         by = list(code = df$code, sample_number = df$sample_number),
-        FUN = mean, na.rm = TRUE
+        FUN = mean,
+        na.rm = TRUE
     )
     # View(couverture_epibiont)
     # done with couverture_epibiont
 
     # now we combine them
-    joined <- merge(x = abondance_epibiont, y = couverture_epibiont, all = TRUE, sort = FALSE)
+    joined <- merge(
+        x = abondance_epibiont,
+        y = couverture_epibiont,
+        all = TRUE,
+        sort = FALSE
+    )
 
     return(joined)
 }
@@ -137,7 +163,8 @@ get_epibiont <- function(andes_db_connection, code_filter) {
 
 #' @export
 format_cod_esp_gen <- function(capt) {
-    query <- readr::read_file(system.file("sql_queries",
+    query <- readr::read_file(system.file(
+        "sql_queries",
         "esp_gen_code_map.sql",
         package = "ANDESMollusque"
     ))
@@ -151,7 +178,9 @@ format_cod_esp_gen <- function(capt) {
     DBI::dbDisconnect(access_db_connection)
 
     # rename column to match for the merge
-    names(cod_esp_gen_map)[names(cod_esp_gen_map) == "COD_ESPECE"] <- "strap_code"
+    names(cod_esp_gen_map)[
+        names(cod_esp_gen_map) == "COD_ESPECE"
+    ] <- "strap_code"
     capt <- left_join(capt, cod_esp_gen_map, by = "strap_code")
 
     # we can probably drop the strap_code column now...
@@ -172,7 +201,11 @@ format_cod_typ_mesure <- function(capt) {
         col = "DESC_TYP_MESURE_F",
         val = "Données quantitatives",
     )
-    capt <- add_hard_coded_value(capt, col_name = "COD_TYP_MESURE", value = quantitative_code)
+    capt <- add_hard_coded_value(
+        capt,
+        col_name = "COD_TYP_MESURE",
+        value = quantitative_code
+    )
     return(capt)
 }
 
@@ -182,6 +215,10 @@ format_cod_typ_mesure <- function(capt) {
 #' But it is not used for commercial stocks, so we skip it
 #' @export
 format_cod_descrip_capt <- function(capt) {
-    capt <- add_hard_coded_value(capt, col_name = "COD_DESCRIP_CAPT", value = NA)
+    capt <- add_hard_coded_value(
+        capt,
+        col_name = "COD_DESCRIP_CAPT",
+        value = NA
+    )
     return(capt)
 }

@@ -11,8 +11,12 @@
 #' @return A dataframe containing fishing set data.
 #' @seealso [get_biometrie_petoncle()] for the formatted results
 #' @export
-get_biometrie_petoncle_db <- function(andes_db_connection, collection_name = NULL) {
-    query <- readr::read_file(system.file("sql_queries",
+get_biometrie_petoncle_db <- function(
+    andes_db_connection,
+    collection_name = NULL
+) {
+    query <- readr::read_file(system.file(
+        "sql_queries",
         "biometrie_petoncle.sql",
         package = "ANDESMollusque"
     ))
@@ -78,21 +82,36 @@ get_legal_collection_names <- function() {
 #' @return A dataframe containing get_biometrie_petoncle table data.
 #' @seealso [get_biometrie_petoncle_db(), get_legal_collection_names()] for the db results
 #' @export
-get_biometrie_petoncle <- function(andes_db_connection, collection_name = NULL) {
+get_biometrie_petoncle <- function(
+    andes_db_connection,
+    collection_name = NULL
+) {
     # Validate input
     if (is.null(collection_name)) {
         logger::log_error("Must provide a formatted collection_name string.")
         stop("Must provide a formatted collection_name string.")
     }
     if (!collection_name %in% get_legal_collection_names()) {
-        logger::log_error(paste0("collection_name must be one of: ", paste(get_legal_collection_names(), collapse = ", ")))
-        stop(paste0("collection_name must be one of: ", paste(get_legal_collection_names(), collapse = ", ")))
+        logger::log_error(paste0(
+            "collection_name must be one of: ",
+            paste(get_legal_collection_names(), collapse = ", ")
+        ))
+        stop(paste0(
+            "collection_name must be one of: ",
+            paste(get_legal_collection_names(), collapse = ", ")
+        ))
     }
 
-    biometrie <- get_biometrie_petoncle_db(andes_db_connection, collection_name = collection_name)
+    biometrie <- get_biometrie_petoncle_db(
+        andes_db_connection,
+        collection_name = collection_name
+    )
 
     # format the date column, apply function andes_str_to_oracle_date()
-    biometrie$date <- unlist(lapply(biometrie$set_start_date, andes_str_to_oracle_date))
+    biometrie$date <- unlist(lapply(
+        biometrie$set_start_date,
+        andes_str_to_oracle_date
+    ))
 
     # can get rid of columns: set_start_date
     biometrie <- subset(biometrie, select = -c(set_start_date))

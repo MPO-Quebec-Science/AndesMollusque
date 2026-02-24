@@ -11,7 +11,8 @@
 #' @seealso [get_trait_mollusque()] for the formatted results
 #' @export
 get_trait_mollusque_db <- function(andes_db_connection) {
-    query <- readr::read_file(system.file("sql_queries",
+    query <- readr::read_file(system.file(
+        "sql_queries",
         "trait_mollusque.sql",
         package = "ANDESMollusque"
     ))
@@ -34,7 +35,9 @@ get_trait_mollusque_db <- function(andes_db_connection) {
 get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     # Validate input
     if (is.null(proj)) {
-        logger::log_error("Must provide a formatted projet_mollusque dataframe.")
+        logger::log_error(
+            "Must provide a formatted projet_mollusque dataframe."
+        )
         stop("Must provide a formatted projet_mollusque dataframe.")
     }
 
@@ -124,7 +127,11 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
         val = "Québec"
     )
 
-    trait <- add_hard_coded_value(trait, col_name = "COD_FUSEAU_HORAIRE", value = cod_fuseau_horaire)
+    trait <- add_hard_coded_value(
+        trait,
+        col_name = "COD_FUSEAU_HORAIRE",
+        value = cod_fuseau_horaire
+    )
 
     # 0 -> Inconnue
     # 1 -> Estimation
@@ -139,7 +146,11 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     trait <- add_hard_coded_value(trait, col_name = "LATLONG_P", value = NA)
 
     trait <- add_hard_coded_value(trait, col_name = "DISTANCE_POS", value = NA)
-    trait <- add_hard_coded_value(trait, col_name = "DISTANCE_POS_P", value = NA)
+    trait <- add_hard_coded_value(
+        trait,
+        col_name = "DISTANCE_POS_P",
+        value = NA
+    )
 
     trait <- add_hard_coded_value(trait, col_name = "VIT_TOUAGE", value = NA)
     trait <- add_hard_coded_value(trait, col_name = "VIT_TOUAGE_P", value = NA)
@@ -158,23 +169,26 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
     # trait <- add_hard_coded_value(trait, col_name = "COD_TYP_ECH_TRAIT", value = NA)
 
     # convert these strings to numeric
-    trait <- cols_to_numeric(trait, col_names = c(
-        "NO_STATION",
-        "COD_RESULT_OPER",
-        "LATLONG_P",
-        "DISTANCE_POS",
-        "DISTANCE_POS_P",
-        "VIT_TOUAGE",
-        "VIT_TOUAGE_P",
-        "DUREE_TRAIT",
-        "DUREE_TRAIT_P",
-        "TEMP_FOND",
-        "TEMP_FOND_P",
-        "PROF_DEB",
-        "PROF_DEB_P",
-        "PROF_FIN",
-        "PROF_FIN_P"
-    ))
+    trait <- cols_to_numeric(
+        trait,
+        col_names = c(
+            "NO_STATION",
+            "COD_RESULT_OPER",
+            "LATLONG_P",
+            "DISTANCE_POS",
+            "DISTANCE_POS_P",
+            "VIT_TOUAGE",
+            "VIT_TOUAGE_P",
+            "DUREE_TRAIT",
+            "DUREE_TRAIT_P",
+            "TEMP_FOND",
+            "TEMP_FOND_P",
+            "PROF_DEB",
+            "PROF_DEB_P",
+            "PROF_FIN",
+            "PROF_FIN_P"
+        )
+    )
 
     return(trait)
 }
@@ -187,130 +201,142 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
 validate_trait_mollusque <- function(df) {
     is_valid <- TRUE
     # check all required cols are present
-    result <- check_columns_present(df, col_names = c(
-        "COD_SOURCE_INFO",
-        "NO_RELEVE",
-        "COD_NBPC",
-        "IDENT_NO_TRAIT",
-        "COD_ZONE_GEST_MOLL",
-        "COD_SECTEUR_RELEVE",
-        "COD_STRATE",
-        "NO_STATION",
-        "COD_TYP_TRAIT",
-        "COD_RESULT_OPER",
-        "DATE_DEB_TRAIT",
-        "DATE_FIN_TRAIT",
-        "HRE_DEB_TRAIT",
-        "HRE_FIN_TRAIT",
-        "COD_TYP_HEURE",
-        "COD_FUSEAU_HORAIRE",
-        "COD_METHOD_POS",
-        "LAT_DEB_TRAIT",
-        "LAT_FIN_TRAIT",
-        "LONG_DEB_TRAIT",
-        "LONG_FIN_TRAIT",
-        "LATLONG_P",
-        "DISTANCE_POS",
-        "DISTANCE_POS_P",
-        "VIT_TOUAGE",
-        "VIT_TOUAGE_P",
-        "DUREE_TRAIT",
-        "DUREE_TRAIT_P",
-        "TEMP_FOND",
-        "TEMP_FOND_P",
-        "PROF_DEB",
-        "PROF_DEB_P",
-        "PROF_FIN",
-        "PROF_FIN_P",
-        "REM_TRAIT_MOLL",
-        "NO_CHARGEMENT"
-    ))
+    result <- check_columns_present(
+        df,
+        col_names = c(
+            "COD_SOURCE_INFO",
+            "NO_RELEVE",
+            "COD_NBPC",
+            "IDENT_NO_TRAIT",
+            "COD_ZONE_GEST_MOLL",
+            "COD_SECTEUR_RELEVE",
+            "COD_STRATE",
+            "NO_STATION",
+            "COD_TYP_TRAIT",
+            "COD_RESULT_OPER",
+            "DATE_DEB_TRAIT",
+            "DATE_FIN_TRAIT",
+            "HRE_DEB_TRAIT",
+            "HRE_FIN_TRAIT",
+            "COD_TYP_HEURE",
+            "COD_FUSEAU_HORAIRE",
+            "COD_METHOD_POS",
+            "LAT_DEB_TRAIT",
+            "LAT_FIN_TRAIT",
+            "LONG_DEB_TRAIT",
+            "LONG_FIN_TRAIT",
+            "LATLONG_P",
+            "DISTANCE_POS",
+            "DISTANCE_POS_P",
+            "VIT_TOUAGE",
+            "VIT_TOUAGE_P",
+            "DUREE_TRAIT",
+            "DUREE_TRAIT_P",
+            "TEMP_FOND",
+            "TEMP_FOND_P",
+            "PROF_DEB",
+            "PROF_DEB_P",
+            "PROF_FIN",
+            "PROF_FIN_P",
+            "REM_TRAIT_MOLL",
+            "NO_CHARGEMENT"
+        )
+    )
     is_valid <- is_valid & result
 
     # check all not-null columns do not have nulls
-    result <- check_cols_contains_na(df, col_names = c(
-        "COD_SOURCE_INFO",
-        "NO_RELEVE",
-        "COD_NBPC",
-        "IDENT_NO_TRAIT",
-        "NO_STATION",
-        "COD_TYP_TRAIT",
-        "COD_RESULT_OPER"
-    ))
+    result <- check_cols_contains_na(
+        df,
+        col_names = c(
+            "COD_SOURCE_INFO",
+            "NO_RELEVE",
+            "COD_NBPC",
+            "IDENT_NO_TRAIT",
+            "NO_STATION",
+            "COD_TYP_TRAIT",
+            "COD_RESULT_OPER"
+        )
+    )
     is_valid <- is_valid & result
 
-    result <- check_other_columns(df, col_names = c(
-        "COD_SOURCE_INFO",
-        "NO_RELEVE",
-        "COD_NBPC",
-        "IDENT_NO_TRAIT",
-        "COD_ZONE_GEST_MOLL",
-        "COD_SECTEUR_RELEVE",
-        "COD_STRATE",
-        "NO_STATION",
-        "COD_TYP_TRAIT",
-        "COD_RESULT_OPER",
-        "DATE_DEB_TRAIT",
-        "DATE_FIN_TRAIT",
-        "HRE_DEB_TRAIT",
-        "HRE_FIN_TRAIT",
-        "COD_TYP_HEURE",
-        "COD_FUSEAU_HORAIRE",
-        "COD_METHOD_POS",
-        "LAT_DEB_TRAIT",
-        "LAT_FIN_TRAIT",
-        "LONG_DEB_TRAIT",
-        "LONG_FIN_TRAIT",
-        "LATLONG_P",
-        "DISTANCE_POS",
-        "DISTANCE_POS_P",
-        "VIT_TOUAGE",
-        "VIT_TOUAGE_P",
-        "DUREE_TRAIT",
-        "DUREE_TRAIT_P",
-        "TEMP_FOND",
-        "TEMP_FOND_P",
-        "PROF_DEB",
-        "PROF_DEB_P",
-        "PROF_FIN",
-        "PROF_FIN_P",
-        "REM_TRAIT_MOLL",
-        "NO_CHARGEMENT"
-    ))
+    result <- check_other_columns(
+        df,
+        col_names = c(
+            "COD_SOURCE_INFO",
+            "NO_RELEVE",
+            "COD_NBPC",
+            "IDENT_NO_TRAIT",
+            "COD_ZONE_GEST_MOLL",
+            "COD_SECTEUR_RELEVE",
+            "COD_STRATE",
+            "NO_STATION",
+            "COD_TYP_TRAIT",
+            "COD_RESULT_OPER",
+            "DATE_DEB_TRAIT",
+            "DATE_FIN_TRAIT",
+            "HRE_DEB_TRAIT",
+            "HRE_FIN_TRAIT",
+            "COD_TYP_HEURE",
+            "COD_FUSEAU_HORAIRE",
+            "COD_METHOD_POS",
+            "LAT_DEB_TRAIT",
+            "LAT_FIN_TRAIT",
+            "LONG_DEB_TRAIT",
+            "LONG_FIN_TRAIT",
+            "LATLONG_P",
+            "DISTANCE_POS",
+            "DISTANCE_POS_P",
+            "VIT_TOUAGE",
+            "VIT_TOUAGE_P",
+            "DUREE_TRAIT",
+            "DUREE_TRAIT_P",
+            "TEMP_FOND",
+            "TEMP_FOND_P",
+            "PROF_DEB",
+            "PROF_DEB_P",
+            "PROF_FIN",
+            "PROF_FIN_P",
+            "REM_TRAIT_MOLL",
+            "NO_CHARGEMENT"
+        )
+    )
     is_valid <- is_valid & result
 
-    result <- check_numeric_columns(df, col_names = c(
-        "COD_SOURCE_INFO",
-        "NO_RELEVE",
-        "IDENT_NO_TRAIT",
-        "COD_ZONE_GEST_MOLL",
-        "COD_SECTEUR_RELEVE",
-        "COD_STRATE",
-        "NO_STATION",
-        "COD_TYP_TRAIT",
-        "COD_RESULT_OPER",
-        "COD_TYP_HEURE",
-        "COD_FUSEAU_HORAIRE",
-        "COD_METHOD_POS",
-        "LAT_DEB_TRAIT",
-        "LAT_FIN_TRAIT",
-        "LONG_DEB_TRAIT",
-        "LONG_FIN_TRAIT",
-        "LATLONG_P",
-        "DISTANCE_POS",
-        "DISTANCE_POS_P",
-        "VIT_TOUAGE",
-        "VIT_TOUAGE_P",
-        "DUREE_TRAIT",
-        "DUREE_TRAIT_P",
-        "TEMP_FOND",
-        "TEMP_FOND_P",
-        "PROF_DEB",
-        "PROF_DEB_P",
-        "PROF_FIN",
-        "PROF_FIN_P",
-        "NO_CHARGEMENT"
-    ))
+    result <- check_numeric_columns(
+        df,
+        col_names = c(
+            "COD_SOURCE_INFO",
+            "NO_RELEVE",
+            "IDENT_NO_TRAIT",
+            "COD_ZONE_GEST_MOLL",
+            "COD_SECTEUR_RELEVE",
+            "COD_STRATE",
+            "NO_STATION",
+            "COD_TYP_TRAIT",
+            "COD_RESULT_OPER",
+            "COD_TYP_HEURE",
+            "COD_FUSEAU_HORAIRE",
+            "COD_METHOD_POS",
+            "LAT_DEB_TRAIT",
+            "LAT_FIN_TRAIT",
+            "LONG_DEB_TRAIT",
+            "LONG_FIN_TRAIT",
+            "LATLONG_P",
+            "DISTANCE_POS",
+            "DISTANCE_POS_P",
+            "VIT_TOUAGE",
+            "VIT_TOUAGE_P",
+            "DUREE_TRAIT",
+            "DUREE_TRAIT_P",
+            "TEMP_FOND",
+            "TEMP_FOND_P",
+            "PROF_DEB",
+            "PROF_DEB_P",
+            "PROF_FIN",
+            "PROF_FIN_P",
+            "NO_CHARGEMENT"
+        )
+    )
     is_valid <- is_valid & result
 
     return(is_valid)
@@ -326,14 +352,23 @@ write_trait_mollusque <- function(trait, access_db_write_connection = NULL) {
 
     # insert make one row at a time
     for (i in seq_len(nrow(trait))) {
-        statement <- generate_sql_insert_statement(trait[i, ], "TRAIT_MOLLUSQUE")
-        logger::log_debug("Writing the following statement to the database: {statement}")
+        statement <- generate_sql_insert_statement(
+            trait[i, ],
+            "TRAIT_MOLLUSQUE"
+        )
+        logger::log_debug(
+            "Writing the following statement to the database: {statement}"
+        )
         result <- DBI::dbExecute(access_db_write_connection, statement)
         if (result != 1) {
-            logger::log_error("Failed to write a row to the TRAIT_MOLLUSQUE Table, row: {i}")
+            logger::log_error(
+                "Failed to write a row to the TRAIT_MOLLUSQUE Table, row: {i}"
+            )
             stop("Failed to write a row to the TRAIT_MOLLUSQUE Table")
         } else {
-            logger::log_debug("Successfully added a row to the TRAIT_MOLLUSQUE Table")
+            logger::log_debug(
+                "Successfully added a row to the TRAIT_MOLLUSQUE Table"
+            )
         }
     }
     logger::log_info("Successfully wrote the trait_mollusque to the database.")

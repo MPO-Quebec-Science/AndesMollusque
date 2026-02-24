@@ -19,7 +19,11 @@ format_cod_secteur_releve <- function(trait, desc_secteur_releve_f) {
 #' @export
 format_cod_strate <- function(trait, desc_serie_hist_f) {
     lookup_cod_strate <- function(strate_name, cod_sect_releve) {
-        optional_query <- paste("AND COD_SECTEUR_RELEVE=", cod_secteur_releve, sep = "")
+        optional_query <- paste(
+            "AND COD_SECTEUR_RELEVE=",
+            cod_secteur_releve,
+            sep = ""
+        )
         key <- get_ref_key(
             table = "TYPE_STRATE_MOLL",
             pkey_col = "COD_STRATE",
@@ -38,7 +42,6 @@ format_cod_strate <- function(trait, desc_serie_hist_f) {
     }
     # they are all the same, as it should be be, so just take the first one)
     cod_secteur_releve <- trait$COD_SECTEUR_RELEVE[1]
-
 
     # get the strat from the desc_serie_hist_f and NO_STATION
     strate <- lapply(trait$NO_STATION, get_strate, desc_serie_hist_f)
@@ -61,8 +64,13 @@ format_cod_strate <- function(trait, desc_serie_hist_f) {
 #' @export
 get_strate <- function(nom_station, desc_serie_hist_f) {
     # This requires opening station reference data to determine the zone.
-    lookup_station <- function(station_name = NULL, zone = NULL, species = NULL) {
-        file_path <- system.file("ref_data",
+    lookup_station <- function(
+        station_name = NULL,
+        zone = NULL,
+        species = NULL
+    ) {
+        file_path <- system.file(
+            "ref_data",
             "STATION_MOLL.csv",
             package = "ANDESMollusque"
         )
@@ -71,7 +79,9 @@ get_strate <- function(nom_station, desc_serie_hist_f) {
 
         # filter out station
         if (!is.null(station_name)) {
-            ref_station <- ref_station[ref_station$NOM_STATION == station_name, ]
+            ref_station <- ref_station[
+                ref_station$NOM_STATION == station_name,
+            ]
         }
         # filter out zone
         if (!is.null(zone)) {
@@ -84,13 +94,14 @@ get_strate <- function(nom_station, desc_serie_hist_f) {
 
         # At this point there should be a singleton
         if (nrow(ref_station) != 1) {
-            logger::log_error("lookup_station filter did not yield a singleton. station: {station_name} zone: {zone} species: {species}")
+            logger::log_error(
+                "lookup_station filter did not yield a singleton. station: {station_name} zone: {zone} species: {species}"
+            )
             stop("lookup_station filter did not yield a singleton")
         }
 
         return(ref_station[1, ])
     }
-
 
     if (desc_serie_hist_f == "Indice d'abondance zone 16E - pétoncle") {
         # For 16E, the strate is the first letter of the station name
@@ -102,16 +113,25 @@ get_strate <- function(nom_station, desc_serie_hist_f) {
         return(strate)
     } else if (desc_serie_hist_f == "Indice d'abondance zone 20 - pétoncle") {
         # For IdM, need a lookup table from station
-        station <- lookup_station(station_name = nom_station, zone = "20", species = "PETONCLE")
+        station <- lookup_station(
+            station_name = nom_station,
+            zone = "20",
+            species = "PETONCLE"
+        )
         strate <- station$STRATE
         return(strate)
     } else if (desc_serie_hist_f == "Indice d'abondance buccin") {
         # For buccin, need a lookup table from station
-        station <- lookup_station(station_name = nom_station, species = "BUCCIN")
+        station <- lookup_station(
+            station_name = nom_station,
+            species = "BUCCIN"
+        )
         strate <- station$STRATE
         return(strate)
     } else {
-        logger::log_error("get strate for {desc_serie_hist_f} has not been implemented.")
+        logger::log_error(
+            "get strate for {desc_serie_hist_f} has not been implemented."
+        )
         stop("Cannot determine zone name")
     }
 }
@@ -124,11 +144,15 @@ format_zone <- function(trait, desc_serie_hist_f) {
             # For 16E
             zone <- "16E"
             return(zone)
-        } else if (desc_serie_hist_f == "Indice d'abondance zone 16F - pétoncle") {
+        } else if (
+            desc_serie_hist_f == "Indice d'abondance zone 16F - pétoncle"
+        ) {
             # For 16F
             zone <- "16F"
             return(zone)
-        } else if (desc_serie_hist_f == "Indice d'abondance zone 20 - pétoncle") {
+        } else if (
+            desc_serie_hist_f == "Indice d'abondance zone 20 - pétoncle"
+        ) {
             # For IdM
             zone <- "20"
             return(zone)
@@ -136,7 +160,9 @@ format_zone <- function(trait, desc_serie_hist_f) {
             stop("Buccin is not implemented yet.")
             return("")
         } else {
-            logger::log_error("get strat for {desc_serie_hist_f} has not been implemented.")
+            logger::log_error(
+                "get strat for {desc_serie_hist_f} has not been implemented."
+            )
             stop("Cannot determine zone name")
         }
     }
@@ -162,7 +188,6 @@ format_zone <- function(trait, desc_serie_hist_f) {
     # then lookup the code, add to dataframe
     # trait$COD_ZONE_GEST_MOLL <- lapply(zone, lookup_cod_zone_gest_moll)
 
-
     # make a lookup table
     value <- unique(zone)
     code <- lapply(value, lookup_cod_zone_gest_moll)
@@ -176,7 +201,6 @@ format_zone <- function(trait, desc_serie_hist_f) {
 
     return(trait)
 }
-
 
 
 #' @export
@@ -193,7 +217,6 @@ strip_alphabetic <- function(my_string) {
 }
 
 
-
 format_cod_typ_trait <- function(trait, desc_stratification) {
     lookup_cod_typ_trait <- function(desc_typ_trait) {
         key <- get_ref_key(
@@ -205,7 +228,11 @@ format_cod_typ_trait <- function(trait, desc_stratification) {
         return(key)
     }
 
-    desc_typ_trait <- lapply(trait$operation, get_desc_typ_trait, desc_stratification)
+    desc_typ_trait <- lapply(
+        trait$operation,
+        get_desc_typ_trait,
+        desc_stratification
+    )
 
     # the naive way (commented-out here) is to simply lookup every cod, but it is slow, so make a map ahead of time
     # trait$cod_typ_trait <- lapply(desc_typ_trait, lookup_cod_typ_trait)
@@ -231,8 +258,12 @@ get_desc_typ_trait <- function(operation, desc_stratification) {
         # this is a fishing operation, must return the mission's stratification type
         return(desc_stratification)
     } else {
-        logger::log_error("cannot get desc_typ_trait, verify that operatin is one of ctd or fish")
-        stop("cannot get desc_typ_trait, verify that operation is one of ctd or fish")
+        logger::log_error(
+            "cannot get desc_typ_trait, verify that operatin is one of ctd or fish"
+        )
+        stop(
+            "cannot get desc_typ_trait, verify that operation is one of ctd or fish"
+        )
     }
 }
 
@@ -246,8 +277,14 @@ get_desc_typ_trait <- function(operation, desc_stratification) {
 #' @export
 format_date_trait <- function(trait) {
     # Convert start and end dates
-    trait$DATE_DEB_TRAIT <- unlist(lapply(trait$DATE_DEB_TRAIT, andes_str_to_oracle_date))
-    trait$DATE_FIN_TRAIT <- unlist(lapply(trait$DATE_FIN_TRAIT, andes_str_to_oracle_date))
+    trait$DATE_DEB_TRAIT <- unlist(lapply(
+        trait$DATE_DEB_TRAIT,
+        andes_str_to_oracle_date
+    ))
+    trait$DATE_FIN_TRAIT <- unlist(lapply(
+        trait$DATE_FIN_TRAIT,
+        andes_str_to_oracle_date
+    ))
     return(trait)
 }
 
@@ -260,8 +297,14 @@ format_date_trait <- function(trait) {
 #' @export
 format_date_hre_trait <- function(trait) {
     # Convert start and end dates
-    trait$HRE_DEB_TRAIT <- unlist(lapply(trait$HRE_DEB_TRAIT, andes_str_to_oracle_datetime))
-    trait$HRE_FIN_TRAIT <- unlist(lapply(trait$HRE_FIN_TRAIT, andes_str_to_oracle_datetime))
+    trait$HRE_DEB_TRAIT <- unlist(lapply(
+        trait$HRE_DEB_TRAIT,
+        andes_str_to_oracle_datetime
+    ))
+    trait$HRE_FIN_TRAIT <- unlist(lapply(
+        trait$HRE_FIN_TRAIT,
+        andes_str_to_oracle_datetime
+    ))
     return(trait)
 }
 
@@ -317,8 +360,14 @@ format_coordinates <- function(trait) {
     trait$LAT_FIN_TRAIT <- unlist(lapply(trait$LAT_FIN_TRAIT, to_oracle_coord))
 
     # the longitudes need a negative
-    trait$LONG_DEB_TRAIT <- unlist(lapply(trait$LONG_DEB_TRAIT, to_oracle_coord))
-    trait$LONG_FIN_TRAIT <- unlist(lapply(trait$LONG_FIN_TRAIT, to_oracle_coord))
+    trait$LONG_DEB_TRAIT <- unlist(lapply(
+        trait$LONG_DEB_TRAIT,
+        to_oracle_coord
+    ))
+    trait$LONG_FIN_TRAIT <- unlist(lapply(
+        trait$LONG_FIN_TRAIT,
+        to_oracle_coord
+    ))
     return(trait)
 }
 
@@ -353,13 +402,27 @@ validate_set_result <- function(trait) {
         msg <- NULL
 
         if (is.na(set_is_valid)) {
-            msg <- sprintf("Set %s has no defined set_is_valid. Please define the result and re-run.", IDENT_NO_TRAIT)
+            msg <- sprintf(
+                "Set %s has no defined set_is_valid. Please define the result and re-run.",
+                IDENT_NO_TRAIT
+            )
         } else if (is.na(COD_RESULT_OPER)) {
-            msg <- sprintf("Set %s has no defined COD_RESULT_OPER. Please define and re-run.", IDENT_NO_TRAIT)
-        } else if ((set_is_valid == 1) && (COD_RESULT_OPER %in% c(3, 4, 5, 6))) {
-            msg <- sprintf("INTEGRITY ERROR: Valid Set %s has failed COD_RESULT_OPER. Please correct and re-run.", IDENT_NO_TRAIT)
+            msg <- sprintf(
+                "Set %s has no defined COD_RESULT_OPER. Please define and re-run.",
+                IDENT_NO_TRAIT
+            )
+        } else if (
+            (set_is_valid == 1) && (COD_RESULT_OPER %in% c(3, 4, 5, 6))
+        ) {
+            msg <- sprintf(
+                "INTEGRITY ERROR: Valid Set %s has failed COD_RESULT_OPER. Please correct and re-run.",
+                IDENT_NO_TRAIT
+            )
         } else if ((set_is_valid == 0) && (COD_RESULT_OPER %in% c(1, 2))) {
-            msg <- sprintf("INTEGRITY ERROR: Invalid Set %s has normal COD_RESULT_OPER. Please correct and re-run.", IDENT_NO_TRAIT)
+            msg <- sprintf(
+                "INTEGRITY ERROR: Invalid Set %s has normal COD_RESULT_OPER. Please correct and re-run.",
+                IDENT_NO_TRAIT
+            )
         }
         if (!is.null(msg)) {
             logger::log_error(msg)

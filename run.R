@@ -1,4 +1,3 @@
-
 rm()
 devtools::load_all()
 devtools::document()
@@ -27,7 +26,10 @@ andes_db_connection <- andes_db_connect(
 # "Conserver pour biométrie centre"
 # "Conserver pour biométrie ouest"
 collection_name <- "Conserver pour biométrie 16F"
-bio <- get_biometrie_petoncle(andes_db_connection, collection_name = collection_name)
+bio <- get_biometrie_petoncle(
+  andes_db_connection,
+  collection_name = collection_name
+)
 head(bio)
 
 ################################################
@@ -77,12 +79,16 @@ engin <- get_engin_mollusque(andes_db_connection, proj = proj)
 validate_engin_mollusque(engin)
 
 # Captures should only use the basket_class filter to select 1 - Vivant intact
-capt <- get_capture_mollusque(andes_db_connection, engin, code_filter = code_filter, basket_class_filter = basket_class_filter)
+capt <- get_capture_mollusque(
+  andes_db_connection,
+  engin,
+  code_filter = code_filter,
+  basket_class_filter = basket_class_filter
+)
 validate_capture_mollusque(capt)
 
 freq <- get_freq_long_mollusque(andes_db_connection, capt)
 validate_freq_long_mollusque(freq)
-
 
 
 p_i <- 1
@@ -94,12 +100,16 @@ for (p_i in seq_len(nrow(proj))) {
   validate_engin_mollusque(engin)
 
   # Captures should only use the basket_class filter to select 1 - Vivant intact
-  capt <- get_capture_mollusque(andes_db_connection, engin, code_filter = code_filter, basket_class_filter = basket_class_filter)
+  capt <- get_capture_mollusque(
+    andes_db_connection,
+    engin,
+    code_filter = code_filter,
+    basket_class_filter = basket_class_filter
+  )
   validate_capture_mollusque(capt)
 
   freq <- get_freq_long_mollusque(andes_db_connection, capt)
   validate_freq_long_mollusque(freq)
-
 }
 
 View(freq)
@@ -108,7 +118,11 @@ View(freq)
 devtools::load_all()
 
 file_path <- create_new_access_db()
-access_db_write_connection <- access_db_connect(paste("./", file_path, sep = ""))
+access_db_write_connection <- access_db_connect(paste(
+  "./",
+  file_path,
+  sep = ""
+))
 
 write_projet_mollusque(proj, access_db_write_connection)
 
@@ -121,3 +135,12 @@ write_capture_mollusque(capt, access_db_write_connection)
 write_freq_long_mollusque(freq, access_db_write_connection)
 
 DBI::dbDisconnect(access_db_write_connection)
+
+
+## DEV
+devtools::load_all()
+devtools::document()
+
+pkgdown::build_site()
+pkgdown::build_reference()
+pkgdown::build_articles()
