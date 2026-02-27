@@ -10,10 +10,10 @@ cols_to_numeric(df, col_names = NULL)
 
 ## Arguments
 
-- df::
+- df:
 
-  the datafram to modify
+  the dataframe to modify
 
-- col_names::
+- col_names:
 
   a list of column names which will be converted to numeric

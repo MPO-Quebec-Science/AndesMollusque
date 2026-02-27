@@ -110,6 +110,13 @@
 
         <dt>
 
+          <code><a href="cleanup_text.html">cleanup_text()</a></code>
+
+        </dt>
+        <dd>Cleanup text form ANDES to play nice in Oracle</dd>
+
+        <dt>
+
           <code><a href="cols_to_numeric.html">cols_to_numeric()</a></code>
 
         </dt>
@@ -117,17 +124,80 @@
 
         <dt>
 
+          <code><a href="create_new_access_db.html">create_new_access_db()</a></code>
+
+        </dt>
+        <dd>Creates a new MS Access database file</dd>
+
+        <dt>
+
           <code><a href="format_cod_descrip_capt.html">format_cod_descrip_capt()</a></code>
 
         </dt>
-        <dd>For now, we will just keep this blank It is a function here so that one day we can use the ANDES relative abundance category But it is not used for commercial stocks, so we skip it</dd>
+        <dd>Format COD_DESCRIP_CAPT</dd>
+
+        <dt>
+
+          <code><a href="format_cod_esp_gen.html">format_cod_esp_gen()</a></code>
+
+        </dt>
+        <dd>format the cod_esp_gen column</dd>
+
+        <dt>
+
+          <code><a href="format_cod_secteur_releve.html">format_cod_secteur_releve()</a></code>
+
+        </dt>
+        <dd>Format COD_SECTEUR_RELEVE</dd>
+
+        <dt>
+
+          <code><a href="format_cod_source_info.html">format_cod_source_info()</a></code>
+
+        </dt>
+        <dd>Format COD_SOURCE_INFO</dd>
+
+        <dt>
+
+          <code><a href="format_cod_strate.html">format_cod_strate()</a></code>
+
+        </dt>
+        <dd>Format COD_STRAT</dd>
+
+        <dt>
+
+          <code><a href="format_cod_tech_mesure_long.html">format_cod_tech_mesure_long()</a></code>
+
+        </dt>
+        <dd>Format COD_TECH_MESURE_LONG</dd>
+
+        <dt>
+
+          <code><a href="format_cod_typ_etat.html">format_cod_typ_etat()</a></code>
+
+        </dt>
+        <dd>Format COD_TYP_ETAT</dd>
+
+        <dt>
+
+          <code><a href="format_cod_typ_heure.html">format_cod_typ_heure()</a></code>
+
+        </dt>
+        <dd>Format COD_TYP_HEURE</dd>
+
+        <dt>
+
+          <code><a href="format_cod_typ_long.html">format_cod_typ_long()</a></code>
+
+        </dt>
+        <dd>Format COD_TYP_LONG</dd>
 
         <dt>
 
           <code><a href="format_cod_typ_mesure.html">format_cod_typ_mesure()</a></code>
 
         </dt>
-        <dd>For now, we will just assume all data is quantitative since we are limiting ourselves to commercial (scallops and whelk). One day, this function should be generalized to also lookup the data and determine it.</dd>
+        <dd>format COD_TYP_MESURE</dd>
 
         <dt>
 
@@ -142,6 +212,20 @@
 
         </dt>
         <dd>Format coordinates for TRAIT_MOLLUSQUE</dd>
+
+        <dt>
+
+          <code><a href="format_date_deb_projet.html">format_date_deb_projet()</a></code>
+
+        </dt>
+        <dd>Format DATE_DE_PROJET</dd>
+
+        <dt>
+
+          <code><a href="format_date_fin_projet.html">format_date_fin_projet()</a></code>
+
+        </dt>
+        <dd>Format DATE_FIN_PROJET</dd>
 
         <dt>
 
@@ -162,21 +246,49 @@
           <code><a href="format_epibiont.html">format_epibiont()</a></code>
 
         </dt>
-        <dd>Formated COD_COUVERTURE_EPIBIONT column to the dataframe This categorizes AND includes the of the following definition: ave_coverage to cod_couverture : 0 -&gt; Aucune balane 1 -&gt; 1/3 et moins surface colonisée 2 -&gt; 1/3 à 2/3 surface colonisée 3 -&gt; 2/3 et plus surface colonisée</dd>
+        <dd>Formated COD_COUVERTURE_EPIBIONT column to the dataframe</dd>
+
+        <dt>
+
+          <code><a href="format_no_mollusque.html">format_no_mollusque()</a></code>
+
+        </dt>
+        <dd>Format NO_MOLLUSQUE</dd>
+
+        <dt>
+
+          <code><a href="format_no_station.html">format_no_station()</a></code>
+
+        </dt>
+        <dd>Format NO_STATION</dd>
+
+        <dt>
+
+          <code><a href="format_seq_pecheur.html">format_seq_pecheur()</a></code>
+
+        </dt>
+        <dd>Format SEQ_PECHEUR</dd>
+
+        <dt>
+
+          <code><a href="format_zone.html">format_zone()</a></code>
+
+        </dt>
+        <dd>Format ZONE</dd>
 
         <dt>
 
           <code><a href="generate_sql_insert_statement.html">generate_sql_insert_statement()</a></code>
 
         </dt>
-        <dd>generate a SQL inster statement for the single dataframe row as a new row into table_name The dataframe must have named columns that correspond to the columns of the table The values must have the correct data types t(here will be some SQL value sanitizing) The statement will look like:" INSERT INTO table_name col_names_str VALUES col_values_str" Where col_names_str is list of column names with parentheses: "(NO_RELEVE COD_NBPC ANNEE COD_TYP_STRATIF DATE_DEB_PROJET...)" and col_values_str is list of column values with parentheses: "(36 4 2025 7 '2025-05-03'...)"</dd>
+        <dd>Generate a SQL statement</dd>
 
         <dt>
 
           <code><a href="get_access_table_properties.html">get_access_table_properties()</a></code>
 
         </dt>
-        <dd>this function is meant to help the validation automatically getting colnames, no-null cols and datatypes. but I cannot get it to work here yet... (but works in Dbeaver)</dd>
+        <dd>get database table properties</dd>
 
         <dt>
 
@@ -278,6 +390,13 @@
 
         <dt>
 
+          <code><a href="get_strate.html">get_strate()</a></code>
+
+        </dt>
+        <dd>Get the strate from reference</dd>
+
+        <dt>
+
           <code><a href="get_trait_mollusque.html">get_trait_mollusque()</a></code>
 
         </dt>
@@ -309,7 +428,21 @@
           <code><a href="left_join.html">left_join()</a></code>
 
         </dt>
-        <dd>a merge that preserves row and column order shamelessly stolen from https://stackoverflow.com/questions/17878048/merge-two-data-frames-while-keeping-the-original-row-order</dd>
+        <dd>a merge that preserves row and column order</dd>
+
+        <dt>
+
+          <code><a href="lookup_cod_serie_hist.html">lookup_cod_serie_hist()</a></code>
+
+        </dt>
+        <dd>Lookup entry in Oracle</dd>
+
+        <dt>
+
+          <code><a href="lookup_cod_source_info.html">lookup_cod_source_info()</a></code>
+
+        </dt>
+        <dd>Lookup COD_SOURCE_INFO</dd>
 
         <dt>
 
@@ -323,7 +456,7 @@
           <code><a href="sanitize_sql_value.html">sanitize_sql_value()</a></code>
 
         </dt>
-        <dd>It will wrap string with an extra set of single quotes. It will escape every single quote by doubling it up This usualy does nothing to the value itself except inject the NULL string for NA/null and empty strings</dd>
+        <dd>Sanitize value to SQL statement</dd>
 
         <dt>
 
@@ -380,6 +513,41 @@
 
         </dt>
         <dd>Perform database validation checks on the dataframe</dd>
+
+        <dt>
+
+          <code><a href="write_capture_mollusque.html">write_capture_mollusque()</a></code>
+
+        </dt>
+        <dd>Write to Access file</dd>
+
+        <dt>
+
+          <code><a href="write_engin_mollusque.html">write_engin_mollusque()</a></code>
+
+        </dt>
+        <dd>Write to Access file</dd>
+
+        <dt>
+
+          <code><a href="write_freq_long_mollusque.html">write_freq_long_mollusque()</a></code>
+
+        </dt>
+        <dd>Write dataframe to Access file</dd>
+
+        <dt>
+
+          <code><a href="write_projet_mollusque.html">write_projet_mollusque()</a></code>
+
+        </dt>
+        <dd>Write to Access file</dd>
+
+        <dt>
+
+          <code><a href="write_trait_mollusque.html">write_trait_mollusque()</a></code>
+
+        </dt>
+        <dd>Write dataframe to Access file</dd>
       </dl></div>
   </main></div>
 

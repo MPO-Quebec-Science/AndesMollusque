@@ -11,9 +11,9 @@ format_date_hre_trait(trait)
 
 ## Arguments
 
-- df:
+- trait:
 
-  Input dataframe
+  Dataframe
 
 ## Value
 

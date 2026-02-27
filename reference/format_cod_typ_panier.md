@@ -9,3 +9,9 @@
 ``` r
 format_cod_typ_panier(engin)
 ```
+
+## Arguments
+
+- engin:
+
+  Dataframe

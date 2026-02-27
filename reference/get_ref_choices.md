@@ -10,21 +10,21 @@ get_ref_choices(table = "tablename", col = "columnname", optional_query = "")
 
 ## Arguments
 
-- table::
+- table:
 
   The name of the Oracle table, defaults to "tablename"
 
-- col::
+- col:
 
   The column that holds the value to match, defaults to "columnname"
 
-- optional_query::
+- optional_query:
 
   additional string to append to the query
 
 ## Value
 
-: The value found in the pkey column for the entry with the value
+The value found in the pkey column for the entry with the value
 
 ## Details
 

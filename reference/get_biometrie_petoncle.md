@@ -16,6 +16,11 @@ get_biometrie_petoncle(andes_db_connection, collection_name = NULL)
 
   a connection object to the ANDES database.
 
+- collection_name:
+
+  Optional. A string with the name of the collection, (e.g., "Conserver
+  pour biométrie 16E").
+
 ## Value
 
 A dataframe containing get_biometrie_petoncle table data.

@@ -16,6 +16,10 @@ get_engin_mollusque(andes_db_connection, proj = NULL)
 
   a connection object to the ANDES database.
 
+- proj:
+
+  Dataframe
+
 ## Value
 
 A dataframe containing engin table data.

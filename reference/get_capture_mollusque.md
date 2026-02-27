@@ -21,6 +21,18 @@ get_capture_mollusque(
 
   a connection object to the ANDES database.
 
+- engin:
+
+  Dataframe
+
+- code_filter:
+
+  Optional list of species to filter
+
+- basket_class_filter:
+
+  Optional list of basket class to filter
+
 ## Value
 
 A dataframe containing capture_mollusque table data.

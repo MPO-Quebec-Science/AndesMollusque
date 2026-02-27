@@ -18,7 +18,7 @@ get_biometrie_petoncle_db(andes_db_connection, collection_name = NULL)
 
 - collection_name:
 
-  Optional. A string with the name of the colelction, (e.g., "Conserver
+  Optional. A string with the name of the collection, (e.g., "Conserver
   pour biométrie 16E").
 
 ## Value

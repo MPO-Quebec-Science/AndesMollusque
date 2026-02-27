@@ -17,26 +17,26 @@ get_ref_key(
 
 ## Arguments
 
-- table::
+- table:
 
   The name of the Oracle table, defaults to "tablename"
 
-- pkey_col::
+- pkey_col:
 
   The column name that holds the key, defaults to "columnofprimarykey"
 
-- col::
+- col:
 
   The column that holds the value to match, defaults to "columnname"
 
-- val::
+- val:
 
   The value to match, defaults to "entryvalue"
 
-- optional_query::
+- optional_query:
 
-  additional string to append to the query
+  Additional string to append to the query
 
 ## Value
 
-: The value found in the pkey column for the entry with the value
+The value found in the pkey column for the entry with the value

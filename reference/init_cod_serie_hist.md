@@ -9,3 +9,13 @@ desc_serie_hist_f to get a list of choices.
 ``` r
 init_cod_serie_hist(df, desc_serie_hist_f = NULL)
 ```
+
+## Arguments
+
+- df:
+
+  Dataframe
+
+- desc_serie_hist_f:
+
+  String

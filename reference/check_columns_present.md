@@ -10,20 +10,20 @@ check_columns_present(df, col_names = NULL, coerce = FALSE)
 
 ## Arguments
 
-- df::
+- df:
 
-  the dataframe to verify
+  Dataframe, the dataframe to verify
 
-- col_names::
+- col_names:
 
-  A list of column names. This will verify if the names in the list are
+  List of column names. This will verify if the names in the list are
   present.
 
-- coerce::
+- coerce:
 
-  A boolean (false by default) to see if the dataframe can be coerced
+  Logical, (FALSE by default) to see if the dataframe can be coerced
   into compliance
 
 ## Value
 
-A boolean representing if the dataframe is compliant.
+A Logical representing if the dataframe is compliant.

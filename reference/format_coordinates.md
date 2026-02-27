@@ -10,9 +10,9 @@ format_coordinates(trait)
 
 ## Arguments
 
-- df:
+- trait:
 
-  Input dataframe
+  Dataframe
 
 ## Value
 

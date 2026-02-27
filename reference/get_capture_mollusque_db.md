@@ -20,6 +20,14 @@ get_capture_mollusque_db(
 
   a connection object to the ANDES database.
 
+- code_filter:
+
+  Optional list of species to filter
+
+- basket_class_filter:
+
+  Optional list of basket class to filter
+
 ## Value
 
 A dataframe containing fishing set data.

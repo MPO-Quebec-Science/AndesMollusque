@@ -72,7 +72,7 @@
 <h2 id="installation-du-package">Installation du package<a class="anchor" aria-label="anchor" href="#installation-du-package"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MPO-Quebec-Science/AndesMollusque"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"MPO-Quebec-Science/AndesMollusque"</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ANDESMollusque</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="installation-des-pilots-sql-sur-un-poste-windows-du-mpo">Installation des pilots SQL sur un poste Windows du MPO<a class="anchor" aria-label="anchor" href="#installation-des-pilots-sql-sur-un-poste-windows-du-mpo"></a>
@@ -173,19 +173,19 @@
 <p>Les tables en dataframes peuvent être sauvegardé en format BD Access.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Faire une BD acces vide</span></span>
-<span><span class="va">file_path</span> <span class="op">&lt;-</span> <span class="fu">create_new_access_db</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">file_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_new_access_db.html">create_new_access_db</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># etablir la connexion a cette BD</span></span>
 <span><span class="va">access_db_write_connection</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/access_db_connect.html">access_db_connect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"./"</span>, <span class="va">file_path</span>, sep <span class="op">=</span> <span class="st">""</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># écrire la table projet</span></span>
-<span><span class="fu">write_projet_mollusque</span><span class="op">(</span><span class="va">proj</span>, <span class="va">access_db_write_connection</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/write_projet_mollusque.html">write_projet_mollusque</a></span><span class="op">(</span><span class="va">proj</span>, <span class="va">access_db_write_connection</span><span class="op">)</span></span>
 <span><span class="co"># écrire la table trait</span></span>
-<span><span class="fu">write_trait_mollusque</span><span class="op">(</span><span class="va">trait</span>, <span class="va">access_db_write_connection</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/write_trait_mollusque.html">write_trait_mollusque</a></span><span class="op">(</span><span class="va">trait</span>, <span class="va">access_db_write_connection</span><span class="op">)</span></span>
 <span><span class="co"># écrire la table engin</span></span>
-<span><span class="fu">write_engin_mollusque</span><span class="op">(</span><span class="va">engin</span>, <span class="va">access_db_write_connection</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/write_engin_mollusque.html">write_engin_mollusque</a></span><span class="op">(</span><span class="va">engin</span>, <span class="va">access_db_write_connection</span><span class="op">)</span></span>
 <span><span class="co"># écrire la table capture_mollusque</span></span>
-<span><span class="fu">write_capture_mollusque</span><span class="op">(</span><span class="va">capt</span>, <span class="va">access_db_write_connection</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/write_capture_mollusque.html">write_capture_mollusque</a></span><span class="op">(</span><span class="va">capt</span>, <span class="va">access_db_write_connection</span><span class="op">)</span></span>
 <span><span class="co"># écrire la table freq_long_mollusque</span></span>
-<span><span class="fu">write_freq_long_mollusque</span><span class="op">(</span><span class="va">freq</span>, <span class="va">access_db_write_connection</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/write_freq_long_mollusque.html">write_freq_long_mollusque</a></span><span class="op">(</span><span class="va">freq</span>, <span class="va">access_db_write_connection</span><span class="op">)</span></span>
 <span><span class="co"># fermer la connexion a la BD Access</span></span>
 <span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbDisconnect.html" class="external-link">dbDisconnect</a></span><span class="op">(</span><span class="va">access_db_write_connection</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -200,21 +200,21 @@
 </h1>
 <p>checkout the repo and use</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">document</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">document</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>to load the library in memory without installing it.</p>
 <p>To test the github package, detach an re-install</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/detach.html" class="external-link">detach</a></span><span class="op">(</span><span class="st">"package:ANDESMollusque"</span>, unload<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MPO-Quebec-Science/ANDESMollusque"</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"MPO-Quebec-Science/ANDESMollusque"</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ANDESMollusque</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># run unittests</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/test.html" class="external-link">test</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">document</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">document</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">rcmdcheck</span><span class="fu">::</span><span class="fu">rcmdcheck</span><span class="op">(</span>args <span class="op">=</span> <span class="st">"--no-manual"</span>, error_on <span class="op">=</span> <span class="st">"error"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">rcmdcheck</span><span class="fu">::</span><span class="fu"><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck</a></span><span class="op">(</span>args <span class="op">=</span> <span class="st">"--no-manual"</span>, error_on <span class="op">=</span> <span class="st">"error"</span><span class="op">)</span></span></code></pre></div>
 </div>
 
   </main><aside class="col-md-3"><div class="license">

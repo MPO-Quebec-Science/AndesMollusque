@@ -10,16 +10,16 @@ check_numeric_columns(df, col_names = NULL, coerce = FALSE)
 
 ## Arguments
 
-- df::
+- df:
 
   the dataframe to verify
 
-- col_names::
+- col_names:
 
   A list of column names. This will veridy if columns not in the list is
   present
 
-- coerce::
+- coerce:
 
   A boolean (false by default) to see if the dataframe can be coerced
   into compliance

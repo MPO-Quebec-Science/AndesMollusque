@@ -213,46 +213,56 @@ rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
   columns listed in col_names have numeric (or NA) values
 - [`check_other_columns()`](check_other_columns.md) : Make sure no other
   columns than the ones listed in col_names are present in the dataframe
+- [`cleanup_text()`](cleanup_text.md) : Cleanup text form ANDES to play
+  nice in Oracle
 - [`cols_to_numeric()`](cols_to_numeric.md) : Convert all dataframe cols
   named in the col_names to a numeric value
-- [`format_cod_descrip_capt()`](format_cod_descrip_capt.md) : For now,
-  we will just keep this blank It is a function here so that one day we
-  can use the ANDES relative abundance category But it is not used for
-  commercial stocks, so we skip it
-- [`format_cod_typ_mesure()`](format_cod_typ_mesure.md) : For now, we
-  will just assume all data is quantitative since we are limiting
-  ourselves to commercial (scallops and whelk). One day, this function
-  should be generalized to also lookup the data and determine it.
+- [`create_new_access_db()`](create_new_access_db.md) : Creates a new MS
+  Access database file
+- [`format_cod_descrip_capt()`](format_cod_descrip_capt.md) : Format
+  COD_DESCRIP_CAPT
+- [`format_cod_esp_gen()`](format_cod_esp_gen.md) : format the
+  cod_esp_gen column
+- [`format_cod_secteur_releve()`](format_cod_secteur_releve.md) : Format
+  COD_SECTEUR_RELEVE
+- [`format_cod_source_info()`](format_cod_source_info.md) : Format
+  COD_SOURCE_INFO
+- [`format_cod_strate()`](format_cod_strate.md) : Format COD_STRAT
+- [`format_cod_tech_mesure_long()`](format_cod_tech_mesure_long.md) :
+  Format COD_TECH_MESURE_LONG
+- [`format_cod_typ_etat()`](format_cod_typ_etat.md) : Format
+  COD_TYP_ETAT
+- [`format_cod_typ_heure()`](format_cod_typ_heure.md) : Format
+  COD_TYP_HEURE
+- [`format_cod_typ_long()`](format_cod_typ_long.md) : Format
+  COD_TYP_LONG
+- [`format_cod_typ_mesure()`](format_cod_typ_mesure.md) : format
+  COD_TYP_MESURE
 - [`format_cod_typ_panier()`](format_cod_typ_panier.md) : Add the
   formated COD_TYP_PANIER column to the dataframe This is currently
   hard-coded to Panier doublé TODO: implement different types depending
   on chosen gear code, for exmaple:
 - [`format_coordinates()`](format_coordinates.md) : Format coordinates
   for TRAIT_MOLLUSQUE
+- [`format_date_deb_projet()`](format_date_deb_projet.md) : Format
+  DATE_DE_PROJET
+- [`format_date_fin_projet()`](format_date_fin_projet.md) : Format
+  DATE_FIN_PROJET
 - [`format_date_hre_trait()`](format_date_hre_trait.md) : Format dates
   for TRAIT_MOLLUSQUE
 - [`format_date_trait()`](format_date_trait.md) : Format dates for
   TRAIT_MOLLUSQUE
 - [`format_epibiont()`](format_epibiont.md) : Formated
-  COD_COUVERTURE_EPIBIONT column to the dataframe This categorizes AND
-  includes the of the following definition: ave_coverage to
-  cod_couverture : 0 -\> Aucune balane 1 -\> 1/3 et moins surface
-  colonisée 2 -\> 1/3 à 2/3 surface colonisée 3 -\> 2/3 et plus surface
-  colonisée
+  COD_COUVERTURE_EPIBIONT column to the dataframe
+- [`format_no_mollusque()`](format_no_mollusque.md) : Format
+  NO_MOLLUSQUE
+- [`format_no_station()`](format_no_station.md) : Format NO_STATION
+- [`format_seq_pecheur()`](format_seq_pecheur.md) : Format SEQ_PECHEUR
+- [`format_zone()`](format_zone.md) : Format ZONE
 - [`generate_sql_insert_statement()`](generate_sql_insert_statement.md)
-  : generate a SQL inster statement for the single dataframe row as a
-  new row into table_name The dataframe must have named columns that
-  correspond to the columns of the table The values must have the
-  correct data types t(here will be some SQL value sanitizing) The
-  statement will look like:" INSERT INTO table_name col_names_str VALUES
-  col_values_str" Where col_names_str is list of column names with
-  parentheses: "(NO_RELEVE COD_NBPC ANNEE COD_TYP_STRATIF
-  DATE_DEB_PROJET...)" and col_values_str is list of column values with
-  parentheses: "(36 4 2025 7 '2025-05-03'...)"
+  : Generate a SQL statement
 - [`get_access_table_properties()`](get_access_table_properties.md) :
-  this function is meant to help the validation automatically getting
-  colnames, no-null cols and datatypes. but I cannot get it to work here
-  yet... (but works in Dbeaver)
+  get database table properties
 - [`get_biometrie_petoncle()`](get_biometrie_petoncle.md) : Gets
   get_biometrie_petoncle (formatted results)
 - [`get_biometrie_petoncle_db()`](get_biometrie_petoncle_db.md) : Gets
@@ -284,6 +294,7 @@ rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
 - [`get_ref_key()`](get_ref_key.md) : Get the reference key
   corresponding to a value (usually from the Oracle / MSAccess reference
   database)
+- [`get_strate()`](get_strate.md) : Get the strate from reference
 - [`get_trait_mollusque()`](get_trait_mollusque.md) : Gets
   trait_mollusque (formatted results)
 - [`get_trait_mollusque_db()`](get_trait_mollusque_db.md) : Gets
@@ -295,14 +306,15 @@ rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
 - [`is_andes_time_str_dst()`](is_andes_time_str_dst.md) : Verify is the
   ANDES dattime string is in daylight savings time
 - [`left_join()`](left_join.md) : a merge that preserves row and column
-  order shamelessly stolen from
-  https://stackoverflow.com/questions/17878048/merge-two-data-frames-while-keeping-the-original-row-order
+  order
+- [`lookup_cod_serie_hist()`](lookup_cod_serie_hist.md) : Lookup entry
+  in Oracle
+- [`lookup_cod_source_info()`](lookup_cod_source_info.md) : Lookup
+  COD_SOURCE_INFO
 - [`parse_andes_datetime()`](parse_andes_datetime.md) : Convert ANDES
   UTC time string and converts it to a POSIXct object
-- [`sanitize_sql_value()`](sanitize_sql_value.md) : It will wrap string
-  with an extra set of single quotes. It will escape every single quote
-  by doubling it up This usualy does nothing to the value itself except
-  inject the NULL string for NA/null and empty strings
+- [`sanitize_sql_value()`](sanitize_sql_value.md) : Sanitize value to
+  SQL statement
 - [`strip_alphabetic()`](strip_alphabetic.md) : This function removes
   alphabetic characters from a string
 - [`to_oracle_coord()`](to_oracle_coord.md) : Convert coordinate to
@@ -319,6 +331,16 @@ rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
   result consistency
 - [`validate_trait_mollusque()`](validate_trait_mollusque.md) : Perform
   database validation checks on the dataframe
+- [`write_capture_mollusque()`](write_capture_mollusque.md) : Write to
+  Access file
+- [`write_engin_mollusque()`](write_engin_mollusque.md) : Write to
+  Access file
+- [`write_freq_long_mollusque()`](write_freq_long_mollusque.md) : Write
+  dataframe to Access file
+- [`write_projet_mollusque()`](write_projet_mollusque.md) : Write to
+  Access file
+- [`write_trait_mollusque()`](write_trait_mollusque.md) : Write
+  dataframe to Access file
 
 # Articles
 
