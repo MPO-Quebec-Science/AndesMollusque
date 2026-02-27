@@ -9,14 +9,15 @@ library(ANDESMollusque)
 #' @param by, by The name (or names) of the column to merge on, must be in both x and y.
 #' @export
 left_join <- function(x, y, ...) {
-    x$join_id_ <- seq_len(nrow(x))
-    joined <- merge(x = x, y = y, all.x = TRUE, sort = FALSE, ...)
+  x$join_id_ <- seq_len(nrow(x))
+  joined <- merge(x = x, y = y, all.x = TRUE, sort = FALSE, ...)
 
-    cols <- unique(c(colnames(x), colnames(y)))
-    return(joined[order(joined$join_id),
-         cols[cols %in% colnames(joined) & cols != "join_id_"]])
+  cols <- unique(c(colnames(x), colnames(y)))
+  return(joined[
+    order(joined$join_id),
+    cols[cols %in% colnames(joined) & cols != "join_id_"]
+  ])
 }
-
 
 
 url_bd <- "iml-science-4.ent.dfo-mpo.ca"
@@ -42,7 +43,10 @@ andes_db_connection <- andes_db_connect(
 # "Conserver pour biométrie centre"
 # "Conserver pour biométrie ouest"
 collection_name <- "Conserver pour biométrie 16E"
-bio <- get_biometrie_petoncle(andes_db_connection, collection_name = collection_name)
+bio <- get_biometrie_petoncle(
+  andes_db_connection,
+  collection_name = collection_name
+)
 
 #############
 # choses a faire par l'equipe pour reformatter le dataframe:
@@ -54,55 +58,54 @@ bio <- get_biometrie_petoncle(andes_db_connection, collection_name = collection_
 # ajout colonne annee
 # éffacer colonnes superflus
 
-
 # map collection to zone and s_zone
 zone_map <- data.frame(list(
-    collection=c(
-        "Conserver pour biométrie 16E" ,
-        "Conserver pour biométrie 16F",
-        "Conserver pour biométrie centre",
-        "Conserver pour biométrie ouest"
-    ),
-    zone = c(
-        "16E",
-        "16F",
-        "20A",
-        "20A"
-    ),
-    s_zone = c(
-        "Ext", # all andes zones are Ext, Int is discontinued
-        NA,
-        "Centre",
-        "Ouest"
-    )
+  collection = c(
+    "Conserver pour biométrie 16E",
+    "Conserver pour biométrie 16F",
+    "Conserver pour biométrie centre",
+    "Conserver pour biométrie ouest"
+  ),
+  zone = c(
+    "16E",
+    "16F",
+    "20A",
+    "20A"
+  ),
+  s_zone = c(
+    "Ext", # all andes zones are Ext, Int is discontinued
+    NA,
+    "Centre",
+    "Ouest"
+  )
 ))
 
 # map sex code to value
 sex_map <- data.frame(list(
-    sexe = c(
-        0, # indéterminé
-        1, # Mâle
-        2, # Femelle
-        9  # non-sexé
-    ),
-    sexe_val = c(
-        "I",
-        "M",
-        "F",
-        "I" 
-    )
+  sexe = c(
+    0, # indéterminé
+    1, # Mâle
+    2, # Femelle
+    9 # non-sexé
+  ),
+  sexe_val = c(
+    "I",
+    "M",
+    "F",
+    "I"
+  )
 ))
 
 # map strap code to value
 strap_map <- data.frame(list(
-    strap = c(
-        4167, # petoncle island
-        4179  # petoncle geant
-    ),
-    espece = c(
-        "I",
-        "G"
-    )
+  strap = c(
+    4167, # petoncle island
+    4179 # petoncle geant
+  ),
+  espece = c(
+    "I",
+    "G"
+  )
 ))
 
 # add zone and s_zone using zone map

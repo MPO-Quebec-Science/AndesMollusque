@@ -12,50 +12,50 @@
 #' @seealso [get_biometrie_petoncle()] for the formatted results
 #' @export
 get_biometrie_petoncle_db <- function(
-    andes_db_connection,
-    collection_name = NULL
+  andes_db_connection,
+  collection_name = NULL
 ) {
-    query <- readr::read_file(system.file(
-        "sql_queries",
-        "biometrie_petoncle.sql",
-        package = "ANDESMollusque"
-    ))
+  query <- readr::read_file(system.file(
+    "sql_queries",
+    "biometrie_petoncle.sql",
+    package = "ANDESMollusque"
+  ))
 
-    # add mission filter
-    # use the active misison, one day you can choose a different mission,
-    query <- paste(query, "WHERE shared_models_mission.is_active=1")
+  # add mission filter
+  # use the active misison, one day you can choose a different mission,
+  query <- paste(query, "WHERE shared_models_mission.is_active=1")
 
-    # add collection_name filter
-    if (!is.null(collection_name)) {
-        query <- paste(
-            query,
-            " AND shared_models_observationgroup.nom='",
-            collection_name,
-            "'",
-            sep = ""
-        )
-    }
-
+  # add collection_name filter
+  if (!is.null(collection_name)) {
     query <- paste(
-        query,
-        "GROUP BY",
-        "shared_models_completespecimen.specimen_id,",
-        "shared_models_sample.sample_number,",
-        "shared_models_sample.start_date,",
-        "shared_models_station.name,",
-        "shared_models_observationgroup.nom,",
-        "shared_models_specimen.comment,",
-        "shared_models_referencecatch.code"
+      query,
+      " AND shared_models_observationgroup.nom='",
+      collection_name,
+      "'",
+      sep = ""
     )
-    # important, only select those specimens that we chose to keep!
-    query <- paste(query, "HAVING collect_specimen=1")
-    # order by code collection coquille
-    query <- paste(query, "ORDER BY code_coquille ASC")
-    result <- DBI::dbSendQuery(andes_db_connection, query)
-    df <- DBI::dbFetch(result, n = Inf)
-    DBI::dbClearResult(result)
+  }
 
-    return(df)
+  query <- paste(
+    query,
+    "GROUP BY",
+    "shared_models_completespecimen.specimen_id,",
+    "shared_models_sample.sample_number,",
+    "shared_models_sample.start_date,",
+    "shared_models_station.name,",
+    "shared_models_observationgroup.nom,",
+    "shared_models_specimen.comment,",
+    "shared_models_referencecatch.code"
+  )
+  # important, only select those specimens that we chose to keep!
+  query <- paste(query, "HAVING collect_specimen=1")
+  # order by code collection coquille
+  query <- paste(query, "ORDER BY code_coquille ASC")
+  result <- DBI::dbSendQuery(andes_db_connection, query)
+  df <- DBI::dbFetch(result, n = Inf)
+  DBI::dbClearResult(result)
+
+  return(df)
 }
 
 #' Get a list of legal collection names as a filter for get_biometrie_petoncle()
@@ -64,12 +64,12 @@ get_biometrie_petoncle_db <- function(
 #' The secteur (16E, 16F, centre, ouest) are taken from the last part of the string.
 #' @return A dataframe containing get_biometrie_petoncle table data.
 get_legal_collection_names <- function() {
-    return(c(
-        "Conserver pour biométrie 16E",
-        "Conserver pour biométrie 16F",
-        "Conserver pour biométrie centre",
-        "Conserver pour biométrie ouest"
-    ))
+  return(c(
+    "Conserver pour biométrie 16E",
+    "Conserver pour biométrie 16F",
+    "Conserver pour biométrie centre",
+    "Conserver pour biométrie ouest"
+  ))
 }
 
 #' Gets get_biometrie_petoncle (formatted results)
@@ -83,41 +83,41 @@ get_legal_collection_names <- function() {
 #' @seealso [get_biometrie_petoncle_db(), get_legal_collection_names()] for the db results
 #' @export
 get_biometrie_petoncle <- function(
-    andes_db_connection,
-    collection_name = NULL
+  andes_db_connection,
+  collection_name = NULL
 ) {
-    # Validate input
-    if (is.null(collection_name)) {
-        logger::log_error("Must provide a formatted collection_name string.")
-        stop("Must provide a formatted collection_name string.")
-    }
-    if (!collection_name %in% get_legal_collection_names()) {
-        logger::log_error(paste0(
-            "collection_name must be one of: ",
-            paste(get_legal_collection_names(), collapse = ", ")
-        ))
-        stop(paste0(
-            "collection_name must be one of: ",
-            paste(get_legal_collection_names(), collapse = ", ")
-        ))
-    }
-
-    biometrie <- get_biometrie_petoncle_db(
-        andes_db_connection,
-        collection_name = collection_name
-    )
-
-    # format the date column, apply function andes_str_to_oracle_date()
-    biometrie$date <- unlist(lapply(
-        biometrie$set_start_date,
-        andes_str_to_oracle_date
+  # Validate input
+  if (is.null(collection_name)) {
+    logger::log_error("Must provide a formatted collection_name string.")
+    stop("Must provide a formatted collection_name string.")
+  }
+  if (!collection_name %in% get_legal_collection_names()) {
+    logger::log_error(paste0(
+      "collection_name must be one of: ",
+      paste(get_legal_collection_names(), collapse = ", ")
     ))
+    stop(paste0(
+      "collection_name must be one of: ",
+      paste(get_legal_collection_names(), collapse = ", ")
+    ))
+  }
 
-    # can get rid of columns: set_start_date
-    biometrie <- subset(biometrie, select = -c(set_start_date))
+  biometrie <- get_biometrie_petoncle_db(
+    andes_db_connection,
+    collection_name = collection_name
+  )
 
-    # can get rid of columns: collect_specimen
-    biometrie <- subset(biometrie, select = -c(collect_specimen))
+  # format the date column, apply function andes_str_to_oracle_date()
+  biometrie$date <- unlist(lapply(
+    biometrie$set_start_date,
+    andes_str_to_oracle_date
+  ))
 
-    return(biometrie)
+  # can get rid of columns: set_start_date
+  biometrie <- subset(biometrie, select = -c(set_start_date))
+
+  # can get rid of columns: collect_specimen
+  biometrie <- subset(biometrie, select = -c(collect_specimen))
+
+  return(biometrie)
 }
