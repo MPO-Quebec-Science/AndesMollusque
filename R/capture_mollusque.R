@@ -106,6 +106,7 @@ get_capture_mollusque_db <- function(
 #' @param andes_db_connection a connection object to the ANDES database.
 #' @param code_filter Optional list of species to filter
 #' @param basket_class_filter Optional list of basket class to filter
+#' @param engin Dataframe
 #' @return A dataframe containing capture_mollusque table data.
 #' @seealso [get_capture_mollusque_db()] for the db results
 #' @export

@@ -31,7 +31,7 @@ get_engin_mollusque_db <- function(andes_db_connection) {
 #' Structurally, it would make sense to send a Trait instance to for every engin
 #' but here we can get away with proj (due to how ANDES is structured)
 #' @param andes_db_connection a connection object to the ANDES database.
-#
+#' @param proj Dataframe
 #' @return A dataframe containing engin table data.
 #' @seealso [get_engin_mollusque_db()] for the db results
 #' @export

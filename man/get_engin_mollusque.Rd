@@ -8,6 +8,8 @@ get_engin_mollusque(andes_db_connection, proj = NULL)
 }
 \arguments{
 \item{andes_db_connection}{a connection object to the ANDES database.}
+
+\item{proj}{Dataframe}
 }
 \value{
 A dataframe containing engin table data.

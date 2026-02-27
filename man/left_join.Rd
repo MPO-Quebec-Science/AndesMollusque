@@ -7,11 +7,11 @@
 left_join(x, y, ...)
 }
 \arguments{
-\item{x, }{the "left" dataframe (all.x=TRUE)}
+\item{x}{the "left" dataframe (all.x=TRUE)}
 
-\item{y, }{the "right" dataframe}
+\item{y}{the "right" dataframe}
 
-\item{by, }{by The name (or names) of the column to merge on, must be in both x and y.}
+\item{...}{Additional arguments passed on to methgods}
 }
 \description{
 shamelessly stolen from https://stackoverflow.com/questions/17878048/merge-two-data-frames-while-keeping-the-original-row-order
