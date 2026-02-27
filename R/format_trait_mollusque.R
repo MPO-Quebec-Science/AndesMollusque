@@ -222,9 +222,10 @@ format_no_station <- function(trait) {
 }
 
 #' This function removes alphabetic characters from a string
-strip_alphabetic <- function(my_string) {
+#' @param string The string to sanitize
+strip_alphabetic <- function(string) {
   # It is mostly used to reformat pétoncle minganie station names that start with a letter
-  numeric_string <- gsub("[A-Za-z]", "", my_string)
+  numeric_string <- gsub("[A-Za-z]", "", string)
   return(numeric_string)
 }
 
@@ -284,7 +285,7 @@ get_desc_typ_trait <- function(operation, desc_stratification) {
 #'
 #' Converts date fields to appropriate format. uses andes_str_to_oracle_date
 #'
-#' @param df Input dataframe
+#' @param trait Dataframe
 #' @return Formatted dataframe
 #' @export
 format_date_trait <- function(trait) {
@@ -304,7 +305,7 @@ format_date_trait <- function(trait) {
 #'
 #' Converts and time fields to appropriate format uses andes_str_to_oracle_datetime
 #'
-#' @param df Input dataframe
+#' @param trait Dataframe
 #' @return Formatted dataframe
 #' @export
 format_date_hre_trait <- function(trait) {
@@ -366,7 +367,7 @@ format_cod_typ_heure <- function(trait) {
 #'
 #' Converts coordinates to Oracle-specific format
 #'
-#' @param df Input dataframe
+#' @param trait Dataframe
 #' @return Formatted dataframe
 #' @export
 format_coordinates <- function(trait) {

@@ -148,9 +148,12 @@ add_hard_coded_value <- function(df, col_name = NULL, value = NULL) {
   return(df)
 }
 
+#' Sanitize value to SQL statement
+#'
 #' It will wrap string with an extra set of single quotes.
 #' It will escape every single quote by doubling it up
 #' This usualy does nothing to the value itself except inject the NULL string for NA/null and empty strings
+#' @param value The value to sanitize
 #' @export
 sanitize_sql_value <- function(value) {
   if (is.null(value) || is.na(value)) {
@@ -193,12 +196,17 @@ to_oracle_coord <- function(coord) {
   return(degrees * 100 + minutes_decimal)
 }
 
-#' generate a SQL inster statement for the single dataframe row as a new row into table_name
+#' Generate a SQL statement
+#'
+#' generate a SQL instert statement for the single dataframe row as a new row into table_name
 #' The dataframe must have named columns that correspond to the columns of the table
 #' The values must have the correct data types t(here will be some SQL value sanitizing)
 #' The statement will look like:" INSERT INTO {table_name} {col_names_str} VALUES {col_values_str}"
 #' Where {col_names_str} is list of column names with parentheses: "(NO_RELEVE COD_NBPC ANNEE COD_TYP_STRATIF DATE_DEB_PROJET...)"
 #' and {col_values_str} is list of column values with parentheses: "(36 4 2025 7 '2025-05-03'...)"
+#'
+#' @param df_row Dataframe row
+#' @param table_name String
 #' @export
 generate_sql_insert_statement <- function(df_row, table_name) {
   col_names <- NULL

@@ -13,6 +13,10 @@ get_capture_mollusque(
 }
 \arguments{
 \item{andes_db_connection}{a connection object to the ANDES database.}
+
+\item{code_filter}{Optional list of species to filter}
+
+\item{basket_class_filter}{Optional list of basket class to filter}
 }
 \value{
 A dataframe containing capture_mollusque table data.

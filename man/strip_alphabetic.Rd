@@ -4,7 +4,10 @@
 \alias{strip_alphabetic}
 \title{This function removes alphabetic characters from a string}
 \usage{
-strip_alphabetic(my_string)
+strip_alphabetic(string)
+}
+\arguments{
+\item{string}{The string to sanitize}
 }
 \description{
 This function removes alphabetic characters from a string

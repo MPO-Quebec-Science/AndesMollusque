@@ -5,6 +5,8 @@
 #'  1->'Panier standard' if 'Drague Digby (4 paniers non doublés)'
 #'  2->'Panier doublé' if 'Drague Digby (4 paniers doublés)'
 #'  3->'Aucun' (or '0->Pas de panier dans l’engin') for anyhing else
+#'
+#' @param engin Dataframe
 #' @export
 format_cod_typ_panier <- function(engin) {
   # don't normally need a lookup, this is always Panier doublé -> 2

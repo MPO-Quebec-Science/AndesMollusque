@@ -78,7 +78,8 @@ get_legal_collection_names <- function() {
 #' The current ANDES active mission will determine for which data are returned.
 #'
 #' @param andes_db_connection a connection object to the ANDES database.
-#
+#' @param collection_name Optional. A string with the name of the collection, (e.g., "Conserver pour biométrie 16E").
+#'
 #' @return A dataframe containing get_biometrie_petoncle table data.
 #' @seealso [get_biometrie_petoncle_db(), get_legal_collection_names()] for the db results
 #' @export

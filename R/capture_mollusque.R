@@ -7,6 +7,9 @@
 #' It is not meant for direct use in analysis or reporting. Users should use `get_capture_mollusc`
 #'
 #' @param andes_db_connection a connection object to the ANDES database.
+#' @param code_filter Optional list of species to filter
+#' @param basket_class_filter Optional list of basket class to filter
+#'
 #' @return A dataframe containing fishing set data.
 #' @seealso [get_capture_mollusque()] for the formatted results
 #' @export
@@ -101,7 +104,8 @@ get_capture_mollusque_db <- function(
 #' Structurally, it would make sense to send a Trait instance to for every capture_mollusque
 #' but here we can get away with proj (due to how ANDES is structured)
 #' @param andes_db_connection a connection object to the ANDES database.
-#
+#' @param code_filter Optional list of species to filter
+#' @param basket_class_filter Optional list of basket class to filter
 #' @return A dataframe containing capture_mollusque table data.
 #' @seealso [get_capture_mollusque_db()] for the db results
 #' @export

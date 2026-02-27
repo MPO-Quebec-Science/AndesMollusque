@@ -7,7 +7,7 @@
 format_date_trait(trait)
 }
 \arguments{
-\item{df}{Input dataframe}
+\item{trait}{Dataframe}
 }
 \value{
 Formatted dataframe

@@ -8,6 +8,9 @@ TODO: implement different types depending on chosen gear code, for exmaple:}
 \usage{
 format_cod_typ_panier(engin)
 }
+\arguments{
+\item{engin}{Dataframe}
+}
 \description{
 1->'Panier standard' if 'Drague Digby (4 paniers non doublés)'
  2->'Panier doublé' if 'Drague Digby (4 paniers doublés)'
