@@ -342,6 +342,10 @@ validate_trait_mollusque <- function(df) {
   return(is_valid)
 }
 
+#' Write dataframe to Access file
+#'
+#' @param trait Dataframe
+#' @param access_db_write_connection the connection to Access file
 #' @export
 write_trait_mollusque <- function(trait, access_db_write_connection = NULL) {
   # write the dataframe to the database

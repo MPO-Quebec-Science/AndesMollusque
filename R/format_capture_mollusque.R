@@ -1,4 +1,5 @@
 #' Formated COD_COUVERTURE_EPIBIONT column to the dataframe
+#'
 #' This categorizes AND includes the of the following definition:
 #' ave_coverage to cod_couverture :
 #' 0 -> Aucune balane
@@ -160,7 +161,9 @@ get_epibiont <- function(andes_db_connection, code_filter) {
   return(joined)
 }
 
-
+#' format the cod_esp_gen column
+#'
+#' @param capt Dataframe de capture
 #' @export
 format_cod_esp_gen <- function(capt) {
   query <- readr::read_file(system.file(
@@ -189,7 +192,9 @@ format_cod_esp_gen <- function(capt) {
   return(capt)
 }
 
+#' format COD_TYP_MESURE
 #'
+#' @param capt Dataframe
 #' For now, we will just assume all data is quantitative
 #' since we are limiting ourselves to commercial (scallops and whelk).
 #' One day, this function should be generalized to also lookup the data and determine it.
@@ -209,10 +214,13 @@ format_cod_typ_mesure <- function(capt) {
   return(capt)
 }
 
+#' Format COD_DESCRIP_CAPT
 #'
 #' For now, we will just keep this blank
 #' It is a function here so that one day we can use the ANDES relative abundance category
 #' But it is not used for commercial stocks, so we skip it
+#'
+#' @param capt Dataframe
 #' @export
 format_cod_descrip_capt <- function(capt) {
   capt <- add_hard_coded_value(

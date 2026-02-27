@@ -1,3 +1,7 @@
+#' Format COD_SECTEUR_RELEVE
+#'
+#' @param trait Dataframe du trait
+#' @param desc_secteur_releve_f String a associer au trait
 #' @export
 format_cod_secteur_releve <- function(trait, desc_secteur_releve_f) {
   # from the des ription, desc_secteur_releve_f
@@ -198,7 +202,9 @@ format_zone <- function(trait, desc_serie_hist_f) {
   return(trait)
 }
 
-
+#' Format NO_STATION
+#'
+#' @param trait Dataframe
 #' @export
 format_no_station <- function(trait) {
   trait$NO_STATION <- sapply(trait$NO_STATION, strip_alphabetic)

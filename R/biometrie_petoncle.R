@@ -7,7 +7,7 @@
 #' It is not meant for direct use in analysis or reporting. Users should use `get_biometrie_petoncle`
 #'
 #' @param andes_db_connection a connection object to the ANDES database.
-#' @param collection_name Optional. A string with the name of the colelction, (e.g., "Conserver pour biométrie 16E").
+#' @param collection_name Optional. A string with the name of the collection, (e.g., "Conserver pour biométrie 16E").
 #' @return A dataframe containing fishing set data.
 #' @seealso [get_biometrie_petoncle()] for the formatted results
 #' @export

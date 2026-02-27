@@ -7,14 +7,14 @@
 get_ref_choices(table = "tablename", col = "columnname", optional_query = "")
 }
 \arguments{
-\item{table:}{The name of the Oracle table, defaults to "tablename"}
+\item{table}{The name of the Oracle table, defaults to "tablename"}
 
-\item{col:}{The column that holds the value to match, defaults to "columnname"}
+\item{col}{The column that holds the value to match, defaults to "columnname"}
 
-\item{optional_query:}{additional string to append to the query}
+\item{optional_query}{additional string to append to the query}
 }
 \value{
-: The value found in the pkey column for the entry with the value
+The value found in the pkey column for the entry with the value
 }
 \description{
 Builds a list of legal choices (descriptions) for get ref key

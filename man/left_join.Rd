@@ -2,8 +2,7 @@
 % Please edit documentation in R/format.R
 \name{left_join}
 \alias{left_join}
-\title{a merge that preserves row and column order
-shamelessly stolen from https://stackoverflow.com/questions/17878048/merge-two-data-frames-while-keeping-the-original-row-order}
+\title{a merge that preserves row and column order}
 \usage{
 left_join(x, y, ...)
 }
@@ -15,6 +14,5 @@ left_join(x, y, ...)
 \item{by, }{by The name (or names) of the column to merge on, must be in both x and y.}
 }
 \description{
-a merge that preserves row and column order
 shamelessly stolen from https://stackoverflow.com/questions/17878048/merge-two-data-frames-while-keeping-the-original-row-order
 }

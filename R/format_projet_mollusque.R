@@ -1,3 +1,6 @@
+#' Format COD_SOURCE_INFO
+#'
+#' @param df Dataframe
 #' @export
 format_cod_source_info <- function(df) {
   desc_source_info_f <- df[, which(names(df) == "DESC_SOURCE_INFO_F")]
@@ -32,6 +35,8 @@ lookup_cod_source_info <- function(desc_source_info_f) {
 #' Add the cod_serie_hist to the whole dataframe
 #' This value is not present in ANDES so it will have to be specified here.
 #' Run this without desc_serie_hist_f to get a list of choices.
+#' @param df Dataframe
+#' @param desc_serie_hist_f String
 #' @export
 init_cod_serie_hist <- function(df, desc_serie_hist_f = NULL) {
   # only buld a list of choices if no descriptioin is specified.
@@ -61,6 +66,8 @@ init_cod_serie_hist <- function(df, desc_serie_hist_f = NULL) {
   return(df)
 }
 
+#' Lookup entry in Oracle
+#' @param desc_serie_hist_f String value
 #' @export
 lookup_cod_serie_hist <- function(desc_serie_hist_f) {
   # # HACK hard lookup here
@@ -81,6 +88,9 @@ lookup_cod_serie_hist <- function(desc_serie_hist_f) {
   return(key)
 }
 
+#' Format DATE_DE_PROJET
+#'
+#' @param df Dataframe to format
 #' @export
 format_date_deb_projet <- function(df) {
   # get the col
@@ -92,6 +102,9 @@ format_date_deb_projet <- function(df) {
   return(df)
 }
 
+#' Format DATE_FIN_PROJET
+#'
+#' @param df Dataframe to format
 #' @export
 format_date_fin_projet <- function(df) {
   # get the col
@@ -103,6 +116,9 @@ format_date_fin_projet <- function(df) {
   return(df)
 }
 
+#' Format SEQ_PECHEUR
+#'
+#' @param df Dataframe to format
 #' @export
 format_seq_pecheur <- function(df) {
   # get the col

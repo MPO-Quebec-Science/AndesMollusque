@@ -19,5 +19,6 @@ Imports:
     readr,
     logger
 Suggests:
-    testthat
+    testthat,
+    devtools,
     lintr

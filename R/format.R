@@ -1,4 +1,5 @@
 #' a merge that preserves row and column order
+#'
 #' shamelessly stolen from https://stackoverflow.com/questions/17878048/merge-two-data-frames-while-keeping-the-original-row-order
 #' @param x, the "left" dataframe (all.x=TRUE)
 #' @param y, the "right" dataframe
@@ -15,6 +16,11 @@ left_join <- function(x, y, ...) {
   ])
 }
 
+#' Cleanup text form ANDES to play nice in Oracle
+#'
+#' @param df Dataframe
+#' @param col_name String the name of the column to target in the dataframe
+#' @param max_chars Numeric, maximum characters allowed in Oracle
 #' @export
 cleanup_text <- function(df, col_name = NULL, max_chars = NULL) {
   # get the col
@@ -230,8 +236,8 @@ generate_sql_insert_statement <- function(df_row, table_name) {
 
 #'
 #' Convert all dataframe cols named in the col_names to a numeric value
-#' @param df: the datafram to modify
-#' @param col_names: a list of column names which will be converted to numeric
+#' @param df the dataframe to modify
+#' @param col_names a list of column names which will be converted to numeric
 #' @export
 cols_to_numeric <- function(df, col_names = NULL) {
   if (is.null(col_names)) {
@@ -282,10 +288,11 @@ check_cols_contains_na <- function(df, col_names = NULL) {
 }
 
 #' Make sure the columns listed in col_names are present in the dataframe
-#' @param df: the dataframe to verify
-#' @param col_names: A list of column names. This will verify if the names in the list are present.
-#' @param coerce: A boolean (false by default) to see if the dataframe can be coerced into compliance
-#' @returns A boolean representing if the dataframe is compliant.
+#'
+#' @param df Dataframe, the dataframe to verify
+#' @param col_names List of column names. This will verify if the names in the list are present.
+#' @param coerce Logical, (FALSE by default) to see if the dataframe can be coerced into compliance
+#' @returns A Logical representing if the dataframe is compliant.
 #' @export
 check_columns_present <- function(df, col_names = NULL, coerce = FALSE) {
   if (is.null(col_names)) {
@@ -310,9 +317,9 @@ check_columns_present <- function(df, col_names = NULL, coerce = FALSE) {
 }
 
 #' Make sure no other columns than the ones listed in col_names are present in the dataframe
-#' @param df: the dataframe to verify
-#' @param col_names: A list of column names. This will veridy if columns not in the list is present
-#' @param coerce: A boolean (false by default) to see if the dataframe can be coerced into compliance
+#' @param df the dataframe to verify
+#' @param col_names A list of column names. This will veridy if columns not in the list is present
+#' @param coerce A boolean (false by default) to see if the dataframe can be coerced into compliance
 #' @returns A boolean representing if the dataframe is compliant.
 #' @export
 check_other_columns <- function(df, col_names = NULL, coerce = FALSE) {
@@ -338,9 +345,9 @@ check_other_columns <- function(df, col_names = NULL, coerce = FALSE) {
 }
 
 #' Make sure the columns listed in col_names have numeric (or NA) values
-#' @param df: the dataframe to verify
-#' @param col_names: A list of column names. This will veridy if columns not in the list is present
-#' @param coerce: A boolean (false by default) to see if the dataframe can be coerced into compliance
+#' @param df the dataframe to verify
+#' @param col_names A list of column names. This will veridy if columns not in the list is present
+#' @param coerce A boolean (false by default) to see if the dataframe can be coerced into compliance
 #' @returns A boolean representing if the dataframe is compliant.
 #' @export
 check_numeric_columns <- function(df, col_names = NULL, coerce = FALSE) {

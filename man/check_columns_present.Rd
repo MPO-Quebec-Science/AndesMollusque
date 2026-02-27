@@ -7,14 +7,14 @@
 check_columns_present(df, col_names = NULL, coerce = FALSE)
 }
 \arguments{
-\item{df:}{the dataframe to verify}
+\item{df}{Dataframe, the dataframe to verify}
 
-\item{col_names:}{A list of column names. This will verify if the names in the list are present.}
+\item{col_names}{List of column names. This will verify if the names in the list are present.}
 
-\item{coerce:}{A boolean (false by default) to see if the dataframe can be coerced into compliance}
+\item{coerce}{Logical, (FALSE by default) to see if the dataframe can be coerced into compliance}
 }
 \value{
-A boolean representing if the dataframe is compliant.
+A Logical representing if the dataframe is compliant.
 }
 \description{
 Make sure the columns listed in col_names are present in the dataframe

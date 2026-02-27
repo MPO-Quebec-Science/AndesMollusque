@@ -7,11 +7,11 @@
 check_numeric_columns(df, col_names = NULL, coerce = FALSE)
 }
 \arguments{
-\item{df:}{the dataframe to verify}
+\item{df}{the dataframe to verify}
 
-\item{col_names:}{A list of column names. This will veridy if columns not in the list is present}
+\item{col_names}{A list of column names. This will veridy if columns not in the list is present}
 
-\item{coerce:}{A boolean (false by default) to see if the dataframe can be coerced into compliance}
+\item{coerce}{A boolean (false by default) to see if the dataframe can be coerced into compliance}
 }
 \value{
 A boolean representing if the dataframe is compliant.

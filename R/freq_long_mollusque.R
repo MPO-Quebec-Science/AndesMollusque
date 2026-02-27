@@ -209,6 +209,10 @@ validate_freq_long_mollusque <- function(df) {
   return(is_valid)
 }
 
+#' Write dataframe to Access file
+#'
+#' @param df Dataframe
+#' @param access_db_write_connection connection to Access file
 #' @export
 write_freq_long_mollusque <- function(df, access_db_write_connection = NULL) {
   # write the dataframe to the database

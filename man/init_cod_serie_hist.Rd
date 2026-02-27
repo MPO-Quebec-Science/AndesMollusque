@@ -8,6 +8,11 @@ Run this without desc_serie_hist_f to get a list of choices.}
 \usage{
 init_cod_serie_hist(df, desc_serie_hist_f = NULL)
 }
+\arguments{
+\item{df}{Dataframe}
+
+\item{desc_serie_hist_f}{String}
+}
 \description{
 Add the cod_serie_hist to the whole dataframe
 This value is not present in ANDES so it will have to be specified here.

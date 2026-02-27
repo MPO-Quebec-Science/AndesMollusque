@@ -13,18 +13,18 @@ get_ref_key(
 )
 }
 \arguments{
-\item{table:}{The name of the Oracle table, defaults to "tablename"}
+\item{table}{The name of the Oracle table, defaults to "tablename"}
 
-\item{pkey_col:}{The column name that holds the key, defaults to "columnofprimarykey"}
+\item{pkey_col}{The column name that holds the key, defaults to "columnofprimarykey"}
 
-\item{col:}{The column that holds the value to match, defaults to "columnname"}
+\item{col}{The column that holds the value to match, defaults to "columnname"}
 
-\item{val:}{The value to match, defaults to "entryvalue"}
+\item{val}{The value to match, defaults to "entryvalue"}
 
-\item{optional_query:}{additional string to append to the query}
+\item{optional_query}{Additional string to append to the query}
 }
 \value{
-: The value found in the pkey column for the entry with the value
+The value found in the pkey column for the entry with the value
 }
 \description{
 Get the reference key corresponding to a value (usually from the Oracle / MSAccess reference database)

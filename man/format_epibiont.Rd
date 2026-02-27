@@ -2,13 +2,7 @@
 % Please edit documentation in R/format_capture_mollusque.R
 \name{format_epibiont}
 \alias{format_epibiont}
-\title{Formated COD_COUVERTURE_EPIBIONT column to the dataframe
-This categorizes AND includes the of the following definition:
-ave_coverage to cod_couverture :
-0 -> Aucune balane
-1 -> 1/3 et moins surface colonisée
-2 -> 1/3 à 2/3 surface colonisée
-3 -> 2/3 et plus surface colonisée}
+\title{Formated COD_COUVERTURE_EPIBIONT column to the dataframe}
 \usage{
 format_epibiont(andes_db_connection, code_filter)
 }
@@ -21,6 +15,14 @@ format_epibiont(andes_db_connection, code_filter)
 The input dataframe with columns for categorical codes
 }
 \description{
+This categorizes AND includes the of the following definition:
+ave_coverage to cod_couverture :
+0 -> Aucune balane
+1 -> 1/3 et moins surface colonisée
+2 -> 1/3 à 2/3 surface colonisée
+3 -> 2/3 et plus surface colonisée
+}
+\details{
 #' ave_with_barnacles to cod_abondance
 0 -> Aucun des pétoncles ne porte de balane
 1 -> 1% à 20%% des pétoncles portent des balanes

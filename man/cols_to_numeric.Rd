@@ -7,9 +7,9 @@
 cols_to_numeric(df, col_names = NULL)
 }
 \arguments{
-\item{df:}{the datafram to modify}
+\item{df}{the dataframe to modify}
 
-\item{col_names:}{a list of column names which will be converted to numeric}
+\item{col_names}{a list of column names which will be converted to numeric}
 }
 \description{
 Convert all dataframe cols named in the col_names to a numeric value

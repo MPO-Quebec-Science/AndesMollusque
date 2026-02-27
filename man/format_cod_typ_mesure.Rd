@@ -2,14 +2,16 @@
 % Please edit documentation in R/format_capture_mollusque.R
 \name{format_cod_typ_mesure}
 \alias{format_cod_typ_mesure}
-\title{For now, we will just assume all data is quantitative
-since we are limiting ourselves to commercial (scallops and whelk).
-One day, this function should be generalized to also lookup the data and determine it.}
+\title{format COD_TYP_MESURE}
 \usage{
 format_cod_typ_mesure(capt)
 }
-\description{
+\arguments{
+\item{capt}{Dataframe
 For now, we will just assume all data is quantitative
 since we are limiting ourselves to commercial (scallops and whelk).
-One day, this function should be generalized to also lookup the data and determine it.
+One day, this function should be generalized to also lookup the data and determine it.}
+}
+\description{
+format COD_TYP_MESURE
 }

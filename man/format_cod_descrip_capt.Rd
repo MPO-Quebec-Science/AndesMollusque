@@ -2,11 +2,12 @@
 % Please edit documentation in R/format_capture_mollusque.R
 \name{format_cod_descrip_capt}
 \alias{format_cod_descrip_capt}
-\title{For now, we will just keep this blank
-It is a function here so that one day we can use the ANDES relative abundance category
-But it is not used for commercial stocks, so we skip it}
+\title{Format COD_DESCRIP_CAPT}
 \usage{
 format_cod_descrip_capt(capt)
+}
+\arguments{
+\item{capt}{Dataframe}
 }
 \description{
 For now, we will just keep this blank

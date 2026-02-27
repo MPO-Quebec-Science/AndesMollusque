@@ -2,11 +2,12 @@
 % Please edit documentation in R/access_db_connect.R
 \name{get_access_table_properties}
 \alias{get_access_table_properties}
-\title{this function is meant to help the validation
-automatically getting colnames, no-null cols and datatypes.
-but I cannot get it to work here yet... (but works in Dbeaver)}
+\title{get database table properties}
 \usage{
 get_access_table_properties(table_name = NULL)
+}
+\arguments{
+\item{table_name}{The name of the table}
 }
 \description{
 this function is meant to help the validation

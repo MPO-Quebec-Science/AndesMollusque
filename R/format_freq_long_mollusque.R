@@ -1,4 +1,6 @@
+#' Format COD_TYP_LONG
 #'
+#' @param freq Dataframe to reformat
 #' @export
 format_cod_typ_long <- function(freq) {
   code <- get_ref_key(
@@ -11,7 +13,9 @@ format_cod_typ_long <- function(freq) {
   return(freq)
 }
 
+#' Format COD_TECH_MESURE_LONG
 #'
+#' @param freq Dataframe to reformat
 #' @export
 format_cod_tech_mesure_long <- function(freq) {
   code_class_proj <- get_ref_key(
@@ -36,8 +40,9 @@ format_cod_tech_mesure_long <- function(freq) {
   return(freq)
 }
 
-
+#' Format COD_TYP_ETAT
 #'
+#' @param freq Dataframe to reformat
 #' @export
 format_cod_typ_etat <- function(freq) {
   # In andes there are only two types (encoded by basket-class), vivant or claquettes
@@ -67,7 +72,10 @@ format_cod_typ_etat <- function(freq) {
   return(freq)
 }
 
+
+#' Format NO_MOLLUSQUE
 #'
+#' @param freq Dataframe to reformat
 #' @export
 format_no_mollusque <- function(freq) {
   freq$NO_MOLLUSQUE <- seq_len(nrow(freq))

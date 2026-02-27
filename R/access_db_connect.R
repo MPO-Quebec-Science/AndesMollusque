@@ -44,6 +44,10 @@ access_db_connect <- function(file_path = NULL) {
   return(access_db_connection)
 }
 
+#' Creates a new MS Access database file
+#'
+#' @param fname Filename for new access DB
+#'
 #' @export
 create_new_access_db <- function(fname = "new_access_db.mdb") {
   template_file_path <- system.file(
@@ -63,12 +67,13 @@ create_new_access_db <- function(fname = "new_access_db.mdb") {
 
 
 #' Get the reference key corresponding to a value (usually from the Oracle / MSAccess reference database)
-#' @param table: The name of the Oracle table, defaults to "tablename"
-#' @param pkey_col: The column name that holds the key, defaults to "columnofprimarykey"
-#' @param col: The column that holds the value to match, defaults to "columnname"
-#' @param val: The value to match, defaults to "entryvalue"
-#' @param optional_query: additional string to append to the query
-#' @return: The value found in the pkey column for the entry with the value
+#'
+#' @param table The name of the Oracle table, defaults to "tablename"
+#' @param pkey_col The column name that holds the key, defaults to "columnofprimarykey"
+#' @param col The column that holds the value to match, defaults to "columnname"
+#' @param val The value to match, defaults to "entryvalue"
+#' @param optional_query Additional string to append to the query
+#' @return The value found in the pkey column for the entry with the value
 #' @export
 get_ref_key <- function(
   table = "tablename",
@@ -127,10 +132,10 @@ get_ref_key <- function(
 
 #' Builds a list of legal choices (descriptions) for get ref key
 #' @details This essentially returns a list of values in table
-#' @param table: The name of the Oracle table, defaults to "tablename"
-#' @param col: The column that holds the value to match, defaults to "columnname"
-#' @param optional_query: additional string to append to the query
-#' @return: The value found in the pkey column for the entry with the value
+#' @param table The name of the Oracle table, defaults to "tablename"
+#' @param col The column that holds the value to match, defaults to "columnname"
+#' @param optional_query additional string to append to the query
+#' @return The value found in the pkey column for the entry with the value
 #' @export
 get_ref_choices <- function(
   table = "tablename",
@@ -155,9 +160,13 @@ get_ref_choices <- function(
 }
 
 
+#' get database table properties
+#'
 #' this function is meant to help the validation
 #' automatically getting colnames, no-null cols and datatypes.
 #' but I cannot get it to work here yet... (but works in Dbeaver)
+#'
+#' @param table_name The name of the table
 get_access_table_properties <- function(table_name = NULL) {
   if (is.null(table_name)) {
     stop("Must supply a table name to verify properties")
