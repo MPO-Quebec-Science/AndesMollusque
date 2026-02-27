@@ -11,7 +11,7 @@ add_hard_coded_value(df, col_name = NULL, value = NULL)
 
 \item{col_name}{The new column name}
 
-\item{value}{The value to add to every row in this column. 
+\item{value}{The value to add to every row in this column.
 To add null values in the column use NA and not NULL.}
 }
 \value{

@@ -18,3 +18,5 @@ Imports:
     DBI,
     readr,
     logger
+Suggests:
+    testthat
