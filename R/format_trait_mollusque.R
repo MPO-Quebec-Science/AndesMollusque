@@ -19,7 +19,10 @@ format_cod_secteur_releve <- function(trait, desc_secteur_releve_f) {
   return(trait)
 }
 
-
+#' Format COD_STRAT
+#'
+#' @param trait Dataframe
+#' @param desc_serie_hist_f String
 #' @export
 format_cod_strate <- function(trait, desc_serie_hist_f) {
   lookup_cod_strate <- function(strate_name, cod_sect_releve) {
@@ -65,6 +68,10 @@ format_cod_strate <- function(trait, desc_serie_hist_f) {
   return(trait)
 }
 
+#' Get the strate from reference
+#'
+#' @param nom_station String
+#' @param desc_serie_hist_f String
 #' @export
 get_strate <- function(nom_station, desc_serie_hist_f) {
   # This requires opening station reference data to determine the zone.
@@ -140,7 +147,10 @@ get_strate <- function(nom_station, desc_serie_hist_f) {
   }
 }
 
-
+#' Format ZONE
+#'
+#' @param trait Dataframe
+#' @param desc_serie_hist_f String
 #' @export
 format_zone <- function(trait, desc_serie_hist_f) {
   get_zone <- function(nom_station, desc_serie_hist_f) {
@@ -310,6 +320,9 @@ format_date_hre_trait <- function(trait) {
   return(trait)
 }
 
+#' Format COD_TYP_HEURE
+#'
+#' @param trait Dataframe
 #' @export
 format_cod_typ_heure <- function(trait) {
   lookup_cod_typ_heure <- function(is_dst) {

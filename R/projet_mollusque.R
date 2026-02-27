@@ -202,6 +202,9 @@ validate_projet_mollusque <- function(df) {
   return(is_valid)
 }
 
+#' Write to Access file
+#' @param proj Dataframe
+#' @param access_db_write_connection the connection to Access file
 #' @export
 write_projet_mollusque <- function(proj, access_db_write_connection = NULL) {
   # write the dataframe to the database

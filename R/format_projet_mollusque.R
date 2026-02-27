@@ -11,6 +11,9 @@ format_cod_source_info <- function(df) {
   return(df)
 }
 
+#' Lookup COD_SOURCE_INFO
+#'
+#' @param desc_source_info_f String
 #' @export
 lookup_cod_source_info <- function(desc_source_info_f) {
   # HACK, hard-code the lookup here
