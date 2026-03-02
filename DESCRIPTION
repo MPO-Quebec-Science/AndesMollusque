@@ -1,6 +1,6 @@
 Package: ANDESMollusque
 Type: Package
-Title: Helper functions to access ANDES mission data as a Dataframe.
+Title: Helper functions to access ANDES mission data as a Dataframe
 Version: 0.1.1
 Author: Les amis de l'IML
 Maintainer: David Sean-Fortin <David.Sean-Fortin@dfo-mpo.gc.ca>
@@ -23,4 +23,7 @@ Imports:
 Suggests:
     testthat,
     devtools,
-    lintr
+    lintr,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

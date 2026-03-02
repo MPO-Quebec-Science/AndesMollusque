@@ -2,6 +2,10 @@
 title: "Fusionner BD Access"
 output: rmarkdown::html_document
 nocite: '@*'
+vignette: >
+  %\VignetteIndexEntry{Fusionner BD Access}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
@@ -9,6 +13,10 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+```
+
+```{r setup}
+library(ANDESMollusque)
 ```
 
 # Combiner deux BD MS Access

@@ -6,5 +6,6 @@
     "[quarto]": {
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "quarto.quarto"
-    }
+    },
+    "pandoc.executable": "C:/Program Files/RStudio/resources/app/bin/quarto/bin/tools/"
 }

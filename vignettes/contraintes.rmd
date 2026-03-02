@@ -2,6 +2,10 @@
 title: "Contraints de missions Andes"
 output: rmarkdown::html_document
 nocite: '@*'
+vignette: >
+  %\VignetteIndexEntry{Contraints de missions Andes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
@@ -9,6 +13,10 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+```
+
+```{r setup}
+library(ANDESMollusque)
 ```
 # Contraintes pour Pétoncle
 

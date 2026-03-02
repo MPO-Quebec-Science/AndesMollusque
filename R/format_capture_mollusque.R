@@ -142,7 +142,7 @@ get_epibiont <- function(andes_db_connection, code_filter) {
   # category <- c ("1", "2", "3")
   # value <- c ((0+1)/6. ,(1+2)/6. ,(2+3)/6. )
 
-  couverture_epibiont <- aggregate(
+  couverture_epibiont <- stats::aggregate(
     x = list(ave_coverage = coverage),
     by = list(code = df$code, sample_number = df$sample_number),
     FUN = mean,
