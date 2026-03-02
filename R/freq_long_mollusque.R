@@ -96,16 +96,11 @@ get_freq_long_mollusque <- function(andes_db_connection, capt = NULL) {
   freq <- format_no_mollusque(freq)
 
   # can get rid of temporary columns
-  freq <- subset(
-    freq,
-    select = -c(
-      id,
-      sample_number,
-      strap_code,
-      description_fra,
-      observation_type_id
-    )
-  )
+  freq$id <- NULL
+  freq$sample_number <- NULL
+  freq$strap_code <- NULL
+  freq$description_fra <- NULL
+  freq$observation_type_id <- NULL
 
   # convert these strings to numeric
   freq <- cols_to_numeric(

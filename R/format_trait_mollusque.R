@@ -447,7 +447,8 @@ validate_set_result <- function(trait) {
   # run the compare_both() function over all rows
   res <- apply(trait, MARGIN = 1, atomic_compare_both)
 
-  # can now remove is_valid column
-  trait <- subset(trait, select = -c(set_is_valid))
+  # can now remove set_is_valid column
+  trait$set_is_valid <- NULL
+
   return(trait)
 }

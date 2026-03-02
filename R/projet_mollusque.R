@@ -38,7 +38,7 @@ get_projet_mollusque <- function(andes_db_connection) {
   # add COD_SOURCE_INFO from the description
   proj <- format_cod_source_info(proj)
   # DESC_SOURCE_INFO_F can be removed
-  proj <- subset(proj, select = -c(DESC_SOURCE_INFO_F))
+  proj$DESC_SOURCE_INFO_F <- NULL
 
   # format the start and end dates
   proj <- format_date_deb_projet(proj)
@@ -47,7 +47,7 @@ get_projet_mollusque <- function(andes_db_connection) {
   # use vessel_name to obtain SEQ_PECHEUR (i.e., Captaine Leim)
   proj <- format_seq_pecheur(proj)
   # drop vessel_name
-  proj <- subset(proj, select = -c(vessel_name))
+  proj$vessel_name <- NULL
 
   # cleanup the text block (remove new lines)
   proj <- cleanup_text(proj, col_name = "NOM_SCIENCE_NAVIRE", max_chars = 250)

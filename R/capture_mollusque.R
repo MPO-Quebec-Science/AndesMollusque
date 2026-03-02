@@ -166,7 +166,7 @@ get_capture_mollusque <- function(
   capt <- format_cod_esp_gen(capt)
 
   # can get rid of strap_code column
-  capt <- subset(capt, select = -c(strap_code))
+  capt$strap_code <- NULL
 
   # convert datatypes
   capt <- cols_to_numeric(

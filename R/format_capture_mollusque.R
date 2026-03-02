@@ -14,11 +14,12 @@
 #' 3 -> 41% à 60%% des pétonlces portent des balanes
 #' 4 -> 61% à 80%% despétoncles portent des balanes
 #' 5 -> 81% à 100%% des pétonlces portent des balanes
+#' @param capt Dataframe
 #' @param andes_db_connection A connection object to the ANDES database.
 #' @param code_filter a list of species code to filter on, or NULL for no filtering
 #' @return The input dataframe with columns for categorical codes
 #' @export
-format_epibiont <- function(andes_db_connection, code_filter) {
+format_epibiont <- function(capt, andes_db_connection, code_filter) {
   epibiont_data <- get_epibiont(andes_db_connection, code_filter)
 
   assert_col(epibiont_data, "ave_with_barnacles")
@@ -82,10 +83,10 @@ format_epibiont <- function(andes_db_connection, code_filter) {
     epibiont_data,
     by = c("IDENT_NO_TRAIT", "strap_code")
   )
-  # can get rid the extra
-  capt <- subset(capt, select = -c(ave_with_barnacles))
-  capt <- subset(capt, select = -c(ave_coverage))
-  capt <- subset(capt, select = -c(description_fra))
+  # can get rid the extra cols
+  capt$ave_with_barnacles <- NULL
+  capt$ave_coverage <- NULL
+  capt$description_fra <- NULL
 
   return(capt)
 }
@@ -187,8 +188,7 @@ format_cod_esp_gen <- function(capt) {
   capt <- left_join(capt, cod_esp_gen_map, by = "strap_code")
 
   # we can probably drop the strap_code column now...
-  # capt <- subset(capt, select = -c(strap_code))
-
+  # capt$strap_code <- NULL
   return(capt)
 }
 

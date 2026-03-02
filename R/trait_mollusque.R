@@ -74,7 +74,7 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
   trait <- format_cod_secteur_releve(trait, desc_secteur_releve_f)
 
   # we can now get rid of that column
-  trait <- subset(trait, select = -c(desc_secteur_releve_f))
+  trait$desc_secteur_releve_f <- NULL
 
   # add COD_STRATE
   trait <- format_cod_strate(trait, desc_serie_hist_f)
@@ -94,15 +94,15 @@ get_trait_mollusque <- function(andes_db_connection, proj = NULL) {
 
   desc_stratification <- trait$desc_stratification[1]
   # we can now get rid of the desc_stratification column
-  trait <- subset(trait, select = -c(desc_stratification))
+  trait$desc_stratification <- NULL
 
   trait <- format_cod_typ_trait(trait, desc_stratification)
+
   # can get rid of operation column
-  trait <- subset(trait, select = -c(operation))
+  trait$operation <- NULL
 
   # can get rid of andes_mission_id column
-  trait <- subset(trait, select = -c(andes_mission_id))
-
+  trait$andes_mission_id <- NULL
   # validate set_result : conistency between set_is_valid and COD_RESULT_OPER.
 
   trait <- validate_set_result(trait)

@@ -212,7 +212,7 @@ generate_sql_insert_statement <- function(df_row, table_name) {
   col_names <- NULL
   # remove id col if present
   if ("id" %in% names(df_row)) {
-    df_row <- subset(df_row, select = -c(id))
+    df_row$id <- NULL
   }
 
   for (col in colnames(df_row)) {

@@ -115,10 +115,10 @@ get_biometrie_petoncle <- function(
   ))
 
   # can get rid of columns: set_start_date
-  biometrie <- subset(biometrie, select = -c(set_start_date))
+  biometrie$set_start_date <- NULL
 
   # can get rid of columns: collect_specimen
-  biometrie <- subset(biometrie, select = -c(collect_specimen))
+  biometrie$collect_specimen <- NULL
 
   return(biometrie)
 }
