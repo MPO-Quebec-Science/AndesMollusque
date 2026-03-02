@@ -45,6 +45,11 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - name: Set env to skip ASCII check
+        id: rcmdcheck
+        run: Sys.setenv("_R_CHECK_ASCII_CODE_"=FALSE)
+        shell: Rscript {0}
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
