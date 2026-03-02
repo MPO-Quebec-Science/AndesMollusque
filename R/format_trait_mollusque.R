@@ -86,7 +86,7 @@ get_strate <- function(nom_station, desc_serie_hist_f) {
       package = "ANDESMollusque"
     )
 
-    ref_station <- read.csv(file_path, sep = ",")
+    ref_station <- utils::read.csv(file_path, sep = ",")
 
     # filter out station
     if (!is.null(station_name)) {

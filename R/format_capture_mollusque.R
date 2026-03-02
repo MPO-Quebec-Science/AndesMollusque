@@ -123,7 +123,7 @@ get_epibiont <- function(andes_db_connection, code_filter) {
 
   # tag each specimen as having barnacles or not ( observation_value is anything but category 0)
   has_barnacles <- as.numeric(df$observation_value > 0)
-  abondance_epibiont <- aggregate(
+  abondance_epibiont <- stats::aggregate(
     x = list(ave_with_barnacles = has_barnacles),
     by = list(code = df$code, sample_number = df$sample_number),
     FUN = mean
