@@ -47,6 +47,6 @@ jobs:
 
       - uses: davidsean/actions/check-r-package@v2
         with:
-          upload-snapshots: true
-          skip-ascii-code: true
+          upload-snapshots: '"true"'
+          skip-ascii-code: '"true"'
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
