@@ -4,9 +4,11 @@
 \alias{format_epibiont}
 \title{Formated COD_COUVERTURE_EPIBIONT column to the dataframe}
 \usage{
-format_epibiont(andes_db_connection, code_filter)
+format_epibiont(capt, andes_db_connection, code_filter)
 }
 \arguments{
+\item{capt}{Dataframe}
+
 \item{andes_db_connection}{A connection object to the ANDES database.}
 
 \item{code_filter}{a list of species code to filter on, or NULL for no filtering}
