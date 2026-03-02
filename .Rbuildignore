@@ -10,3 +10,10 @@
 ^[.]?air[.]toml$
 ^\.vscode$
 ^\.lintr$
+
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+SECURITY.md
+example.Renviron
+exemple_biometrie.R
+run.R
