@@ -1,5 +1,10 @@
 # Code Espèce
 
+``` r
+library(ANDESMollusque)
+#devtools::load_all()
+```
+
 ## Codes espèce: Saisie vs archivage
 
 Il faut faire une distinction entre le codes espèces pour les besoins de

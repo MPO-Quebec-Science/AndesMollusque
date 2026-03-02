@@ -186,5 +186,7 @@ devtools::test()
 
 devtools::document()
 
+Sys.setenv("_R_CHECK_ASCII_CODE_"=FALSE)
+Sys.setenv("_R_CHECK_ASCII_DATA_"=FALSE)
 rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
 ```

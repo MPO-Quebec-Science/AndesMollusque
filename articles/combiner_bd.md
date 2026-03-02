@@ -1,5 +1,9 @@
 # Fusionner BD Access
 
+``` r
+library(ANDESMollusque)
+```
+
 ## Combiner deux BD MS Access
 
 FAIRE UNE SAUVEGARDE DES DEUX BDS AVANT DE COMMENCER!

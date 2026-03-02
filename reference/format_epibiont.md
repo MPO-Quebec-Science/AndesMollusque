@@ -8,10 +8,14 @@ surface colonisée
 ## Usage
 
 ``` r
-format_epibiont(andes_db_connection, code_filter)
+format_epibiont(capt, andes_db_connection, code_filter)
 ```
 
 ## Arguments
+
+- capt:
+
+  Dataframe
 
 - andes_db_connection:
 
