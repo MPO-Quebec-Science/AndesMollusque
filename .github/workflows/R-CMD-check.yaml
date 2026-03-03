@@ -50,4 +50,5 @@ jobs:
           upload-snapshots: true
           skip-ascii-code: true
           skip-ascii-data: true
+          skip-system-clock: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
