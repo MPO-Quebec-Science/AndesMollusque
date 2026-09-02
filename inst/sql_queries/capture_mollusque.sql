@@ -19,10 +19,10 @@ LEFT JOIN shared_models_sampleobservationtype
 -- # # this part is to remove 'NA' and Biodiversity size-class baskets
 LEFT JOIN shared_models_basket 
 	ON shared_models_basket.catch_id=shared_models_catch.id
-LEFT JOIN shared_models_samplingprotocol 
-	ON shared_models_samplingprotocol.id=shared_models_mission.sampling_protocol_id 
+-- LEFT JOIN shared_models_samplingprotocol 
+-- 	ON shared_models_samplingprotocol.id=shared_models_mission.sampling_protocol_id 
 LEFT JOIN shared_models_sizeclass 
-	ON shared_models_sizeclass.sampling_protocol_id=shared_models_samplingprotocol.id and shared_models_sizeclass.code=shared_models_basket.size_class
+	ON shared_models_sizeclass.code=shared_models_basket.size_class
 -- Need to add these...
 -- WHERE shared_models_mission.is_active=1
 -- GROUP BY
