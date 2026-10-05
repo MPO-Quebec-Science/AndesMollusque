@@ -18,20 +18,35 @@ des données équipe IML de la région du Québec fait avec ANDES.
 
 ## Installation du package
 
-``` r
-
-devtools::install_github("MPO-Quebec-Science/AndesMollusque")
-library(ANDESMollusque)
-```
-
 ### Installation des pilots SQL sur un poste Windows du MPO
 
-Si ce n’est pas fait, il faut installer des pilotes de BD. Cèst possible
-de le faire à partir du `Centre Logiciel`. - Pour connexion BD ANDES,
-installer `My SQL Connecteur ODBC 8.0.22` - Pour BD MS ACCESS, rien a
-faire de plus. Office 365 deja présent. - (facultatif) Pour connexion
-Oracle, installer `Oracle 12 (Instant Client) x64` qui va mettre les
-libraries sous `C:\Oracle\12.2.0_Instant_x64`.
+Les requetes de la BD MySQL Andes requiert un pilote. Le pilote
+`{MySQL ODBC 8.0 Unicode Driver}` devraient être disponible pour les
+postes standards du MPO. Il peut être installé via le center logiciel.
+Nom: `MySQL Connector ODBC` Version `8.0.22` URL:
+`softwarecenter:SoftwareID=ScopeId_A90E3BBE-DB35-4A92-A44E-15F8C7C595B3/Application_dec16a4a-d57f-44b1-8a9f-8f6267f34539`
+
+- Pour BD MS ACCESS, rien a faire de plus. Office 365 deja présent.
+- (facultatif) Pour connexion Oracle, installer
+  `Oracle 12 (Instant Client) x64` qui va mettre les libraries sous
+  `C:\Oracle\12.2.0_Instant_x64`.
+
+### Option 1 installer avec `pak`
+
+``` r
+#detach("package:AndesMollusque", unload = TRUE)
+install.packages("pak")`
+pak::pak("MPO-Quebec-Science/AndesMollusque")
+```
+
+### Option 2 installer avec `devtools`
+
+``` r
+
+#detach("package:AndesMollusque", unload = TRUE)
+install.packages("devtools")
+devtools::install_github("MPO-Quebec-Science/AndesMollusque")
+```
 
 ## Connexion BD ANDES
 

@@ -71,19 +71,37 @@
 <div class="section level2">
 <h2 id="installation-du-package">Installation du package<a class="anchor" aria-label="anchor" href="#installation-du-package"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/install-deprecated.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"MPO-Quebec-Science/AndesMollusque"</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ANDESMollusque</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="installation-des-pilots-sql-sur-un-poste-windows-du-mpo">Installation des pilots SQL sur un poste Windows du MPO<a class="anchor" aria-label="anchor" href="#installation-des-pilots-sql-sur-un-poste-windows-du-mpo"></a>
 </h3>
-<p>Si ce n’est pas fait, il faut installer des pilotes de BD. Cèst possible de le faire à partir du <code>Centre Logiciel</code>. - Pour connexion BD ANDES, installer <code>My SQL Connecteur ODBC 8.0.22</code> - Pour BD MS ACCESS, rien a faire de plus. Office 365 deja présent. - (facultatif) Pour connexion Oracle, installer <code>Oracle 12 (Instant Client) x64</code> qui va mettre les libraries sous <code>C:\Oracle\12.2.0_Instant_x64</code>.</p>
+<p>Les requetes de la BD MySQL Andes requiert un pilote. Le pilote <code>{MySQL ODBC 8.0 Unicode Driver}</code> devraient être disponible pour les postes standards du MPO. Il peut être installé via le center logiciel. Nom: <code>MySQL Connector ODBC</code> Version <code>8.0.22</code> URL: <code>softwarecenter:SoftwareID=ScopeId_A90E3BBE-DB35-4A92-A44E-15F8C7C595B3/Application_dec16a4a-d57f-44b1-8a9f-8f6267f34539</code></p>
+<ul>
+<li>Pour BD MS ACCESS, rien a faire de plus. Office 365 deja présent.</li>
+<li>(facultatif) Pour connexion Oracle, installer <code>Oracle 12 (Instant Client) x64</code> qui va mettre les libraries sous <code>C:\Oracle\12.2.0_Instant_x64</code>.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="option-1-installer-avec-pak">Option 1 installer avec <code>pak</code>
+<a class="anchor" aria-label="anchor" href="#option-1-installer-avec-pak"></a>
+</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co">#detach("package:AndesMollusque", unload = TRUE)</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"pak"</span>)<span class="st">`</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="at">pak::pak("MPO-Quebec-Science/AndesMollusque")</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="option-2-installer-avec-devtools">Option 2 installer avec <code>devtools</code>
+<a class="anchor" aria-label="anchor" href="#option-2-installer-avec-devtools"></a>
+</h3>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#detach("package:AndesMollusque", unload = TRUE)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/install-deprecated.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"MPO-Quebec-Science/AndesMollusque"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="connexion-bd-andes">Connexion BD ANDES<a class="anchor" aria-label="anchor" href="#connexion-bd-andes"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Infos connexion BD, voir section Authentification Connexion BD</span></span>
 <span><span class="va">url_bd</span> <span class="op">&lt;-</span> <span class="st">"iml-science-4.ent.dfo-mpo.ca"</span></span>
 <span><span class="va">port_bd</span> <span class="op">&lt;-</span> <span class="fl">25993</span></span>
@@ -108,7 +126,7 @@
 </h3>
 <p>Il faut avant tout définir certains parametres, dont certain qui ne sont PAS dans le BD ANDES. Entre autres: - <code>desc_serie_hist_f</code> - <code>code_filter</code> (list de code strap) - <code>basket_class_filter</code> (list de code de types de paniers andes)</p>
 <p>Les tables Access suivent une hiearchy <code>proj</code> -&gt; <code>trait</code> -&gt; <code>engin</code> -&gt; <code>capture</code> -&gt; <code>FreqLongMollusque</code></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">################################################</span></span>
 <span><span class="co"># EXTERNAL INPUT</span></span>
 <span><span class="co"># This needs to be manually defined</span></span>
@@ -157,7 +175,7 @@
 </h3>
 <p>Pour les données de biométrie pétconle, il faut définir le nom de la collection lié au champ <code>conserver pour biométrie?</code>. Nous allons alors pourvoir obtenir les spécimens de la mission ou la réponse a été <code>1=OUI</code>. Normalement, les données de biométrie sont présent pour ces spécimens.</p>
 <p>Utilisé ensuite la fonction <code><a href="reference/get_biometrie_petoncle.html">get_biometrie_petoncle()</a></code></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># BIOMETRIE PETONCLE</span></span>
 <span><span class="co"># select collection_name as one of the following</span></span>
 <span><span class="co"># "Conserver pour biométrie 16E"</span></span>
@@ -171,7 +189,7 @@
 <h2 id="écrire-une-bd-access">Écrire une BD Access<a class="anchor" aria-label="anchor" href="#%C3%A9crire-une-bd-access"></a>
 </h2>
 <p>Les tables en dataframes peuvent être sauvegardé en format BD Access.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Faire une BD acces vide</span></span>
 <span><span class="va">file_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_new_access_db.html">create_new_access_db</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># etablir la connexion a cette BD</span></span>
@@ -199,12 +217,12 @@
 <h1 id="developpement">Developpement<a class="anchor" aria-label="anchor" href="#developpement"></a>
 </h1>
 <p>checkout the repo and use</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">document</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>to load the library in memory without installing it.</p>
 <p>To test the github package, detach an re-install</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/detach.html" class="external-link">detach</a></span><span class="op">(</span><span class="st">"package:ANDESMollusque"</span>, unload<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/install-deprecated.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"MPO-Quebec-Science/ANDESMollusque"</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ANDESMollusque</span><span class="op">)</span></span>
