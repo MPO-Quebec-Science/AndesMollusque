@@ -225,6 +225,11 @@ format_no_station <- function(trait) {
 #' @param string The string to sanitize
 strip_alphabetic <- function(string) {
   # It is mostly used to reformat pétoncle minganie station names that start with a letter
+  # in 2026, station names had _16E and _16F appended to them to reduce picking the wrong station.
+  # let us strip this right now
+  string <- gsub("_16E", "", string)
+  string <- gsub("_16F", "", string)
+
   numeric_string <- gsub("[A-Za-z]", "", string)
   return(numeric_string)
 }
