@@ -4,7 +4,7 @@ SELECT
 shared_models_sample.sample_number AS IDENT_NO_TRAIT,
 shared_models_referencecatch.code AS strap_code, -- will need to be converted to cod_esp_eng
 shared_models_sizeclass.description_fra,
-MAX(CASE WHEN (shared_models_sampleobservationtype.export_name='number_of_successful_dredge_baskets') THEN value ELSE '' END) AS FRACTION_PECH
+MAX(CASE WHEN (shared_models_sampleobservationtype.export_name='number_of_successful_dredge_baskets') THEN shared_models_sampleobservation.value ELSE '' END) AS FRACTION_PECH
 FROM shared_models_catch 
 LEFT JOIN shared_models_sample 
 	ON shared_models_catch.sample_id=shared_models_sample.id 
@@ -30,4 +30,3 @@ LEFT JOIN shared_models_sizeclass
 --     strap_code, 
 --     shared_models_sizeclass.description_fra
 -- ORDER BY IDENT_NO_TRAIT ASC
-
